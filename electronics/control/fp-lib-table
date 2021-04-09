@@ -1,0 +1,3 @@
+(fp_lib_table
+  (lib (name CNC)(type KiCad)(uri /home/marc-antoine/Bureau/CNC/electronics/CNC.pretty)(options "")(descr ""))
+)
