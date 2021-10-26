@@ -1,9 +1,8 @@
 EESchema-DOCLIB  Version 2.0
 #
-$CMP MOCD217R2M
-D DC Quad Optocoupler, Vce 80V, CTR 100-600%, SOP-16
-K NPN DC Quad Optocoupler
-F http://optoelectronics.liteon.com/upload/download/DS70-2009-0014/LTV-2X7%20sereis%20Mar17.PDF
+$CMP +3V3_LSW
+D Power symbol creates a global label with name "+5V"
+K power-flag
 $ENDCMP
 #
 #End Doc Library
