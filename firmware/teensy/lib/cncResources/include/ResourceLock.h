@@ -1,9 +1,10 @@
-#ifndef CORE_RESOURCE_LOCK_H
-#define CORE_RESOURCE_LOCK_H
+#ifndef CNC_RESOURCES_RESOURCE_LOCK_H
+#define CNC_RESOURCES_RESOURCE_LOCK_H
 
-#include "utils/ClassMacro.h"
+#include <cncUtils.h>
+#include <cstdint>
 
-#include <Arduino.h>
+// Those lock are not thread safe.
 
 class PinLock {
 protected:

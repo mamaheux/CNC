@@ -1,8 +1,8 @@
 #ifndef CORE_IO_ANALOG_INPUT_H
 #define CORE_IO_ANALOG_INPUT_H
 
-#include "core/ResourceLock.h"
-#include "utils/ClassMacro.h"
+#include <cncResources.h>
+#include <cncUtils.h>
 
 #include <Arduino.h>
 

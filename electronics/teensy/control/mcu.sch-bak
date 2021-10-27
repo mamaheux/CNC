@@ -458,10 +458,10 @@ F 3 "~" H 1500 5150 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L CNC:Cetus_J1B1211CCD U16
+L CNC:Cetus_J1B1211CCD J?
 U 1 1 6195AE16
 P 900 4350
-F 0 "U16" H 958 4415 50  0000 C CNN
+F 0 "J?" H 958 4415 50  0000 C CNN
 F 1 "Cetus_J1B1211CCD" H 958 4324 50  0000 C CNN
 F 2 "cnc:Cetus J1B1211CCD" H 900 4350 50  0001 C CNN
 F 3 "" H 900 4350 50  0001 C CNN
@@ -544,8 +544,6 @@ Text Label 9750 4550 0    50   ~ 0
 USB_UART_TX
 Text Label 9750 4450 0    50   ~ 0
 USB_UART_RX
-Wire Wire Line
-	9750 2950 9700 2950
 Wire Wire Line
 	9700 2850 9750 2850
 Text Label 9750 3850 0    50   ~ 0
@@ -835,8 +833,6 @@ Text Label 9750 3350 0    50   ~ 0
 PIN_16
 Text Label 9750 3250 0    50   ~ 0
 PIN_17
-Text Label 9750 2950 0    50   ~ 0
-PIN_20
 Text Label 9750 2850 0    50   ~ 0
 PIN_21
 Text Label 9750 2750 0    50   ~ 0
@@ -862,4 +858,5 @@ PIN_23
 Wire Wire Line
 	7300 4250 7250 4250
 NoConn ~ 9700 4650
+NoConn ~ 9700 2950
 $EndSCHEMATC

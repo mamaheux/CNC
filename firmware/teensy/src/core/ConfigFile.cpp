@@ -25,8 +25,7 @@ bool ConfigFile::readNext(ConfigItem& item) {
   char line[MAX_LINE_SIZE];
   memset(line, '\0', MAX_LINE_SIZE);
 
-  size_t i = 0;
-  while (m_file.available() > 0) {
+  for (size_t i = 0;  i < MAX_LINE_SIZE && m_file.available() > 0; i++) {
     line[i] = m_file.read();
     if (line[i] == '\n') {
       line[i] = '\0';

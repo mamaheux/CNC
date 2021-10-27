@@ -1,5 +1,8 @@
-#include "core/ResourceLock.h"
-#include "core/Resource.h"
+#include <cncResources.h>
+
+#include <cmath>
+
+using namespace std;
 
 enum class LockState {
   UNLOCKED,
@@ -7,8 +10,8 @@ enum class LockState {
 };
 
 static volatile LockState pinLockStates[PIN_COUNT] = { LockState::UNLOCKED };
-static volatile uint8_t pwmGroupPinCount[PWM_GROUP_COUNT] = { 0 };
-static volatile float pwmGroupFrequency[PWM_GROUP_COUNT] = { nanf("") };
+static volatile uint8_t pwmGroupPinCount[PWM_GROUP_COUNT] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+static volatile float pwmGroupFrequency[PWM_GROUP_COUNT] = { NAN, NAN, NAN, NAN, NAN, NAN, NAN, NAN, NAN, NAN, NAN, NAN, NAN, NAN, NAN, NAN, NAN, NAN, NAN, NAN };
 
 PinLock::PinLock() : m_pin(0), m_hasLock(false) {
 }
@@ -35,6 +38,7 @@ bool PinLock::tryLock(uint8_t pin) {
 
 PwmLock::PwmLock() : PinLock(), m_frequency(nan("")) {
 }
+
 PwmLock::~PwmLock() {
   uint8_t pwmGroup = PWM_GROUP_BY_PIN[m_pin];
   if (m_hasLock && pwmGroup != INVALID_PWM_GROUP) {
@@ -50,7 +54,7 @@ bool PwmLock::tryLock(uint8_t pin, float frequency) {
   m_frequency = frequency;
 
   uint8_t pwmGroup = PWM_GROUP_BY_PIN[m_pin];
-  if (pwmGroup != INVALID_PWM_GROUP) {
+  if (pwmGroup == INVALID_PWM_GROUP) {
     return false;
   }
 

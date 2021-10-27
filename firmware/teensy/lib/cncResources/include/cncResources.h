@@ -1,7 +1,9 @@
-#ifndef CORE_RESOURCE_H
-#define CORE_RESOURCE_H
+#ifndef CNC_RESOURCES_CNC_RESOURCES_H
+#define CNC_RESOURCES_CNC_RESOURCES_H
 
-#include <Arduino.h>
+#include <ResourceLock.h>
+
+#include <cstdint>
 
 constexpr uint8_t PIN_COUNT = 42;
 

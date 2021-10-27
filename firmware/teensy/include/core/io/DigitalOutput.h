@@ -1,8 +1,8 @@
 #ifndef CORE_IO_DIGITAL_OUTPUT
 #define CORE_IO_DIGITAL_OUTPUT
 
-#include "core/ResourceLock.h"
-#include "utils/ClassMacro.h"
+#include <cncResources.h>
+#include <cncUtils.h>
 
 #include <Arduino.h>
 

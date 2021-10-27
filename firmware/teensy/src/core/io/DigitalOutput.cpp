@@ -1,6 +1,7 @@
 #include "core/io/DigitalOutput.h"
 #include "core/error.h"
-#include "core/Resource.h"
+
+#include <cncResources.h>
 
 #include <cstring>
 #include <cstdlib>
