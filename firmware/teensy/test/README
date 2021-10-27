@@ -1,0 +1,1 @@
+To execute the tests : `platformio test -e native`

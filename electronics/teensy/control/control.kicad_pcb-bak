@@ -6,7 +6,7 @@
     (tracks 1241)
     (zones 0)
     (modules 154)
-    (nets 168)
+    (nets 169)
   )
 
   (page A4)
@@ -264,6 +264,7 @@
   (net 165 "Net-(U5-Pad2)")
   (net 166 "Net-(U19-Pad33)")
   (net 167 "Net-(U14-Pad1)")
+  (net 168 "Net-(U19-Pad20)")
 
   (net_class Default "This is the default net class."
     (clearance 0.2)
@@ -432,6 +433,7 @@
     (add_net "Net-(U19-Pad13)")
     (add_net "Net-(U19-Pad18)")
     (add_net "Net-(U19-Pad19)")
+    (add_net "Net-(U19-Pad20)")
     (add_net "Net-(U19-Pad3.3V_0)")
     (add_net "Net-(U19-Pad33)")
     (add_net "Net-(U19-PadGND_1)")
@@ -564,7 +566,7 @@
     (pad 21 thru_hole circle (at 7.62 12.7) (size 1.7 1.7) (drill 1) (layers *.Cu *.Mask)
       (net 156 /mcu/PIN_21))
     (pad 20 thru_hole circle (at 7.62 15.24) (size 1.7 1.7) (drill 1) (layers *.Cu *.Mask)
-      (net 157 /mcu/PIN_20))
+      (net 168 "Net-(U19-Pad20)"))
     (pad 19 thru_hole circle (at 7.62 17.78) (size 1.7 1.7) (drill 1) (layers *.Cu *.Mask)
       (net 149 "Net-(U19-Pad19)"))
     (pad 18 thru_hole circle (at 7.62 20.32) (size 1.7 1.7) (drill 1) (layers *.Cu *.Mask)
