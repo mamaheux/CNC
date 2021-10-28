@@ -22,10 +22,10 @@ public:
   void begin(uint8_t pin);
   void begin(const char* pinString);
 
-  uint16_t read();
+  uint16_t read() const;
 };
 
-inline uint16_t AnalogInput::read() {
+inline uint16_t AnalogInput::read() const {
   return analogRead(m_pin);
 }
 

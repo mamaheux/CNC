@@ -54,7 +54,7 @@
 | `G21`      | [Link 1](https://smoothieware.org/g21), [Link 2](http://linuxcnc.org/docs/html/gcode/g-code.html#gcode:g20-g21)       |                                                | `G21`                  |
 | `G28`      | [Link 1](https://smoothieware.org/g28-cnc), [Link 2](http://linuxcnc.org/docs/html/gcode/g-code.html#gcode:g28-g28.1) | Axes (optional)                                | `G28`                  |
 | `G28.1`    | [Link](http://linuxcnc.org/docs/html/gcode/g-code.html#gcode:g28-g28.1)                                               |                                                | `G28.1`                |
-| `G53`      | [Link](http://linuxcnc.org/docs/html/gcode/g-code.html#gcode:g53)                                                     | G1 or G1 (modal command is permitted)          | `G53 G0 X0 Y0 Z0`      |
+| `G53`      | [Link](http://linuxcnc.org/docs/html/gcode/g-code.html#gcode:g53)                                                     | G1 or G1 (modal commands are permitted)        | `G53 G0 X0 Y0 Z0`      |
 | `G54-59.3` | [Link](http://linuxcnc.org/docs/html/gcode/g-code.html#gcode:g54-g59.3)                                               |                                                | `G54`                  |
 | `G90`      | [Link 1](https://smoothieware.org/g90), [Link 2](http://linuxcnc.org/docs/html/gcode/g-code.html#gcode:g90-g91)       |                                                | `G90`                  |
 | `G91`      | [Link 1](https://smoothieware.org/g91), [Link 2](http://linuxcnc.org/docs/html/gcode/g-code.html#gcode:g90-g91)       |                                                | `G91`                  |
@@ -80,7 +80,7 @@
 | M-Code     | Documentation                                                                                           | Parameters        | Example               |
 | ---------- | ------------------------------------------------------------------------------------------------------- | ----------------- | --------------------- |
 | `M3`       | [Link](https://smoothieware.org/m3)                                                                     | Spindle Speed (S) | `M3 S500`             |
-| `M4`       | [Link](https://smoothieware.org/m5)                                                                     |                   | `M5`                  |
+| `M5`       | [Link](https://smoothieware.org/m5)                                                                     |                   | `M5`                  |
 | `M17`      | Enable all stepper motors.                                                                              |                   | `M17`                 |
 | `M18`      | Disable all stepper motors.                                                                             |                   | `M18`                 |
 | `M20`      | List all G-Code files.                                                                                  |                   | `M20`                 |
@@ -98,14 +98,16 @@
 | `M114.1`   | Print the real time position in the selected coordinate system                                          |                   | `M114.1`              |
 | `M114.2`   | Print the last requested position in the machine coordinate system                                      |                   | `M114.2`              |
 | `M114.3`   | Print the real time position in the machine coordinate system                                           |                   | `M114.3`              |
-| `M203`     | Set the maximum feedrate (current unit / sec).                                                          | Axes              | `M203 X200`           |
-| `M204`     | Set the maximum feedrate (current unit^2 / sec).                                                        | Axes              | `M204 X200`           |
+| `M203`     | Print the the maximum feedrate values and set the maximum feedrate (mm/sec).                            | Axes              | `M203 X200`           |
+| `M204`     | Print the the maximum acceleration values and set the maximum acceleration (mm^2/sec).                  | Axes              | `M204 X200`           |
 | `M220`     | Set speed factor (percent).                                                                             | Percent (S)       | `M220 S25`            |
 | `M957`     | Print the spindle speed (RPM)                                                                           |                   | `M957`                |
-| `M958`     | Print the spindle PID gain values.                                                                      |                   | `M958`                |
-| `M958`     | Set the spindle PID gain values.                                                                        |                   | `M958 P0.1 I0.2 D0.2` |
+| `M958`     | Print the spindle PID gain values and set the spindle PID gain values.                                  | P, I, D           | `M958 P0.1 I0.2 `     |
 
 ## Supported G-Code Parameter Names
+- X
+- Y
+- Z
 - S
 - File parameter
 - P

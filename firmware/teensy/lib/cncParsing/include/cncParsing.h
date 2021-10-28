@@ -4,4 +4,8 @@
 #include <properties.h>
 #include <trim.h>
 
+#include <SystemCommand.h>
+#include <GCode.h>
+#include <MCode.h>
+
 #endif

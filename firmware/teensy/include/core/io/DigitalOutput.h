@@ -22,11 +22,11 @@ public:
   void begin(uint8_t pin, bool inverted, bool state);
   void begin(const char* pinString, bool state);
 
-  bool read();
+  bool read() const;
   void write(bool state);
 };
 
-inline bool DigitalOutput::read() {
+inline bool DigitalOutput::read() const {
   return m_state;
 }
 

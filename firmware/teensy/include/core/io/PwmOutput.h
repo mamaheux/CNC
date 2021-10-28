@@ -25,11 +25,11 @@ public:
   void begin(uint8_t pin, bool inverted, float frequency, uint16_t value);
   void begin(const char* pinString, float frequency, uint16_t value);
 
-  uint16_t read();
+  uint16_t read() const;
   void write(uint16_t state);
 };
 
-inline uint16_t PwmOutput::read() {
+inline uint16_t PwmOutput::read() const {
   return m_value;
 }
 

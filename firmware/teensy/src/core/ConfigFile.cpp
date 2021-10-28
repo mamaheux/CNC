@@ -1,7 +1,7 @@
 #include "core/ConfigFile.h"
 #include "core/error.h"
 
-#include <parsing.h>
+#include <cncParsing.h>
 
 ConfigItem::ConfigItem() {
   memset(m_key, '\0', CONFIG_ITEM_BUFFER_SIZE);

@@ -37,10 +37,10 @@ public:
 
   void attachInterrupt(void (*function)(void), DigitalInputInterruptMode mode);
 
-  bool read();
+  bool read() const;
 };
 
-inline bool DigitalInput::read() {
+inline bool DigitalInput::read() const {
   return static_cast<bool>(digitalReadFast(m_pin)) != m_inverted;
 }
 
