@@ -7,19 +7,20 @@
 
 #define __FUNCTION_NAME__ __PRETTY_FUNCTION__
 #define __FILENAME__ (std::strrchr(__FILE__, '/') ? std::strrchr(__FILE__, '/') + 1 : __FILE__)
-constexpr uint32_t ERROR_DELAY_MS = 10000;
+constexpr uint32_t ERROR_DELAY_MS = 1000;
 
-#define ERROR_CHECK(code, reason) \
+#define CRITICAL_ERROR_CHECK(code, reason) \
   while (!(code)) { \
     DEBUG_SERIAL.println((reason)); \
     DEBUG_SERIAL.print("Function name: "); \
     DEBUG_SERIAL.println(__FUNCTION_NAME__); \
     DEBUG_SERIAL.print("Filename: "); \
     DEBUG_SERIAL.println(__FILENAME__); \
+    toogleErrorLed(); \
     delay(ERROR_DELAY_MS); \
   }
 
-#define ERROR_CHECK_2(code, reason1, reason2) \
+#define CRITICAL_ERROR_CHECK_2(code, reason1, reason2) \
   while (!(code)) { \
     DEBUG_SERIAL.print((reason1)); \
     DEBUG_SERIAL.println((reason2)); \
@@ -27,10 +28,11 @@ constexpr uint32_t ERROR_DELAY_MS = 10000;
     DEBUG_SERIAL.println(__FUNCTION_NAME__); \
     DEBUG_SERIAL.print("Filename: "); \
     DEBUG_SERIAL.println(__FILENAME__); \
+    toogleErrorLed(); \
     delay(ERROR_DELAY_MS); \
   }
 
-#define ERROR_CHECK_3(code, reason1, reason2, reason3) \
+#define CRITICAL_ERROR_CHECK_3(code, reason1, reason2, reason3) \
   while (!(code)) { \
     DEBUG_SERIAL.print((reason1)); \
     DEBUG_SERIAL.print((reason2)); \
@@ -39,10 +41,11 @@ constexpr uint32_t ERROR_DELAY_MS = 10000;
     DEBUG_SERIAL.println(__FUNCTION_NAME__); \
     DEBUG_SERIAL.print("Filename: "); \
     DEBUG_SERIAL.println(__FILENAME__); \
+    toogleErrorLed(); \
     delay(ERROR_DELAY_MS); \
   }
 
-#define ERROR_CHECK_4(code, reason1, reason2, reason3, reason4) \
+#define CRITICAL_ERROR_CHECK_4(code, reason1, reason2, reason3, reason4) \
   while (!(code)) { \
     DEBUG_SERIAL.print((reason1)); \
     DEBUG_SERIAL.print((reason2)); \
@@ -52,7 +55,11 @@ constexpr uint32_t ERROR_DELAY_MS = 10000;
     DEBUG_SERIAL.println(__FUNCTION_NAME__); \
     DEBUG_SERIAL.print("Filename: "); \
     DEBUG_SERIAL.println(__FILENAME__); \
+    toogleErrorLed(); \
     delay(ERROR_DELAY_MS); \
   }
+
+void setupCriticalErrorCheck();
+void toogleErrorLed();
 
 #endif

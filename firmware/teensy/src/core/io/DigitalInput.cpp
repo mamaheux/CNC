@@ -1,5 +1,5 @@
 #include "core/io/DigitalInput.h"
-#include "core/error.h"
+#include "core/criticalError.h"
 
 #include <cncResources.h>
 
@@ -10,18 +10,18 @@ DigitalInput::DigitalInput() : m_pin(0), m_inverted(false) {
 }
 
 void DigitalInput::begin(uint8_t pin, bool inverted, DigitalInputMode mode) {
-  ERROR_CHECK_3(pin < PIN_COUNT, "Invalid pin (", pin, ")");
+  CRITICAL_ERROR_CHECK_3(pin < PIN_COUNT, "Invalid pin (", pin, ")");
 
   m_pin = pin;
   m_inverted = inverted;
-  ERROR_CHECK_3(m_lock.tryLock(m_pin), "Pin ",  m_pin, " already use.");
+  CRITICAL_ERROR_CHECK_3(m_lock.tryLock(m_pin), "Pin ",  m_pin, " already use.");
 
   pinMode(m_pin, static_cast<uint8_t>(mode));
 }
 
 void DigitalInput::begin(const char* pinString) {
   size_t size = strlen(pinString);
-  ERROR_CHECK_3(size > 0, "Invalid pin string (", pinString, ")");
+  CRITICAL_ERROR_CHECK_3(size > 0, "Invalid pin string (", pinString, ")");
 
   DigitalInputMode mode = DigitalInputMode::NORMAL;
   if (pinString[size - 1] == 'v') {

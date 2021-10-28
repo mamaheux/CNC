@@ -39,7 +39,7 @@ void GCode::clear() {
 }
 
 GCodeParser::GCodeParser() : m_modalMoveCode(tl::nullopt), m_isMachineCoordinateSystem(false) {
-  memset(m_lineBuffer, 0, GCODE_LINE_BUFFER_SIZE);
+  memset(m_lineBuffer, '\0', GCODE_LINE_BUFFER_SIZE);
 }
 
 ParsingResult GCodeParser::parse(const char* line, GCode& gcode) {

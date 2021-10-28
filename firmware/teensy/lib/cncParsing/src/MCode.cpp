@@ -33,7 +33,7 @@ void MCode::clear() {
 }
 
 MCodeParser::MCodeParser() {
-  memset(m_lineBuffer, 0, MCODE_LINE_BUFFER_SIZE);
+  memset(m_lineBuffer, '\0', MCODE_LINE_BUFFER_SIZE);
 }
 
 ParsingResult MCodeParser::parse(const char* line, MCode& mcode) {

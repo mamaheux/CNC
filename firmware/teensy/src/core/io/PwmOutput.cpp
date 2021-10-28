@@ -1,5 +1,5 @@
 #include "core/io/PwmOutput.h"
-#include "core/error.h"
+#include "core/criticalError.h"
 
 #include <cncResources.h>
 
@@ -12,12 +12,12 @@ PwmOutput::PwmOutput() : m_pin(0), m_value(0), m_inverted(false) {
 }
 
 void PwmOutput::begin(uint8_t pin, bool inverted, float frequency, uint16_t value) {
-  ERROR_CHECK_3(pin < PIN_COUNT, "Invalid pin (", pin, ")");
-  ERROR_CHECK_3(HAS_PWM_BY_PIN[pin], "Pin ", pin, "does not have PWM capabilities");
+  CRITICAL_ERROR_CHECK_3(pin < PIN_COUNT, "Invalid pin (", pin, ")");
+  CRITICAL_ERROR_CHECK_3(HAS_PWM_BY_PIN[pin], "Pin ", pin, "does not have PWM capabilities");
 
   m_pin = pin;
   m_inverted = inverted;
-  ERROR_CHECK_3(m_lock.tryLock(m_pin, frequency), "PWM pin ",  m_pin, " already in use.");
+  CRITICAL_ERROR_CHECK_3(m_lock.tryLock(m_pin, frequency), "PWM pin ",  m_pin, " already in use.");
 
   analogWriteFrequency(m_pin, frequency);
   analogWriteResolution(PWM_RESOLUTION);
@@ -27,7 +27,7 @@ void PwmOutput::begin(uint8_t pin, bool inverted, float frequency, uint16_t valu
 
 void PwmOutput::begin(const char* pinString, float frequency, uint16_t value) {
   size_t size = strlen(pinString);
-  ERROR_CHECK_3(size > 0, "Invalid pin string (", pinString, ")");
+  CRITICAL_ERROR_CHECK_3(size > 0, "Invalid pin string (", pinString, ")");
 
   bool inverted = false;
   if (pinString[0] == '!') {
