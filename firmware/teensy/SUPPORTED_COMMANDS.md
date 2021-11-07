@@ -45,7 +45,7 @@
 | `G2`       | [Link 1](https://smoothieware.org/g2), [Link 2](http://linuxcnc.org/docs/html/gcode/g-code.html#gcode:g2-g3)          | Axes, center offsets (I, J, K), feedrate       | `G2 X5 Y5 I-5 J5 F10`  |
 | `G3`       | [Link 1](https://smoothieware.org/g3), [Link 2](http://linuxcnc.org/docs/html/gcode/g-code.html#gcode:g2-g3)          | Axes, center offsets (I, J, K), feedrate       | `G3 X5 Y5 I-5 J5 F10`  |
 | `G4`       | [Link 1](https://smoothieware.org/g4), [Link 2](http://linuxcnc.org/docs/html/gcode/g-code.html#gcode:g4)             | Second (S), milisecondes (P)                   | `G4 S2`                |
-| `G10 L2`   | [Link](http://linuxcnc.org/docs/html/gcode/g-code.html#gcode:g10-l2)                                                  | Coordinate System (P), axes, R (not supported) | `G10 L2 P2 X1 Y2`      |
+| `G10 L2`   | [Link](http://linuxcnc.org/docs/html/gcode/g-code.html#gcode:g10-l2)                                                  | Coordinate System (P), axes, R                 | `G10 L2 P2 X1 Y2`      |
 | `G10 L20`  | [Link](http://linuxcnc.org/docs/html/gcode/g-code.html#gcode:g10-l20)                                                 | Coordinate System (P), axes                    | `G10 L20 P3 X1`        |
 | `G17`      | [Link 1](https://smoothieware.org/g17), [Link 2](http://linuxcnc.org/docs/html/gcode/g-code.html#gcode:g17-g19.1)     |                                                | `G17`                  |
 | `G18`      | [Link 1](https://smoothieware.org/g18), [Link 2](http://linuxcnc.org/docs/html/gcode/g-code.html#gcode:g17-g19.1)     |                                                | `G18`                  |

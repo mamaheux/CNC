@@ -1,6 +1,6 @@
 #include "config.h"
-#include "core/criticalError.h"
-#include "Kernel.h"
+#include "mcu/criticalError.h"
+#include "mcu/modules/Kernel.h"
 
 #include <SD.h>
 
@@ -15,6 +15,8 @@ void setup() {
   DEBUG_SERIAL.begin(DEBUG_SERIAL_BAUD_RATE);
   setupCriticalErrorCheck();
   SD.begin(BUILTIN_SDCARD);
+
+  setupKernel();
 }
 
 void loop() {
