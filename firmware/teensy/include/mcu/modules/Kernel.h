@@ -24,8 +24,8 @@ class Kernel : public ModuleKernel {
   MCodeParser m_mcodeParser;
   MCode m_mcode;
 
-  uint32_t m_currentCommandId;
-  tl::optional<uint32_t> m_pendingCommandResponseId;
+  uint32_t m_currentCommandIdByCommandSource[static_cast<size_t>(CommandSource::COUNT)];
+  tl::optional<uint32_t> m_pendingCommandResponseIdByCommandSource[static_cast<size_t>(CommandSource::COUNT)];
 
 public:
   Kernel();
@@ -39,21 +39,21 @@ public:
 
   void begin();
 
-  void executeCommand(const char* line); //TODO Check command source, How?
-  void sendCommandResponse(const char* commandResponse, uint32_t commandId);
+  uint32_t executeCommand(const char* line, CommandSource source); // Return the command id
+  void sendCommandResponse(const char* commandResponse, CommandSource source, uint32_t commandId);
 
   void dispatchTargetPosition(const Vector3<float> machinePosition);
 
 private:
-  void executeSystemCommand(const char* line, uint32_t commandId);
-  void executeGCodeCommand(const char* line, uint32_t commandId);
-  void executeMCodeCommand(const char* line, uint32_t commandId);
+  void executeSystemCommand(const char* line, CommandSource source, uint32_t commandId);
+  void executeGCodeCommand(const char* line, CommandSource source, uint32_t commandId);
+  void executeMCodeCommand(const char* line, CommandSource source, uint32_t commandId);
 
-  void dispatchSystemCommand(const SystemCommand& command, uint32_t commandId);
-  void dispatchGCodeCommand(const GCode& gcode, uint32_t commandId);
-  void dispatchMCodeCommand(const MCode& mcode, uint32_t commandId);
+  void dispatchSystemCommand(const SystemCommand& command, CommandSource source, uint32_t commandId);
+  void dispatchGCodeCommand(const GCode& gcode, CommandSource source, uint32_t commandId);
+  void dispatchMCodeCommand(const MCode& mcode, CommandSource source, uint32_t commandId);
 
-  void handleAgregatedCommandResult(CommandResult result, uint32_t commandId);
+  void handleAgregatedCommandResult(CommandResult result, CommandSource source, uint32_t commandId);
 };
 
 #endif

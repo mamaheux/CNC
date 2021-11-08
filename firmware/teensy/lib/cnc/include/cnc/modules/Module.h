@@ -32,12 +32,19 @@ inline CommandResult agregateCommandResult(CommandResult r1, CommandResult r2) {
   return CommandResult::NOT_HANDLED;
 }
 
-enum class ModuleEventType: size_t {
+enum class ModuleEventType : size_t {
   SYSTEM_COMMAND,
   GCODE_COMMAND,
   MCODE_COMMAND,
   TARGET_POSITION,
   COMMAND_RESPONSE,
+  COUNT
+};
+
+enum class CommandSource : size_t {
+  SERIAL_SOURCE,
+  FILE_SOURCE,
+  WEB_SOURCE,
   COUNT
 };
 
@@ -59,13 +66,13 @@ public:
 
   void setKernel(ModuleKernel* kernel);
 
-  virtual CommandResult onSystemCommandReceived(const SystemCommand& command, uint32_t commandId);
-  virtual CommandResult onGCodeCommandReceived(const GCode& gcode, uint32_t commandId);
-  virtual CommandResult onMCodeCommandReceived(const MCode& mcode, uint32_t commandId);
+  virtual CommandResult onSystemCommandReceived(const SystemCommand& command, CommandSource source, uint32_t commandId);
+  virtual CommandResult onGCodeCommandReceived(const GCode& gcode, CommandSource source, uint32_t commandId);
+  virtual CommandResult onMCodeCommandReceived(const MCode& mcode, CommandSource source, uint32_t commandId);
 
   virtual void onTargetPositionChanged(const Vector3<float>& machinePosition); // In mm
 
-  virtual void onCommandResponse(const char* response);
+  virtual void onCommandResponse(const char* response, CommandSource source);
 };
 
 #endif

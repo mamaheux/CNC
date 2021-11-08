@@ -35,10 +35,13 @@ public:
   CoordinateTransformer();
   ~CoordinateTransformer() override = default;
 
+  DECLARE_NOT_COPYABLE(CoordinateTransformer);
+  DECLARE_NOT_MOVABLE(CoordinateTransformer);
+
   void configure(const ConfigItem& item) override;
   void begin() override;
 
-  CommandResult onGCodeCommandReceived(const GCode& gcode, uint32_t commandId) override;
+  CommandResult onGCodeCommandReceived(const GCode& gcode, CommandSource source, uint32_t commandId) override;
   void onTargetPositionChanged(const Vector3<float>& machinePosition) override;
 
   Vector3<float> gcodeCoordinateToMachineCoordinate(const Vector3<float> v);

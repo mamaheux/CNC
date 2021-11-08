@@ -8,13 +8,17 @@ static const char* PARSING_ERROR_COMMAND_RESPONSE = "error:parsing";
 static const char* EXECUTING_ERROR_COMMAND_RESPONSE = "error:executing";
 static const char* NOT_HANDLED_COMMAND_RESPONSE = "error:not_handled";
 
-Kernel::Kernel() : m_moduleCount(0), m_currentCommandId(0) {
+Kernel::Kernel() : m_moduleCount(0) {
   for (size_t i = 0; i < MAX_MODULE_COUNT; i++) {
     m_modules[i] = nullptr;
     for (size_t j = 0; j < static_cast<size_t>(ModuleEventType::COUNT); j++) {
       m_modulesByEventType[j][i] = nullptr;
       m_moduleCountByEventType[j] = 0;
     }
+  }
+
+  for (size_t i = 0; i < static_cast<size_t>(CommandSource::COUNT); i++) {
+    m_currentCommandIdByCommandSource[i] = 0;
   }
 }
 
@@ -51,37 +55,40 @@ void Kernel::begin() {
   }
 }
 
-void Kernel::executeCommand(const char* line) {
-  uint32_t commandId = m_currentCommandId;
-  m_pendingCommandResponseId = commandId;
-  m_currentCommandId++;
+uint32_t Kernel::executeCommand(const char* line, CommandSource source) {
+  size_t sourceIndex = static_cast<size_t>(source);
+  uint32_t commandId = m_currentCommandIdByCommandSource[sourceIndex];
+  m_pendingCommandResponseIdByCommandSource[sourceIndex] = commandId;
+  m_currentCommandIdByCommandSource[sourceIndex]++;
 
   if (line[0] == '\0') {
-    sendCommandResponse(OK_COMMAND_RESPONSE, commandId);
+    sendCommandResponse(OK_COMMAND_RESPONSE, source, commandId);
   }
   else if (line[0] == 'G' || line[0] == ' ') {
-    executeGCodeCommand(line, commandId);
+    executeGCodeCommand(line, source, commandId);
   }
   else if (line[0] == 'M') {
-    executeMCodeCommand(line, commandId);
+    executeMCodeCommand(line, source, commandId);
   }
   else {
-    executeSystemCommand(line, commandId);
+    executeSystemCommand(line, source, commandId);
   }
+  return commandId;
 }
 
-void Kernel::sendCommandResponse(const char* response, uint32_t commandId) {
-  if (m_pendingCommandResponseId != commandId) {
+void Kernel::sendCommandResponse(const char* response, CommandSource source, uint32_t commandId) {
+  size_t sourceIndex = static_cast<size_t>(source);
+  if (m_pendingCommandResponseIdByCommandSource[sourceIndex] != commandId) {
     return;
   }
 
   constexpr size_t EVENT_INDEX = static_cast<size_t>(ModuleEventType::COMMAND_RESPONSE);
 
   for (size_t i = 0; i < m_moduleCountByEventType[EVENT_INDEX]; i++) {
-    m_modulesByEventType[EVENT_INDEX][i]->onCommandResponse(response);
+    m_modulesByEventType[EVENT_INDEX][i]->onCommandResponse(response, source);
   }
 
-  m_pendingCommandResponseId = tl::nullopt;
+  m_pendingCommandResponseIdByCommandSource[sourceIndex] = tl::nullopt;
 }
 
 void Kernel::dispatchTargetPosition(const Vector3<float> machinePosition) {
@@ -92,95 +99,95 @@ void Kernel::dispatchTargetPosition(const Vector3<float> machinePosition) {
   }
 }
 
-void Kernel::executeSystemCommand(const char* line, uint32_t commandId) {
+void Kernel::executeSystemCommand(const char* line, CommandSource source, uint32_t commandId) {
   SystemCommand command;
   ParsingResult result = m_systemCommandParser.parse(line, command);
   switch (result)
   {
   case ParsingResult::OK:
-    dispatchSystemCommand(command, commandId);
+    dispatchSystemCommand(command, source, commandId);
     break;
   case ParsingResult::ERROR:
-    sendCommandResponse(PARSING_ERROR_COMMAND_RESPONSE, commandId);
+    sendCommandResponse(PARSING_ERROR_COMMAND_RESPONSE, source, commandId);
     break;
   case ParsingResult::NEXT_LINE_NEEDED:
-    sendCommandResponse(OK_COMMAND_RESPONSE, commandId);
+    sendCommandResponse(OK_COMMAND_RESPONSE, source, commandId);
   }
 }
 
-void Kernel::executeGCodeCommand(const char* line, uint32_t commandId) {
+void Kernel::executeGCodeCommand(const char* line, CommandSource source, uint32_t commandId) {
   ParsingResult result = m_gcodeParser.parse(line, m_gcode);
   switch (result)
   {
   case ParsingResult::OK:
-    dispatchGCodeCommand(m_gcode, commandId);
+    dispatchGCodeCommand(m_gcode, source, commandId);
     break;
   case ParsingResult::ERROR:
-    sendCommandResponse(PARSING_ERROR_COMMAND_RESPONSE, commandId);
+    sendCommandResponse(PARSING_ERROR_COMMAND_RESPONSE, source, commandId);
     break;
   case ParsingResult::NEXT_LINE_NEEDED:
-    sendCommandResponse(OK_COMMAND_RESPONSE, commandId);
+    sendCommandResponse(OK_COMMAND_RESPONSE, source, commandId);
   }
 }
 
-void Kernel::executeMCodeCommand(const char* line, uint32_t commandId) {
+void Kernel::executeMCodeCommand(const char* line, CommandSource source, uint32_t commandId) {
   ParsingResult result = m_mcodeParser.parse(line, m_mcode);
   switch (result)
   {
   case ParsingResult::OK:
-    dispatchMCodeCommand(m_mcode, commandId);
+    dispatchMCodeCommand(m_mcode, source, commandId);
     break;
   case ParsingResult::ERROR:
-    sendCommandResponse(PARSING_ERROR_COMMAND_RESPONSE, commandId);
+    sendCommandResponse(PARSING_ERROR_COMMAND_RESPONSE, source, commandId);
     break;
   case ParsingResult::NEXT_LINE_NEEDED:
-    sendCommandResponse(OK_COMMAND_RESPONSE, commandId);
+    sendCommandResponse(OK_COMMAND_RESPONSE, source, commandId);
   }
 }
 
-void Kernel::dispatchSystemCommand(const SystemCommand& command, uint32_t commandId) {
+void Kernel::dispatchSystemCommand(const SystemCommand& command, CommandSource source, uint32_t commandId) {
   constexpr size_t EVENT_INDEX = static_cast<size_t>(ModuleEventType::SYSTEM_COMMAND);
 
   CommandResult agregatedResult = CommandResult::OK;
   for (size_t i = 0; i < m_moduleCountByEventType[EVENT_INDEX]; i++) {
-    CommandResult result = m_modulesByEventType[EVENT_INDEX][i]->onSystemCommandReceived(command, commandId);
+    CommandResult result = m_modulesByEventType[EVENT_INDEX][i]->onSystemCommandReceived(command, source, commandId);
     agregatedResult = agregateCommandResult(agregatedResult, result);
   }
-  handleAgregatedCommandResult(agregatedResult, commandId);
+  handleAgregatedCommandResult(agregatedResult, source, commandId);
 }
 
-void Kernel::dispatchGCodeCommand(const GCode& gcode, uint32_t commandId) {
+void Kernel::dispatchGCodeCommand(const GCode& gcode, CommandSource source, uint32_t commandId) {
   constexpr size_t EVENT_INDEX = static_cast<size_t>(ModuleEventType::GCODE_COMMAND);
 
   CommandResult agregatedResult = CommandResult::OK;
   for (size_t i = 0; i < m_moduleCountByEventType[EVENT_INDEX]; i++) {
-    CommandResult result = m_modulesByEventType[EVENT_INDEX][i]->onGCodeCommandReceived(gcode, commandId);
+    CommandResult result = m_modulesByEventType[EVENT_INDEX][i]->onGCodeCommandReceived(gcode, source, commandId);
     agregatedResult = agregateCommandResult(agregatedResult, result);
   }
-  handleAgregatedCommandResult(agregatedResult, commandId);
+  handleAgregatedCommandResult(agregatedResult, source, commandId);
 }
 
-void Kernel::dispatchMCodeCommand(const MCode& mcode, uint32_t commandId) {
+void Kernel::dispatchMCodeCommand(const MCode& mcode, CommandSource source, uint32_t commandId) {
   constexpr size_t EVENT_INDEX = static_cast<size_t>(ModuleEventType::MCODE_COMMAND);
 
   CommandResult agregatedResult = CommandResult::OK;
   for (size_t i = 0; i < m_moduleCountByEventType[EVENT_INDEX]; i++) {
-    CommandResult result = m_modulesByEventType[EVENT_INDEX][i]->onMCodeCommandReceived(mcode, commandId);
+    CommandResult result = m_modulesByEventType[EVENT_INDEX][i]->onMCodeCommandReceived(mcode, source, commandId);
     agregatedResult = agregateCommandResult(agregatedResult, result);
   }
-  handleAgregatedCommandResult(agregatedResult, commandId);
+  handleAgregatedCommandResult(agregatedResult, source, commandId);
 }
 
-void Kernel::handleAgregatedCommandResult(CommandResult result, uint32_t commandId) {
+void Kernel::handleAgregatedCommandResult(CommandResult result, CommandSource source, uint32_t commandId) {
   switch (result)
   {
   case CommandResult::OK:
-    sendCommandResponse(OK_COMMAND_RESPONSE, commandId);
+    sendCommandResponse(OK_COMMAND_RESPONSE, source, commandId);
     break;
   case CommandResult::ERROR:
-    sendCommandResponse(EXECUTING_ERROR_COMMAND_RESPONSE, commandId);
+    sendCommandResponse(EXECUTING_ERROR_COMMAND_RESPONSE, source, commandId);
   case CommandResult::NOT_HANDLED:
-    sendCommandResponse(NOT_HANDLED_COMMAND_RESPONSE, commandId);
+    sendCommandResponse(NOT_HANDLED_COMMAND_RESPONSE, source, commandId);
   case CommandResult::OK_RESPONSE_SENT:
   case CommandResult::PENDING:
     break;

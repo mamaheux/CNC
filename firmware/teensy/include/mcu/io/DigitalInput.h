@@ -6,13 +6,13 @@
 
 #include <Arduino.h>
 
-enum class DigitalInputMode: uint8_t {
+enum class DigitalInputMode : uint8_t {
   NORMAL = INPUT,
   PULLUP = INPUT_PULLUP,
   PULLDOWN = INPUT_PULLDOWN,
 };
 
-enum class DigitalInputInterruptMode: int {
+enum class DigitalInputInterruptMode : int {
   INTERRUPT_LOW = LOW,
   INTERRUPT_CHANGE = CHANGE,
   INTERRUPT_RISING = RISING,

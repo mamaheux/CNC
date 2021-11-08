@@ -20,7 +20,7 @@ void CoordinateTransformer::begin() {
   m_kernel->registerToEvent(ModuleEventType::GCODE_COMMAND, this);
 }
 
-CommandResult CoordinateTransformer::onGCodeCommandReceived(const GCode& gcode, uint32_t commandId) {
+CommandResult CoordinateTransformer::onGCodeCommandReceived(const GCode& gcode, CommandSource source, uint32_t commandId) {
   if (gcode.code() == 10 && gcode.l() == 2u) {
     return setCoordinateSystemL2(gcode);
   }
