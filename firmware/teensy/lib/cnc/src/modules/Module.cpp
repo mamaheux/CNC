@@ -1,5 +1,6 @@
 #include <cnc/modules/Module.h>
 
+const char* OK_COMMAND_RESPONSE = "ok";
 
 Module::Module() :
   m_kernel(nullptr) {

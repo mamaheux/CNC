@@ -8,6 +8,8 @@
 #include <cnc/parsing/MCode.h>
 #include <cnc/utils/ClassMacro.h>
 
+extern const char* OK_COMMAND_RESPONSE;
+
 enum class RawCommandResult {
   HANDLED,
   NOT_HANDLED,
@@ -52,7 +54,6 @@ constexpr size_t MODULE_EVENT_TYPE_COUNT = static_cast<size_t>(ModuleEventType::
 enum class CommandSource : size_t {
   SERIAL_SOURCE,
   FILE_SOURCE,
-  WEB_SOURCE,
   COUNT
 };
 

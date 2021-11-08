@@ -80,8 +80,8 @@
 
 | M-Code     | Documentation                                                                                           | Parameters        | Example               | Handled |
 | ---------- | ------------------------------------------------------------------------------------------------------- | ----------------- | --------------------- | ------- |
-| `M3`       | [Link](https://smoothieware.org/m3)                                                                     | Spindle Speed (S) | `M3 S500`             |         |
-| `M5`       | [Link](https://smoothieware.org/m5)                                                                     |                   | `M5`                  |         |
+| `M3`       | [Link](https://smoothieware.org/m3)                                                                     | Spindle Speed (S) | `M3 S500`             | Yes     |
+| `M5`       | [Link](https://smoothieware.org/m5)                                                                     |                   | `M5`                  | Yes     |
 | `M17`      | Enable all stepper motors.                                                                              |                   | `M17`                 | Yes     |
 | `M18`      | Disable all stepper motors.                                                                             |                   | `M18`                 | Yes     |
 | `M20`      | List all files.                                                                                         |                   | `M20`                 | Yes     |
@@ -101,8 +101,8 @@
 | `M203`     | Print the the maximum feedrate values and set the maximum feedrate (mm/sec).                            | Axes              | `M203 X200`           |         |
 | `M204`     | Print the the maximum acceleration values and set the maximum acceleration (mm^2/sec).                  | Axes              | `M204 X200`           |         |
 | `M220`     | Set speed factor (percent).                                                                             | Percent (S)       | `M220 S25`            |         |
-| `M957`     | Print the spindle speed (RPM)                                                                           |                   | `M957`                |         |
-| `M958`     | Print the spindle PID gain values and set the spindle PID gain values.                                  | P, I, D           | `M958 P0.1 I0.2 `     |         |
+| `M957`     | Print the spindle speed (RPM)                                                                           |                   | `M957`                | Yes     |
+| `M958`     | Print the spindle PID gain values and set the spindle PID gain values.                                  | P, I, D           | `M958 P0.1 I0.2 `     | Yes     |
 
 ## Supported G-Code Parameter Names
 - X

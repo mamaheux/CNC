@@ -5,6 +5,7 @@
 #include "mcu/modules/FileSystem.h"
 #include "mcu/modules/CommandSerial.h"
 #include "mcu/modules/Stepper.h"
+#include "mcu/modules/Spindle.h"
 
 #include <cnc/modules/CoordinateTransformer.h>
 
@@ -16,6 +17,7 @@ CommandSerial commandSerial;
 Stepper xStepper(StepperAxis::X);
 Stepper yStepper(StepperAxis::Y);
 Stepper zStepper(StepperAxis::Z);
+Spindle spindle;
 
 CoordinateTransformer coordinateTransformer;
 
@@ -30,6 +32,7 @@ void setupKernel() {
   kernel.addModule(&xStepper);
   kernel.addModule(&yStepper);
   kernel.addModule(&zStepper);
+  kernel.addModule(&spindle);
 
   kernel.addModule(&coordinateTransformer);
   kernel.begin();

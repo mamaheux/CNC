@@ -18,7 +18,7 @@ public:
   void setUpdatePeriodMs(uint32_t updatePeriodMs);
 
 protected:
-  virtual void onUpdate() = 0; // Best effort period
+  virtual void onUpdate(uint32_t elapsedMs) = 0; // Best effort period
 };
 
 #endif

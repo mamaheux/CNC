@@ -1,5 +1,5 @@
-#ifndef MCU_IO_DIGITAL_OUTPUT
-#define MCU_IO_DIGITAL_OUTPUT
+#ifndef MCU_IO_PWM_OUTPUT
+#define MCU_IO_PWM_OUTPUT
 
 #include <cnc/config/PwmOutputConfig.h>
 #include <cnc/resources/ResourceLock.h>

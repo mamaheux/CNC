@@ -10,9 +10,10 @@ IntervalModule::IntervalModule() :
 
 void IntervalModule::update() {
   uint32_t currentTimeMs = millis();
-  if ((currentTimeMs - m_updateLastTimeMs) >= m_updatePeriodMs) {
+  uint32_t elapsedMs = (currentTimeMs - m_updateLastTimeMs);
+  if (elapsedMs >= m_updatePeriodMs) {
     m_updateLastTimeMs = currentTimeMs;
-    onUpdate();
+    onUpdate(elapsedMs);
   }
 }
 

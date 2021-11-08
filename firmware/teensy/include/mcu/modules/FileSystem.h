@@ -6,13 +6,13 @@
 
 #include <SD.h>
 
-constexpr size_t MAX_RESPONSE_SIZE = 512;
+constexpr size_t MAX_FILE_SYSTEM_RESPONSE_SIZE = 512;
 
 class FileSystem : public Module {
   File m_newFile;
   MCodeParser m_mcodeParser;
 
-  char m_response[MAX_RESPONSE_SIZE];
+  char m_response[MAX_FILE_SYSTEM_RESPONSE_SIZE];
 
 public:
   FileSystem();

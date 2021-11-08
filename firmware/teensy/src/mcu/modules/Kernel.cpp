@@ -3,7 +3,6 @@
 #include "mcu/criticalError.h"
 #include "mcu/ConfigFile.h"
 
-static const char* OK_COMMAND_RESPONSE = "ok";
 static const char* PARSING_ERROR_COMMAND_RESPONSE = "error:parsing";
 static const char* EXECUTING_ERROR_COMMAND_RESPONSE = "error:executing";
 static const char* NOT_HANDLED_COMMAND_RESPONSE = "error:not_handled";

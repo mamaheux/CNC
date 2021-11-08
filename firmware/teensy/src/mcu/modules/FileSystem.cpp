@@ -26,7 +26,7 @@ CommandResult FileSystem::onMCodeCommandReceived(const MCode& mcode, CommandSour
   if (mcode.code() == 20) {
     File root = SD.open("/");
     listFiles(root, 0, source, commandId);
-    m_kernel->sendCommandResponse("ok", source, commandId);
+    m_kernel->sendCommandResponse(OK_COMMAND_RESPONSE, source, commandId);
     return CommandResult::OK_RESPONSE_SENT;
   }
   else if (mcode.code() == 28) {
@@ -40,7 +40,7 @@ CommandResult FileSystem::onMCodeCommandReceived(const MCode& mcode, CommandSour
 }
 
 void FileSystem::listFiles(File& directory, size_t spaceCount, CommandSource source, uint32_t commandId) {
-  if (spaceCount >= MAX_RESPONSE_SIZE) {
+  if (spaceCount >= MAX_FILE_SYSTEM_RESPONSE_SIZE) {
     return;
   }
 
@@ -63,7 +63,7 @@ void FileSystem::sendFileEntry(File& file, size_t spaceCount, CommandSource sour
   if (file.isDirectory()) {
     directorySize = 1;
   }
-  if ((spaceCount + nameSize + directorySize) >= MAX_RESPONSE_SIZE) {
+  if ((spaceCount + nameSize + directorySize) >= MAX_FILE_SYSTEM_RESPONSE_SIZE) {
     return;
   }
   memset(m_response, ' ', spaceCount);
@@ -99,7 +99,7 @@ void FileSystem::writeOrStopNewFile(const char* line, CommandSource source, uint
   else {
     m_newFile.println(line);
   }
-  m_kernel->sendCommandResponse("ok", source, commandId);
+  m_kernel->sendCommandResponse(OK_COMMAND_RESPONSE, source, commandId);
 }
 
 CommandResult FileSystem::deleteFile(const char* path) {
