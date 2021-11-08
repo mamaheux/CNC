@@ -13,9 +13,9 @@ void FileSystem::begin() {
   m_kernel->registerToEvent(ModuleEventType::MCODE_COMMAND, this);
 }
 
-RawCommandResult FileSystem::onRawCommandReceived(const char* line, CommandSource source) {
+RawCommandResult FileSystem::onRawCommandReceived(const char* line, CommandSource source, uint32_t commandId) {
   if (m_newFile && source != CommandSource::FILE_SOURCE) {
-    writeOrStopNewFile(line);
+    writeOrStopNewFile(line, source, commandId);
     return RawCommandResult::HANDLED;
   }
 
@@ -90,7 +90,7 @@ CommandResult FileSystem::startNewFile(const char* path) {
   }
 }
 
-void FileSystem::writeOrStopNewFile(const char* line) {
+void FileSystem::writeOrStopNewFile(const char* line, CommandSource source, uint32_t commandId) {
   MCode mcode;
   if (m_mcodeParser.parse(line, mcode) == ParsingResult::OK && mcode.code() == 29) {
     m_newFile.close();
@@ -99,6 +99,7 @@ void FileSystem::writeOrStopNewFile(const char* line) {
   else {
     m_newFile.println(line);
   }
+  m_kernel->sendCommandResponse("ok", source, commandId);
 }
 
 CommandResult FileSystem::deleteFile(const char* path) {

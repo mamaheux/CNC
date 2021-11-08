@@ -17,7 +17,7 @@ public:
   virtual void addModule(Module* module) = 0;
   virtual void registerToEvent(ModuleEventType eventType, Module* module) = 0;
 
-  virtual uint32_t executeCommand(const char* line, CommandSource source) = 0; // Return the command id
+  virtual void executeCommand(const char* line, CommandSource source, tl::optional<uint32_t>& commandId) = 0;
   virtual void sendCommandResponse(const char* commandResponse, CommandSource source,
       uint32_t commandId, bool isComplete = true) = 0;
 

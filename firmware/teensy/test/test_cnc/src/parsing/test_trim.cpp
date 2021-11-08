@@ -14,7 +14,7 @@ void test_ltrim_twoSpace() {
 }
 
 void test_ltrim_allSpaceCharacters() {
-    char string[] = { ' ', '\t', '\n', 'a', 'b', ' ', '\0' };
+    char string[] = { ' ', '\t', '\n', '\r', 'a', 'b', ' ', '\0' };
     ltrim(string);
     TEST_ASSERT_EQUAL_STRING("ab ", string);
 }
@@ -44,7 +44,7 @@ void test_rtrim_twoSpace() {
 }
 
 void test_rtrim_allSpaceCharacters() {
-    char string[] = { ' ', 'a', 'b', ' ', '\t', '\n', '\0' };
+    char string[] = { ' ', 'a', 'b', ' ', '\t', '\n', '\r', '\0' };
     rtrim(string);
     TEST_ASSERT_EQUAL_STRING(" ab", string);
 }

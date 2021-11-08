@@ -11,7 +11,7 @@ void ltrim(char* string) {
   }
 
   size_t count = 0;
-  while (string[count] == ' ' || string[count] == '\t' || string[count] == '\n') {
+  while (string[count] == ' ' || string[count] == '\t' || string[count] == '\n' || string[count] == '\r') {
     count++;
   }
 
@@ -31,7 +31,7 @@ void rtrim(char* string) {
   }
 
   size_t count = 0;
-  while (string[stringSize - count - 1] == ' ' || string[stringSize - count - 1] == '\t' || string[stringSize - count - 1] == '\n') {
+  while (string[stringSize - count - 1] == ' ' || string[stringSize - count - 1] == '\t' || string[stringSize - count - 1] == '\n' || string[stringSize - count - 1] == '\r') {
     count++;
   }
 

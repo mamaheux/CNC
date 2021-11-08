@@ -14,27 +14,27 @@ class ConfigItem {
 public:
   ConfigItem();
 
-  const char* getKey();
-  const char* getValueString();
-  int getValueInt();
-  float getValueFloat();
+  const char* getKey() const;
+  const char* getValueString() const;
+  int getValueInt() const;
+  float getValueFloat() const;
 
   friend ConfigFile;
 };
 
-inline const char* ConfigItem::getKey() {
+inline const char* ConfigItem::getKey() const {
   return m_key;
 }
 
-inline const char* ConfigItem::getValueString() {
+inline const char* ConfigItem::getValueString() const {
   return m_value;
 }
 
-inline int ConfigItem::getValueInt() {
+inline int ConfigItem::getValueInt() const {
   return std::atoi(m_value);
 }
 
-inline float ConfigItem::getValueFloat() {
+inline float ConfigItem::getValueFloat() const {
   return static_cast<float>(std::atof(m_value));
 }
 

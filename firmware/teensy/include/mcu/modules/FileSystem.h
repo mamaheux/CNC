@@ -24,7 +24,7 @@ public:
   void configure(const ConfigItem& item) override;
   void begin() override;
 
-  RawCommandResult onRawCommandReceived(const char* line, CommandSource source) override;
+  RawCommandResult onRawCommandReceived(const char* line, CommandSource source, uint32_t commandId) override;
   CommandResult onMCodeCommandReceived(const MCode& mcode, CommandSource source, uint32_t commandId) override;
 
 private:
@@ -32,7 +32,7 @@ private:
   void sendFileEntry(File& file, size_t spaceCount, CommandSource source, uint32_t commandId);
 
   CommandResult startNewFile(const char* path);
-  void writeOrStopNewFile(const char* line);
+  void writeOrStopNewFile(const char* line, CommandSource source, uint32_t commandId);
   CommandResult deleteFile(const char* path);
 };
 

@@ -41,7 +41,7 @@ public:
   void update();
 
 
-  uint32_t executeCommand(const char* line, CommandSource source) override; // Return the command id
+  void executeCommand(const char* line, CommandSource source, tl::optional<uint32_t>& commandId) override;
   void sendCommandResponse(const char* commandResponse, CommandSource source,
       uint32_t commandId, bool isComplete = true) override;
 
@@ -52,7 +52,7 @@ private:
   void executeGCodeCommand(const char* line, CommandSource source, uint32_t commandId);
   void executeMCodeCommand(const char* line, CommandSource source, uint32_t commandId);
 
-  RawCommandResult dispatchRawCommand(const char* line, CommandSource source);
+  RawCommandResult dispatchRawCommand(const char* line, CommandSource source, uint32_t commandId);
   void dispatchSystemCommand(const SystemCommand& command, CommandSource source, uint32_t commandId);
   void dispatchGCodeCommand(const GCode& gcode, CommandSource source, uint32_t commandId);
   void dispatchMCodeCommand(const MCode& mcode, CommandSource source, uint32_t commandId);

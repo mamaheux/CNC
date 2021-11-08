@@ -42,7 +42,7 @@ void test_parsePropertiesLine_valueTrailingSpace() {
   char key[BUFFER_SIZE];
   char value[BUFFER_SIZE];
 
-  TEST_ASSERT_TRUE(parsePropertiesLine("key2=abc ", key, BUFFER_SIZE, value, BUFFER_SIZE));
+  TEST_ASSERT_TRUE(parsePropertiesLine("key2=abc \r", key, BUFFER_SIZE, value, BUFFER_SIZE));
   TEST_ASSERT_EQUAL_STRING("key2", key);
   TEST_ASSERT_EQUAL_STRING("abc", value);
 }

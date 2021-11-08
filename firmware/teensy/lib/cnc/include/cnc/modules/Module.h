@@ -72,7 +72,7 @@ public:
 
   void setKernel(ModuleKernel* kernel);
 
-  virtual RawCommandResult onRawCommandReceived(const char* line, CommandSource source);
+  virtual RawCommandResult onRawCommandReceived(const char* line, CommandSource source, uint32_t commandId);
 
   virtual CommandResult onSystemCommandReceived(const SystemCommand& command, CommandSource source, uint32_t commandId);
   virtual CommandResult onGCodeCommandReceived(const GCode& gcode, CommandSource source, uint32_t commandId);
@@ -80,7 +80,7 @@ public:
 
   virtual void onTargetPositionChanged(const Vector3<float>& machinePosition); // In mm
 
-  virtual void onCommandResponse(const char* response, CommandSource source, bool isComplete);
+  virtual void onCommandResponse(const char* response, CommandSource source, uint32_t commandId, bool isComplete);
 
   virtual void update();
 };

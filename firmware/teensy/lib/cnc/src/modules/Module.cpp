@@ -9,7 +9,7 @@ void Module::setKernel(ModuleKernel* kernel) {
   m_kernel = kernel;
 }
 
-RawCommandResult Module::onRawCommandReceived(const char* command, CommandSource source) {
+RawCommandResult Module::onRawCommandReceived(const char* command, CommandSource source, uint32_t commandId) {
   return RawCommandResult::NOT_HANDLED;
 }
 
@@ -28,7 +28,7 @@ CommandResult Module::onMCodeCommandReceived(const MCode& mcode, CommandSource s
 void Module::onTargetPositionChanged(const Vector3<float>& machinePosition) {
 }
 
-void Module::onCommandResponse(const char* response, CommandSource source, bool isComplete) {
+void Module::onCommandResponse(const char* response, CommandSource source, uint32_t commandId, bool isComplete) {
 }
 
 void Module::update() {

@@ -61,29 +61,28 @@ void Kernel::update() {
   }
 }
 
-uint32_t Kernel::executeCommand(const char* line, CommandSource source) {
+void Kernel::executeCommand(const char* line, CommandSource source, tl::optional<uint32_t>& commandId) {
   size_t sourceIndex = static_cast<size_t>(source);
-  uint32_t commandId = m_currentCommandIdByCommandSource[sourceIndex];
+  commandId = m_currentCommandIdByCommandSource[sourceIndex];
   m_currentCommandIdByCommandSource[sourceIndex]++;
-  if (dispatchRawCommand(line, source) == RawCommandResult::HANDLED) {
-    return commandId;
+  m_pendingCommandResponseIdByCommandSource[sourceIndex] = *commandId;
+  if (dispatchRawCommand(line, source, *commandId) == RawCommandResult::HANDLED) {
+    m_pendingCommandResponseIdByCommandSource[sourceIndex] = tl::nullopt;
+    return;
   }
-
-  m_pendingCommandResponseIdByCommandSource[sourceIndex] = commandId;
 
   if (line[0] == '\0') {
-    sendCommandResponse(OK_COMMAND_RESPONSE, source, commandId);
+    sendCommandResponse(OK_COMMAND_RESPONSE, source, *commandId);
   }
   else if (line[0] == 'G' || line[0] == ' ') {
-    executeGCodeCommand(line, source, commandId);
+    executeGCodeCommand(line, source, *commandId);
   }
   else if (line[0] == 'M') {
-    executeMCodeCommand(line, source, commandId);
+    executeMCodeCommand(line, source, *commandId);
   }
   else {
-    executeSystemCommand(line, source, commandId);
+    executeSystemCommand(line, source, *commandId);
   }
-  return commandId;
 }
 
 void Kernel::sendCommandResponse(const char* response, CommandSource source,
@@ -96,7 +95,7 @@ void Kernel::sendCommandResponse(const char* response, CommandSource source,
   constexpr size_t EVENT_INDEX = static_cast<size_t>(ModuleEventType::COMMAND_RESPONSE);
 
   for (size_t i = 0; i < m_moduleCountByEventType[EVENT_INDEX]; i++) {
-    m_modulesByEventType[EVENT_INDEX][i]->onCommandResponse(response, source, isCompleted);
+    m_modulesByEventType[EVENT_INDEX][i]->onCommandResponse(response, source, commandId, isCompleted);
   }
 
   if (isCompleted) {
@@ -158,10 +157,10 @@ void Kernel::executeMCodeCommand(const char* line, CommandSource source, uint32_
   }
 }
 
-RawCommandResult Kernel::dispatchRawCommand(const char* line, CommandSource source) {
+RawCommandResult Kernel::dispatchRawCommand(const char* line, CommandSource source, uint32_t commandId) {
   constexpr size_t EVENT_INDEX = static_cast<size_t>(ModuleEventType::RAW_COMMAND);
   for (size_t i = 0; i < m_moduleCountByEventType[EVENT_INDEX]; i++) {
-    RawCommandResult result = m_modulesByEventType[EVENT_INDEX][i]->onRawCommandReceived(line, source);
+    RawCommandResult result = m_modulesByEventType[EVENT_INDEX][i]->onRawCommandReceived(line, source, commandId);
     if (result == RawCommandResult::HANDLED) {
       return RawCommandResult::HANDLED;
     }
@@ -172,7 +171,7 @@ RawCommandResult Kernel::dispatchRawCommand(const char* line, CommandSource sour
 void Kernel::dispatchSystemCommand(const SystemCommand& command, CommandSource source, uint32_t commandId) {
   constexpr size_t EVENT_INDEX = static_cast<size_t>(ModuleEventType::SYSTEM_COMMAND);
 
-  CommandResult agregatedResult = CommandResult::OK;
+  CommandResult agregatedResult = CommandResult::NOT_HANDLED;
   for (size_t i = 0; i < m_moduleCountByEventType[EVENT_INDEX]; i++) {
     CommandResult result = m_modulesByEventType[EVENT_INDEX][i]->onSystemCommandReceived(command, source, commandId);
     agregatedResult = agregateCommandResult(agregatedResult, result);
@@ -183,7 +182,7 @@ void Kernel::dispatchSystemCommand(const SystemCommand& command, CommandSource s
 void Kernel::dispatchGCodeCommand(const GCode& gcode, CommandSource source, uint32_t commandId) {
   constexpr size_t EVENT_INDEX = static_cast<size_t>(ModuleEventType::GCODE_COMMAND);
 
-  CommandResult agregatedResult = CommandResult::OK;
+  CommandResult agregatedResult = CommandResult::NOT_HANDLED;
   for (size_t i = 0; i < m_moduleCountByEventType[EVENT_INDEX]; i++) {
     CommandResult result = m_modulesByEventType[EVENT_INDEX][i]->onGCodeCommandReceived(gcode, source, commandId);
     agregatedResult = agregateCommandResult(agregatedResult, result);
@@ -194,7 +193,7 @@ void Kernel::dispatchGCodeCommand(const GCode& gcode, CommandSource source, uint
 void Kernel::dispatchMCodeCommand(const MCode& mcode, CommandSource source, uint32_t commandId) {
   constexpr size_t EVENT_INDEX = static_cast<size_t>(ModuleEventType::MCODE_COMMAND);
 
-  CommandResult agregatedResult = CommandResult::OK;
+  CommandResult agregatedResult = CommandResult::NOT_HANDLED;
   for (size_t i = 0; i < m_moduleCountByEventType[EVENT_INDEX]; i++) {
     CommandResult result = m_modulesByEventType[EVENT_INDEX][i]->onMCodeCommandReceived(mcode, source, commandId);
     agregatedResult = agregateCommandResult(agregatedResult, result);
