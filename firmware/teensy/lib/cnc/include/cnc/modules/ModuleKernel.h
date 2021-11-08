@@ -16,6 +16,12 @@ public:
 
   virtual void addModule(Module* module) = 0;
   virtual void registerToEvent(ModuleEventType eventType, Module* module) = 0;
+
+  virtual uint32_t executeCommand(const char* line, CommandSource source) = 0; // Return the command id
+  virtual void sendCommandResponse(const char* commandResponse, CommandSource source,
+      uint32_t commandId, bool isComplete = true) = 0;
+
+  virtual void dispatchTargetPosition(const Vector3<float> machinePosition) = 0;
 };
 
 #endif

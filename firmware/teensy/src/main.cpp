@@ -1,10 +1,14 @@
 #include "config.h"
 #include "mcu/criticalError.h"
+
 #include "mcu/modules/Kernel.h"
+#include "mcu/modules/FileSystem.h"
 
 #include <cnc/modules/CoordinateTransformer.h>
 
 #include <SD.h>
+
+FileSystem fileSystem;
 
 CoordinateTransformer coordinateTransformer;
 
@@ -12,6 +16,8 @@ Kernel kernel;
 
 void setupKernel() {
   DEBUG_SERIAL.println("Setup the kernel");
+
+  kernel.addModule(&fileSystem);
 
   kernel.addModule(&coordinateTransformer);
   kernel.begin();

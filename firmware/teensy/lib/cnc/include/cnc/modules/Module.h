@@ -8,6 +8,11 @@
 #include <cnc/parsing/MCode.h>
 #include <cnc/utils/ClassMacro.h>
 
+enum class RawCommandResult {
+  HANDLED,
+  NOT_HANDLED,
+};
+
 enum class CommandResult {
   OK,
   OK_RESPONSE_SENT,
@@ -33,6 +38,7 @@ inline CommandResult agregateCommandResult(CommandResult r1, CommandResult r2) {
 }
 
 enum class ModuleEventType : size_t {
+  RAW_COMMAND,
   SYSTEM_COMMAND,
   GCODE_COMMAND,
   MCODE_COMMAND,
@@ -66,13 +72,15 @@ public:
 
   void setKernel(ModuleKernel* kernel);
 
+  virtual RawCommandResult onRawCommandReceived(const char* line, CommandSource source);
+
   virtual CommandResult onSystemCommandReceived(const SystemCommand& command, CommandSource source, uint32_t commandId);
   virtual CommandResult onGCodeCommandReceived(const GCode& gcode, CommandSource source, uint32_t commandId);
   virtual CommandResult onMCodeCommandReceived(const MCode& mcode, CommandSource source, uint32_t commandId);
 
   virtual void onTargetPositionChanged(const Vector3<float>& machinePosition); // In mm
 
-  virtual void onCommandResponse(const char* response, CommandSource source);
+  virtual void onCommandResponse(const char* response, CommandSource source, bool isComplete);
 };
 
 #endif

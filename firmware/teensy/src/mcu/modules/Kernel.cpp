@@ -58,8 +58,12 @@ void Kernel::begin() {
 uint32_t Kernel::executeCommand(const char* line, CommandSource source) {
   size_t sourceIndex = static_cast<size_t>(source);
   uint32_t commandId = m_currentCommandIdByCommandSource[sourceIndex];
-  m_pendingCommandResponseIdByCommandSource[sourceIndex] = commandId;
   m_currentCommandIdByCommandSource[sourceIndex]++;
+  if (dispatchRawCommand(line, source) == RawCommandResult::HANDLED) {
+    return commandId;
+  }
+
+  m_pendingCommandResponseIdByCommandSource[sourceIndex] = commandId;
 
   if (line[0] == '\0') {
     sendCommandResponse(OK_COMMAND_RESPONSE, source, commandId);
@@ -76,7 +80,8 @@ uint32_t Kernel::executeCommand(const char* line, CommandSource source) {
   return commandId;
 }
 
-void Kernel::sendCommandResponse(const char* response, CommandSource source, uint32_t commandId) {
+void Kernel::sendCommandResponse(const char* response, CommandSource source,
+    uint32_t commandId, bool isCompleted) {
   size_t sourceIndex = static_cast<size_t>(source);
   if (m_pendingCommandResponseIdByCommandSource[sourceIndex] != commandId) {
     return;
@@ -85,10 +90,12 @@ void Kernel::sendCommandResponse(const char* response, CommandSource source, uin
   constexpr size_t EVENT_INDEX = static_cast<size_t>(ModuleEventType::COMMAND_RESPONSE);
 
   for (size_t i = 0; i < m_moduleCountByEventType[EVENT_INDEX]; i++) {
-    m_modulesByEventType[EVENT_INDEX][i]->onCommandResponse(response, source);
+    m_modulesByEventType[EVENT_INDEX][i]->onCommandResponse(response, source, isCompleted);
   }
 
-  m_pendingCommandResponseIdByCommandSource[sourceIndex] = tl::nullopt;
+  if (isCompleted) {
+    m_pendingCommandResponseIdByCommandSource[sourceIndex] = tl::nullopt;
+  }
 }
 
 void Kernel::dispatchTargetPosition(const Vector3<float> machinePosition) {
@@ -143,6 +150,17 @@ void Kernel::executeMCodeCommand(const char* line, CommandSource source, uint32_
   case ParsingResult::NEXT_LINE_NEEDED:
     sendCommandResponse(OK_COMMAND_RESPONSE, source, commandId);
   }
+}
+
+RawCommandResult Kernel::dispatchRawCommand(const char* line, CommandSource source) {
+  constexpr size_t EVENT_INDEX = static_cast<size_t>(ModuleEventType::RAW_COMMAND);
+  for (size_t i = 0; i < m_moduleCountByEventType[EVENT_INDEX]; i++) {
+    RawCommandResult result = m_modulesByEventType[EVENT_INDEX][i]->onRawCommandReceived(line, source);
+    if (result == RawCommandResult::HANDLED) {
+      return RawCommandResult::HANDLED;
+    }
+  }
+  return RawCommandResult::NOT_HANDLED;
 }
 
 void Kernel::dispatchSystemCommand(const SystemCommand& command, CommandSource source, uint32_t commandId) {

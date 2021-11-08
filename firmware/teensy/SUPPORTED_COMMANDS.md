@@ -84,17 +84,16 @@
 | `M5`       | [Link](https://smoothieware.org/m5)                                                                     |                   | `M5`                  |         |
 | `M17`      | Enable all stepper motors.                                                                              |                   | `M17`                 |         |
 | `M18`      | Disable all stepper motors.                                                                             |                   | `M18`                 |         |
-| `M20`      | List all G-Code files.                                                                                  |                   | `M20`                 |         |
+| `M20`      | List all G-Code files.                                                                                  |                   | `M20`                 | Yes     |
 | `M23`      | Select a G-Code file.                                                                                   | File path         | `M23 path/file.gcode` |         |
 | `M24`      | Start or resume the selected file.                                                                      |                   | `M24`                 |         |
 | `M25`      | Pause the selected file.                                                                                |                   | `M25`                 |         |
 | `M26`      | Abort the selected file.                                                                                |                   | `M26`                 |         |
 | `M27`      | Report the progress of the selected file (line count).                                                  |                   | `M27`                 |         |
-| `M28`      | Start to write the specified file.                                                                      | File path         | `M28 path/file.gcode` |         |
-| `M29`      | End to write the current file.                                                                          |                   | `M29`                 |         |
-| `M30`      | Delete the specified file.                                                                              | File path         | `M30 path/file.gcode` |         |
+| `M28`      | Start to write the specified file.                                                                      | File path         | `M28 path/file.gcode` | Yes     |
+| `M29`      | End to write the current file.                                                                          |                   | `M29`                 | Yes     |
+| `M30`      | Delete the specified file.                                                                              | File path         | `M30 path/file.gcode` | Yes     |
 | `M32`      | Select a G-Code file and start the selected file.                                                       | File path         | `M32 path/file.gcode` |         |
-| `M84`      | Disable all stepper motors.                                                                             |                   | `M84`                 |         |
 | `M114`     | Print the last requested position in the selected coordinate system                                     |                   | `M114`                |         |
 | `M114.1`   | Print the real time position in the selected coordinate system                                          |                   | `M114.1`              |         |
 | `M114.2`   | Print the last requested position in the machine coordinate system                                      |                   | `M114.2`              |         |

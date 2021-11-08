@@ -39,16 +39,18 @@ public:
 
   void begin();
 
-  uint32_t executeCommand(const char* line, CommandSource source); // Return the command id
-  void sendCommandResponse(const char* commandResponse, CommandSource source, uint32_t commandId);
+  uint32_t executeCommand(const char* line, CommandSource source) override; // Return the command id
+  void sendCommandResponse(const char* commandResponse, CommandSource source,
+      uint32_t commandId, bool isComplete = true) override;
 
-  void dispatchTargetPosition(const Vector3<float> machinePosition);
+  void dispatchTargetPosition(const Vector3<float> machinePosition) override;
 
 private:
   void executeSystemCommand(const char* line, CommandSource source, uint32_t commandId);
   void executeGCodeCommand(const char* line, CommandSource source, uint32_t commandId);
   void executeMCodeCommand(const char* line, CommandSource source, uint32_t commandId);
 
+  RawCommandResult dispatchRawCommand(const char* line, CommandSource source);
   void dispatchSystemCommand(const SystemCommand& command, CommandSource source, uint32_t commandId);
   void dispatchGCodeCommand(const GCode& gcode, CommandSource source, uint32_t commandId);
   void dispatchMCodeCommand(const MCode& mcode, CommandSource source, uint32_t commandId);
