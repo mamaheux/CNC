@@ -81,6 +81,8 @@ public:
   virtual void onTargetPositionChanged(const Vector3<float>& machinePosition); // In mm
 
   virtual void onCommandResponse(const char* response, CommandSource source, bool isComplete);
+
+  virtual void update();
 };
 
 #endif

@@ -30,3 +30,6 @@ void Module::onTargetPositionChanged(const Vector3<float>& machinePosition) {
 
 void Module::onCommandResponse(const char* response, CommandSource source, bool isComplete) {
 }
+
+void Module::update() {
+}

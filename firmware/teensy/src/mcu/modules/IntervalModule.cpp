@@ -1,14 +1,14 @@
-#include "mcu/modules/UpdatableModule.h"
+#include "mcu/modules/IntervalModule.h"
 
 #include <Arduino.h>
 
-UpdatableModule::UpdatableModule() :
+IntervalModule::IntervalModule() :
   m_updatePeriodMs(0), // As fast as possible
   m_updateLastTimeMs(0)
 {
 }
 
-void UpdatableModule::update() {
+void IntervalModule::update() {
   uint32_t currentTimeMs = millis();
   if ((currentTimeMs - m_updateLastTimeMs) >= m_updatePeriodMs) {
     m_updateLastTimeMs = currentTimeMs;
@@ -16,7 +16,7 @@ void UpdatableModule::update() {
   }
 }
 
-void UpdatableModule::setUpdatePeriodMs(uint32_t updatePeriodMs) {
+void IntervalModule::setUpdatePeriodMs(uint32_t updatePeriodMs) {
   m_updatePeriodMs = updatePeriodMs;
   m_updateLastTimeMs = millis();
 }

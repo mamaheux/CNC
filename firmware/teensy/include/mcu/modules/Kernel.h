@@ -38,6 +38,8 @@ public:
   void registerToEvent(ModuleEventType eventType, Module* module) override;
 
   void begin();
+  void update();
+
 
   uint32_t executeCommand(const char* line, CommandSource source) override; // Return the command id
   void sendCommandResponse(const char* commandResponse, CommandSource source,

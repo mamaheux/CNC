@@ -55,6 +55,12 @@ void Kernel::begin() {
   }
 }
 
+void Kernel::update() {
+  for (size_t i = 0; i < m_moduleCount; i++) {
+    m_modules[i]->update();
+  }
+}
+
 uint32_t Kernel::executeCommand(const char* line, CommandSource source) {
   size_t sourceIndex = static_cast<size_t>(source);
   uint32_t commandId = m_currentCommandIdByCommandSource[sourceIndex];
