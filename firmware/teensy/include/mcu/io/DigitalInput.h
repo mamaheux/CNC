@@ -1,16 +1,11 @@
 #ifndef MCU_IO_DIGITAL_INPUT_H
 #define MCU_IO_DIGITAL_INPUT_H
 
+#include <cnc/config/DigitalInputConfig.h>
 #include <cnc/resources/ResourceLock.h>
 #include <cnc/utils/ClassMacro.h>
 
 #include <Arduino.h>
-
-enum class DigitalInputMode : uint8_t {
-  NORMAL = INPUT,
-  PULLUP = INPUT_PULLUP,
-  PULLDOWN = INPUT_PULLDOWN,
-};
 
 enum class DigitalInputInterruptMode : int {
   INTERRUPT_LOW = LOW,
@@ -32,8 +27,7 @@ public:
   DECLARE_NOT_COPYABLE(DigitalInput);
   DECLARE_NOT_MOVABLE(DigitalInput);
 
-  void begin(uint8_t pin, bool inverted, DigitalInputMode mode);
-  void begin(const char* pinString);
+  void begin(const DigitalInputConfig& config);
 
   void attachInterrupt(void (*function)(void), DigitalInputInterruptMode mode);
 

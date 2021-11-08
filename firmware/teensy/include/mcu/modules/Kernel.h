@@ -15,8 +15,8 @@ constexpr size_t MAX_MODULE_COUNT = 25;
 class Kernel : public ModuleKernel {
   Module* m_modules[MAX_MODULE_COUNT];
   size_t m_moduleCount;
-  Module* m_modulesByEventType[static_cast<size_t>(ModuleEventType::COUNT)][MAX_MODULE_COUNT];
-  size_t m_moduleCountByEventType[static_cast<size_t>(ModuleEventType::COUNT)];
+  Module* m_modulesByEventType[MODULE_EVENT_TYPE_COUNT][MAX_MODULE_COUNT];
+  size_t m_moduleCountByEventType[MODULE_EVENT_TYPE_COUNT];
 
   SystemCommandParser m_systemCommandParser;
   GCodeParser m_gcodeParser;
@@ -24,8 +24,8 @@ class Kernel : public ModuleKernel {
   MCodeParser m_mcodeParser;
   MCode m_mcode;
 
-  uint32_t m_currentCommandIdByCommandSource[static_cast<size_t>(CommandSource::COUNT)];
-  tl::optional<uint32_t> m_pendingCommandResponseIdByCommandSource[static_cast<size_t>(CommandSource::COUNT)];
+  uint32_t m_currentCommandIdByCommandSource[COMMAND_SOURCE_COUNT];
+  tl::optional<uint32_t> m_pendingCommandResponseIdByCommandSource[COMMAND_SOURCE_COUNT];
 
 public:
   Kernel();

@@ -82,9 +82,9 @@
 | ---------- | ------------------------------------------------------------------------------------------------------- | ----------------- | --------------------- | ------- |
 | `M3`       | [Link](https://smoothieware.org/m3)                                                                     | Spindle Speed (S) | `M3 S500`             |         |
 | `M5`       | [Link](https://smoothieware.org/m5)                                                                     |                   | `M5`                  |         |
-| `M17`      | Enable all stepper motors.                                                                              |                   | `M17`                 |         |
-| `M18`      | Disable all stepper motors.                                                                             |                   | `M18`                 |         |
-| `M20`      | List all G-Code files.                                                                                  |                   | `M20`                 | Yes     |
+| `M17`      | Enable all stepper motors.                                                                              |                   | `M17`                 | Yes     |
+| `M18`      | Disable all stepper motors.                                                                             |                   | `M18`                 | Yes     |
+| `M20`      | List all files.                                                                                         |                   | `M20`                 | Yes     |
 | `M23`      | Select a G-Code file.                                                                                   | File path         | `M23 path/file.gcode` |         |
 | `M24`      | Start or resume the selected file.                                                                      |                   | `M24`                 |         |
 | `M25`      | Pause the selected file.                                                                                |                   | `M25`                 |         |

@@ -4,7 +4,7 @@
 static DigitalOutput led;
 
 void setupCriticalErrorCheck() {
-  led.begin(LED_PIN, false, false);
+  led.begin(DigitalOutputConfig(LED_PIN, false), false);
 }
 
 void toogleErrorLed() {

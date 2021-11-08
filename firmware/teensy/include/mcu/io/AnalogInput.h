@@ -1,6 +1,7 @@
 #ifndef MCU_IO_ANALOG_INPUT_H
 #define MCU_IO_ANALOG_INPUT_H
 
+#include <cnc/config/AnalogInputConfig.h>
 #include <cnc/resources/ResourceLock.h>
 #include <cnc/utils/ClassMacro.h>
 
@@ -19,8 +20,7 @@ public:
   DECLARE_NOT_COPYABLE(AnalogInput);
   DECLARE_NOT_MOVABLE(AnalogInput);
 
-  void begin(uint8_t pin);
-  void begin(const char* pinString);
+  void begin(const AnalogInputConfig& config);
 
   uint16_t read() const;
 };

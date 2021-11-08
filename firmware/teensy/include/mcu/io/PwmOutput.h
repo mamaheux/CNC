@@ -1,6 +1,7 @@
 #ifndef MCU_IO_DIGITAL_OUTPUT
 #define MCU_IO_DIGITAL_OUTPUT
 
+#include <cnc/config/PwmOutputConfig.h>
 #include <cnc/resources/ResourceLock.h>
 #include <cnc/utils/ClassMacro.h>
 
@@ -13,8 +14,8 @@ class PwmOutput {
   PwmLock m_lock;
 
   uint8_t m_pin;
-  uint16_t m_value;
   bool m_inverted;
+  uint16_t m_value;
 
 public:
   PwmOutput();
@@ -22,8 +23,7 @@ public:
   DECLARE_NOT_COPYABLE(PwmOutput);
   DECLARE_NOT_MOVABLE(PwmOutput);
 
-  void begin(uint8_t pin, bool inverted, float frequency, uint16_t value);
-  void begin(const char* pinString, float frequency, uint16_t value);
+  void begin(const PwmOutputConfig& config, uint16_t value);
 
   uint16_t read() const;
   void write(uint16_t state);

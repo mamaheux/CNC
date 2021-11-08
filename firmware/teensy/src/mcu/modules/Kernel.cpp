@@ -11,13 +11,13 @@ static const char* NOT_HANDLED_COMMAND_RESPONSE = "error:not_handled";
 Kernel::Kernel() : m_moduleCount(0) {
   for (size_t i = 0; i < MAX_MODULE_COUNT; i++) {
     m_modules[i] = nullptr;
-    for (size_t j = 0; j < static_cast<size_t>(ModuleEventType::COUNT); j++) {
+    for (size_t j = 0; j < MODULE_EVENT_TYPE_COUNT; j++) {
       m_modulesByEventType[j][i] = nullptr;
       m_moduleCountByEventType[j] = 0;
     }
   }
 
-  for (size_t i = 0; i < static_cast<size_t>(CommandSource::COUNT); i++) {
+  for (size_t i = 0; i < COMMAND_SOURCE_COUNT; i++) {
     m_currentCommandIdByCommandSource[i] = 0;
   }
 }

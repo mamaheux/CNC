@@ -47,12 +47,16 @@ enum class ModuleEventType : size_t {
   COUNT
 };
 
+constexpr size_t MODULE_EVENT_TYPE_COUNT = static_cast<size_t>(ModuleEventType::COUNT);
+
 enum class CommandSource : size_t {
   SERIAL_SOURCE,
   FILE_SOURCE,
   WEB_SOURCE,
   COUNT
 };
+
+constexpr size_t COMMAND_SOURCE_COUNT = static_cast<size_t>(CommandSource::COUNT);
 
 class ModuleKernel;
 

@@ -1,5 +1,10 @@
 #include <unity.h>
 
+#include "../include/config/test_AnalogInputConfig.h"
+#include "../include/config/test_DigitalInputConfig.h"
+#include "../include/config/test_DigitalOutputConfig.h"
+#include "../include/config/test_PwmOutputConfig.h"
+
 #include "../include/math/test_Vector3.h"
 #include "../include/math/test_ZRotation.h"
 
@@ -10,6 +15,20 @@
 #include "../include/parsing/test_MCode.h"
 
 #include "../include/resources/test_ResourceLock.h"
+
+void testConfig() {
+  RUN_TEST(test_AnalogInputConfig_constructor);
+  RUN_TEST(test_AnalogInputConfig_parse);
+
+  RUN_TEST(test_DigitalInputConfig_constructor);
+  RUN_TEST(test_DigitalInputConfig_parse);
+
+  RUN_TEST(test_DigitalOutputConfig_constructor);
+  RUN_TEST(test_DigitalOutputConfig_parse);
+
+  RUN_TEST(test_PwmOutputConfig_constructor);
+  RUN_TEST(test_PwmOutputConfig_parse);
+}
 
 void testMath() {
   RUN_TEST(test_Vector3_constructor);
@@ -137,6 +156,7 @@ void testResources() {
 int main(int argc, char **argv) {
   UNITY_BEGIN();
 
+  testConfig();
   testMath();
   testParsing();
   testResources();
