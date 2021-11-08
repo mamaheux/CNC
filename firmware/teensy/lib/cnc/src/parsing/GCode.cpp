@@ -177,6 +177,9 @@ ParsingResult GCodeParser::parseParameters(char* start, GCode& gcode) {
   case 'P':
     gcode.m_p = atof(start + 1);
     break;
+  case 'R':
+    gcode.m_r = atof(start + 1);
+    break;
   case 'L':
     l = atoi(start + 1);
     if  (l >= 0) {

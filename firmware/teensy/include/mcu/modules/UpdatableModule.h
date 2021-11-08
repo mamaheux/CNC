@@ -3,7 +3,7 @@
 
 #include <cnc/modules/Module.h>
 
-class UpdatableModule: public Module {
+class UpdatableModule : public Module {
   uint32_t m_updatePeriodMs;
   uint32_t m_updateLastTimeMs;
 

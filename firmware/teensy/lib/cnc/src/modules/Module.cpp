@@ -9,16 +9,19 @@ void Module::setKernel(ModuleKernel* kernel) {
   m_kernel = kernel;
 }
 
-CommandResult Module::onSystemCommand(const SystemCommand& command, uint32_t commandId) {
+CommandResult Module::onSystemCommandReceived(const SystemCommand& command, uint32_t commandId) {
   return CommandResult::ERROR;
 }
 
-CommandResult Module::onGCodeCommand(const GCode& gcode, uint32_t commandId) {
+CommandResult Module::onGCodeCommandReceived(const GCode& gcode, uint32_t commandId) {
   return CommandResult::ERROR;
 }
 
-CommandResult Module::onMCodeCommand(const MCode& mcode, uint32_t commandId) {
+CommandResult Module::onMCodeCommandReceived(const MCode& mcode, uint32_t commandId) {
   return CommandResult::ERROR;
+}
+
+void Module::onTargetPositionChanged(const Vector3<float>& machinePosition) {
 }
 
 void Module::onCommandResponse(const char* response) {

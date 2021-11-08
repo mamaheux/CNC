@@ -11,6 +11,7 @@
   TEST_ASSERT_TRUE(tl::nullopt == (code).k()); \
   TEST_ASSERT_TRUE(tl::nullopt == (code).s()); \
   TEST_ASSERT_TRUE(tl::nullopt == (code).p()); \
+  TEST_ASSERT_TRUE(tl::nullopt == (code).r()); \
   TEST_ASSERT_TRUE(tl::nullopt == (code).l()); \
   TEST_ASSERT_FALSE(code.isMachineCoordinateSystem())
 
@@ -54,6 +55,7 @@ void test_parseGCode_G0() {
   TEST_ASSERT_TRUE(tl::nullopt == code.k());
   TEST_ASSERT_TRUE(tl::nullopt == code.s());
   TEST_ASSERT_TRUE(tl::nullopt == code.p());
+  TEST_ASSERT_TRUE(tl::nullopt == code.r());
   TEST_ASSERT_TRUE(tl::nullopt == code.l());
   TEST_ASSERT_FALSE(code.isMachineCoordinateSystem());
 
@@ -69,6 +71,7 @@ void test_parseGCode_G0() {
   TEST_ASSERT_TRUE(tl::nullopt == code.k());
   TEST_ASSERT_TRUE(tl::nullopt == code.s());
   TEST_ASSERT_TRUE(tl::nullopt == code.p());
+  TEST_ASSERT_TRUE(tl::nullopt == code.r());
   TEST_ASSERT_TRUE(tl::nullopt == code.l());
   TEST_ASSERT_FALSE(code.isMachineCoordinateSystem());
 
@@ -84,6 +87,7 @@ void test_parseGCode_G0() {
   TEST_ASSERT_TRUE(tl::nullopt == code.k());
   TEST_ASSERT_TRUE(tl::nullopt == code.s());
   TEST_ASSERT_TRUE(tl::nullopt == code.p());
+  TEST_ASSERT_TRUE(tl::nullopt == code.r());
   TEST_ASSERT_TRUE(tl::nullopt == code.l());
   TEST_ASSERT_FALSE(code.isMachineCoordinateSystem());
 }
@@ -104,6 +108,7 @@ void test_parseGCode_G1() {
   TEST_ASSERT_TRUE(tl::nullopt == code.k());
   TEST_ASSERT_TRUE(tl::nullopt == code.s());
   TEST_ASSERT_TRUE(tl::nullopt == code.p());
+  TEST_ASSERT_TRUE(tl::nullopt == code.r());
   TEST_ASSERT_TRUE(tl::nullopt == code.l());
   TEST_ASSERT_FALSE(code.isMachineCoordinateSystem());
 
@@ -119,6 +124,7 @@ void test_parseGCode_G1() {
   TEST_ASSERT_TRUE(tl::nullopt == code.k());
   TEST_ASSERT_TRUE(tl::nullopt == code.s());
   TEST_ASSERT_TRUE(tl::nullopt == code.p());
+  TEST_ASSERT_TRUE(tl::nullopt == code.r());
   TEST_ASSERT_TRUE(tl::nullopt == code.l());
   TEST_ASSERT_FALSE(code.isMachineCoordinateSystem());
 
@@ -134,6 +140,7 @@ void test_parseGCode_G1() {
   TEST_ASSERT_TRUE(tl::nullopt == code.k());
   TEST_ASSERT_TRUE(tl::nullopt == code.s());
   TEST_ASSERT_TRUE(tl::nullopt == code.p());
+  TEST_ASSERT_TRUE(tl::nullopt == code.r());
   TEST_ASSERT_TRUE(tl::nullopt == code.l());
   TEST_ASSERT_FALSE(code.isMachineCoordinateSystem());
 }
@@ -154,6 +161,7 @@ void test_parseGCode_G2() {
   TEST_ASSERT_TRUE(tl::nullopt == code.k());
   TEST_ASSERT_TRUE(tl::nullopt == code.s());
   TEST_ASSERT_TRUE(tl::nullopt == code.p());
+  TEST_ASSERT_TRUE(tl::nullopt == code.r());
   TEST_ASSERT_TRUE(tl::nullopt == code.l());
   TEST_ASSERT_FALSE(code.isMachineCoordinateSystem());
 }
@@ -174,6 +182,7 @@ void test_parseGCode_G3() {
   TEST_ASSERT_TRUE(5.0 == code.k());
   TEST_ASSERT_TRUE(tl::nullopt == code.s());
   TEST_ASSERT_TRUE(tl::nullopt == code.p());
+  TEST_ASSERT_TRUE(tl::nullopt == code.r());
   TEST_ASSERT_TRUE(tl::nullopt == code.l());
   TEST_ASSERT_FALSE(code.isMachineCoordinateSystem());
 }
@@ -194,6 +203,7 @@ void test_parseGCode_G4() {
   TEST_ASSERT_TRUE(tl::nullopt == code.k());
   TEST_ASSERT_TRUE(10.25 == code.s());
   TEST_ASSERT_TRUE(10.75 == code.p());
+  TEST_ASSERT_TRUE(tl::nullopt == code.r());
   TEST_ASSERT_TRUE(tl::nullopt == code.l());
   TEST_ASSERT_FALSE(code.isMachineCoordinateSystem());
 }
@@ -202,7 +212,7 @@ void test_parseGCode_G10L2() {
   GCode code;
   GCodeParser parser;
 
-  TEST_ASSERT_EQUAL(ParsingResult::OK, parser.parse("G10 L2 P3 X5 Y6", code));
+  TEST_ASSERT_EQUAL(ParsingResult::OK, parser.parse("G10 L2 P3 X5 Y6 R45", code));
   TEST_ASSERT_EQUAL(10, code.code());
   TEST_ASSERT_TRUE(tl::nullopt == code.subcode());
   TEST_ASSERT_TRUE(5 == code.x());
@@ -214,6 +224,7 @@ void test_parseGCode_G10L2() {
   TEST_ASSERT_TRUE(tl::nullopt == code.k());
   TEST_ASSERT_TRUE(tl::nullopt == code.s());
   TEST_ASSERT_TRUE(3 == code.p());
+  TEST_ASSERT_TRUE(45 == code.r());
   TEST_ASSERT_TRUE(2 == code.l());
   TEST_ASSERT_FALSE(code.isMachineCoordinateSystem());
 }
@@ -234,6 +245,7 @@ void test_parseGCode_G10L20() {
   TEST_ASSERT_TRUE(tl::nullopt == code.k());
   TEST_ASSERT_TRUE(tl::nullopt == code.s());
   TEST_ASSERT_TRUE(3 == code.p());
+  TEST_ASSERT_TRUE(tl::nullopt == code.r());
   TEST_ASSERT_TRUE(20 == code.l());
   TEST_ASSERT_FALSE(code.isMachineCoordinateSystem());
 }
@@ -304,6 +316,7 @@ void test_parseGCode_G28() {
   TEST_ASSERT_TRUE(tl::nullopt == code.k());
   TEST_ASSERT_TRUE(tl::nullopt == code.s());
   TEST_ASSERT_TRUE(tl::nullopt == code.p());
+  TEST_ASSERT_TRUE(tl::nullopt == code.r());
   TEST_ASSERT_TRUE(tl::nullopt == code.l());
   TEST_ASSERT_FALSE(code.isMachineCoordinateSystem());
 }
@@ -334,6 +347,7 @@ void test_parseGCode_G53() {
   TEST_ASSERT_TRUE(tl::nullopt == code.k());
   TEST_ASSERT_TRUE(tl::nullopt == code.s());
   TEST_ASSERT_TRUE(tl::nullopt == code.p());
+  TEST_ASSERT_TRUE(tl::nullopt == code.r());
   TEST_ASSERT_TRUE(tl::nullopt == code.l());
   TEST_ASSERT_TRUE(code.isMachineCoordinateSystem());
 
@@ -349,6 +363,7 @@ void test_parseGCode_G53() {
   TEST_ASSERT_TRUE(tl::nullopt == code.k());
   TEST_ASSERT_TRUE(tl::nullopt == code.s());
   TEST_ASSERT_TRUE(tl::nullopt == code.p());
+  TEST_ASSERT_TRUE(tl::nullopt == code.r());
   TEST_ASSERT_TRUE(tl::nullopt == code.l());
   TEST_ASSERT_FALSE(code.isMachineCoordinateSystem());
 
@@ -364,6 +379,7 @@ void test_parseGCode_G53() {
   TEST_ASSERT_TRUE(tl::nullopt == code.k());
   TEST_ASSERT_TRUE(tl::nullopt == code.s());
   TEST_ASSERT_TRUE(tl::nullopt == code.p());
+  TEST_ASSERT_TRUE(tl::nullopt == code.r());
   TEST_ASSERT_TRUE(tl::nullopt == code.l());
   TEST_ASSERT_TRUE(code.isMachineCoordinateSystem());
 }
@@ -385,6 +401,7 @@ void test_parseGCode_G53NextLine() {
   TEST_ASSERT_TRUE(tl::nullopt == code.k());
   TEST_ASSERT_TRUE(tl::nullopt == code.s());
   TEST_ASSERT_TRUE(tl::nullopt == code.p());
+  TEST_ASSERT_TRUE(tl::nullopt == code.r());
   TEST_ASSERT_TRUE(tl::nullopt == code.l());
   TEST_ASSERT_TRUE(code.isMachineCoordinateSystem());
 
@@ -400,6 +417,7 @@ void test_parseGCode_G53NextLine() {
   TEST_ASSERT_TRUE(tl::nullopt == code.k());
   TEST_ASSERT_TRUE(tl::nullopt == code.s());
   TEST_ASSERT_TRUE(tl::nullopt == code.p());
+  TEST_ASSERT_TRUE(tl::nullopt == code.r());
   TEST_ASSERT_TRUE(tl::nullopt == code.l());
   TEST_ASSERT_FALSE(code.isMachineCoordinateSystem());
 
@@ -416,6 +434,7 @@ void test_parseGCode_G53NextLine() {
   TEST_ASSERT_TRUE(tl::nullopt == code.k());
   TEST_ASSERT_TRUE(tl::nullopt == code.s());
   TEST_ASSERT_TRUE(tl::nullopt == code.p());
+  TEST_ASSERT_TRUE(tl::nullopt == code.r());
   TEST_ASSERT_TRUE(tl::nullopt == code.l());
   TEST_ASSERT_TRUE(code.isMachineCoordinateSystem());
 }

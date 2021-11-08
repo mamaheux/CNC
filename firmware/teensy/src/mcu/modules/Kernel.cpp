@@ -6,6 +6,7 @@
 static const char* OK_COMMAND_RESPONSE = "ok";
 static const char* PARSING_ERROR_COMMAND_RESPONSE = "error:parsing";
 static const char* EXECUTING_ERROR_COMMAND_RESPONSE = "error:executing";
+static const char* NOT_HANDLED_COMMAND_RESPONSE = "error:not_handled";
 
 Kernel::Kernel() : m_moduleCount(0), m_currentCommandId(0) {
   for (size_t i = 0; i < MAX_MODULE_COUNT; i++) {
@@ -83,6 +84,14 @@ void Kernel::sendCommandResponse(const char* response, uint32_t commandId) {
   m_pendingCommandResponseId = tl::nullopt;
 }
 
+void Kernel::dispatchTargetPosition(const Vector3<float> machinePosition) {
+  constexpr size_t EVENT_INDEX = static_cast<size_t>(ModuleEventType::TARGET_POSITION);
+
+  for (size_t i = 0; i < m_moduleCountByEventType[EVENT_INDEX]; i++) {
+    m_modulesByEventType[EVENT_INDEX][i]->onTargetPositionChanged(machinePosition);
+  }
+}
+
 void Kernel::executeSystemCommand(const char* line, uint32_t commandId) {
   SystemCommand command;
   ParsingResult result = m_systemCommandParser.parse(line, command);
@@ -134,7 +143,7 @@ void Kernel::dispatchSystemCommand(const SystemCommand& command, uint32_t comman
 
   CommandResult agregatedResult = CommandResult::OK;
   for (size_t i = 0; i < m_moduleCountByEventType[EVENT_INDEX]; i++) {
-    CommandResult result = m_modulesByEventType[EVENT_INDEX][i]->onSystemCommand(command, commandId);
+    CommandResult result = m_modulesByEventType[EVENT_INDEX][i]->onSystemCommandReceived(command, commandId);
     agregatedResult = agregateCommandResult(agregatedResult, result);
   }
   handleAgregatedCommandResult(agregatedResult, commandId);
@@ -145,7 +154,7 @@ void Kernel::dispatchGCodeCommand(const GCode& gcode, uint32_t commandId) {
 
   CommandResult agregatedResult = CommandResult::OK;
   for (size_t i = 0; i < m_moduleCountByEventType[EVENT_INDEX]; i++) {
-    CommandResult result = m_modulesByEventType[EVENT_INDEX][i]->onGCodeCommand(gcode, commandId);
+    CommandResult result = m_modulesByEventType[EVENT_INDEX][i]->onGCodeCommandReceived(gcode, commandId);
     agregatedResult = agregateCommandResult(agregatedResult, result);
   }
   handleAgregatedCommandResult(agregatedResult, commandId);
@@ -156,7 +165,7 @@ void Kernel::dispatchMCodeCommand(const MCode& mcode, uint32_t commandId) {
 
   CommandResult agregatedResult = CommandResult::OK;
   for (size_t i = 0; i < m_moduleCountByEventType[EVENT_INDEX]; i++) {
-    CommandResult result = m_modulesByEventType[EVENT_INDEX][i]->onMCodeCommand(mcode, commandId);
+    CommandResult result = m_modulesByEventType[EVENT_INDEX][i]->onMCodeCommandReceived(mcode, commandId);
     agregatedResult = agregateCommandResult(agregatedResult, result);
   }
   handleAgregatedCommandResult(agregatedResult, commandId);
@@ -170,6 +179,8 @@ void Kernel::handleAgregatedCommandResult(CommandResult result, uint32_t command
     break;
   case CommandResult::ERROR:
     sendCommandResponse(EXECUTING_ERROR_COMMAND_RESPONSE, commandId);
+  case CommandResult::NOT_HANDLED:
+    sendCommandResponse(NOT_HANDLED_COMMAND_RESPONSE, commandId);
   case CommandResult::OK_RESPONSE_SENT:
   case CommandResult::PENDING:
     break;

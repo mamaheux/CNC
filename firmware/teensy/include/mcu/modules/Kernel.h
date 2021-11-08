@@ -12,7 +12,7 @@
 
 constexpr size_t MAX_MODULE_COUNT = 25;
 
-class Kernel: public ModuleKernel {
+class Kernel : public ModuleKernel {
   Module* m_modules[MAX_MODULE_COUNT];
   size_t m_moduleCount;
   Module* m_modulesByEventType[static_cast<size_t>(ModuleEventType::COUNT)][MAX_MODULE_COUNT];
@@ -41,6 +41,8 @@ public:
 
   void executeCommand(const char* line); //TODO Check command source, How?
   void sendCommandResponse(const char* commandResponse, uint32_t commandId);
+
+  void dispatchTargetPosition(const Vector3<float> machinePosition);
 
 private:
   void executeSystemCommand(const char* line, uint32_t commandId);

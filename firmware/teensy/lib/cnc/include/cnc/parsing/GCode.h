@@ -21,6 +21,7 @@ class GCode {
   tl::optional<float> m_k;
   tl::optional<float> m_s;
   tl::optional<float> m_p;
+  tl::optional<float> m_r;
   tl::optional<uint32_t> m_l;
 
   uint32_t m_code;
@@ -39,6 +40,7 @@ public:
   tl::optional<float> k() const;
   tl::optional<float> s() const;
   tl::optional<float> p() const;
+  tl::optional<float> r() const;
   tl::optional<uint32_t> l() const;
 
   uint32_t code() const;
@@ -86,6 +88,10 @@ inline tl::optional<float> GCode::s() const {
 
 inline tl::optional<float> GCode::p() const {
   return m_p;
+}
+
+inline tl::optional<float> GCode::r() const {
+  return m_r;
 }
 
 inline tl::optional<uint32_t> GCode::l() const {

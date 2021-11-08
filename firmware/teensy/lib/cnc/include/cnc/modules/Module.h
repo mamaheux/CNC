@@ -2,16 +2,18 @@
 #define CNC_MODULES_MODULE_H
 
 #include <cnc/config/ConfigItem.h>
-#include <cnc/utils/ClassMacro.h>
+#include <cnc/math/Vector3.h>
 #include <cnc/parsing/SystemCommand.h>
 #include <cnc/parsing/GCode.h>
 #include <cnc/parsing/MCode.h>
+#include <cnc/utils/ClassMacro.h>
 
 enum class CommandResult {
   OK,
   OK_RESPONSE_SENT,
   PENDING,
-  ERROR
+  ERROR,
+  NOT_HANDLED,
 };
 
 inline CommandResult agregateCommandResult(CommandResult r1, CommandResult r2) {
@@ -24,13 +26,17 @@ inline CommandResult agregateCommandResult(CommandResult r1, CommandResult r2) {
   else if (r1 == CommandResult::PENDING || r2 == CommandResult::PENDING) {
     return CommandResult::PENDING;
   }
-  return CommandResult::OK;
+  else if (r1 == CommandResult::OK || r2 == CommandResult::OK) {
+    return CommandResult::OK;
+  }
+  return CommandResult::NOT_HANDLED;
 }
 
 enum class ModuleEventType: size_t {
   SYSTEM_COMMAND,
   GCODE_COMMAND,
   MCODE_COMMAND,
+  TARGET_POSITION,
   COMMAND_RESPONSE,
   COUNT
 };
@@ -53,9 +59,12 @@ public:
 
   void setKernel(ModuleKernel* kernel);
 
-  virtual CommandResult onSystemCommand(const SystemCommand& command, uint32_t commandId);
-  virtual CommandResult onGCodeCommand(const GCode& gcode, uint32_t commandId);
-  virtual CommandResult onMCodeCommand(const MCode& mcode, uint32_t commandId);
+  virtual CommandResult onSystemCommandReceived(const SystemCommand& command, uint32_t commandId);
+  virtual CommandResult onGCodeCommandReceived(const GCode& gcode, uint32_t commandId);
+  virtual CommandResult onMCodeCommandReceived(const MCode& mcode, uint32_t commandId);
+
+  virtual void onTargetPositionChanged(const Vector3<float>& machinePosition); // In mm
+
   virtual void onCommandResponse(const char* response);
 };
 

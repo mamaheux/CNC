@@ -1,5 +1,8 @@
 #include <unity.h>
 
+#include "../include/math/test_Vector3.h"
+#include "../include/math/test_ZRotation.h"
+
 #include "../include/parsing/test_properties.h"
 #include "../include/parsing/test_trim.h"
 #include "../include/parsing/test_SystemCommand.h"
@@ -7,6 +10,23 @@
 #include "../include/parsing/test_MCode.h"
 
 #include "../include/resources/test_ResourceLock.h"
+
+void testMath() {
+  RUN_TEST(test_Vector3_constructor);
+  RUN_TEST(test_Vector3_dot);
+  RUN_TEST(test_Vector3_add);
+  RUN_TEST(test_Vector3_addAssign);
+  RUN_TEST(test_Vector3_substract);
+  RUN_TEST(test_Vector3_substractAssign);
+  RUN_TEST(test_Vector3_multiply);
+  RUN_TEST(test_Vector3_multiplyAssign);
+  RUN_TEST(test_Vector3_divide);
+  RUN_TEST(test_Vector3_divideAssign);
+
+  RUN_TEST(test_degToRad);
+  RUN_TEST(test_radToDeg);
+  RUN_TEST(test_ZRotation_rotate);
+}
 
 void testParsing() {
   RUN_TEST(test_parsePropertiesLine_comment);
@@ -117,6 +137,7 @@ void testResources() {
 int main(int argc, char **argv) {
   UNITY_BEGIN();
 
+  testMath();
   testParsing();
   testResources();
 
