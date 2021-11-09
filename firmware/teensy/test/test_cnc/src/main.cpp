@@ -8,6 +8,8 @@
 #include "../include/math/test_Vector3.h"
 #include "../include/math/test_ZRotation.h"
 
+#include "../include/modules/test_CoordinateTransformer.h"
+
 #include "../include/parsing/test_properties.h"
 #include "../include/parsing/test_trim.h"
 #include "../include/parsing/test_SystemCommand.h"
@@ -45,6 +47,15 @@ void testMath() {
   RUN_TEST(test_degToRad);
   RUN_TEST(test_radToDeg);
   RUN_TEST(test_ZRotation_rotate);
+}
+
+void testModules() {
+  RUN_TEST(test_CoordinateTransformer_G10L2P10);
+  RUN_TEST(test_CoordinateTransformer_G10L2);
+  RUN_TEST(test_CoordinateTransformer_G10L20);
+  RUN_TEST(test_CoordinateTransformer_G20G21);
+  RUN_TEST(test_CoordinateTransformer_G90G91);
+  RUN_TEST(test_CoordinateTransformer_G92);
 }
 
 void testParsing() {
@@ -158,6 +169,7 @@ int main(int argc, char **argv) {
 
   testConfig();
   testMath();
+  testModules();
   testParsing();
   testResources();
 

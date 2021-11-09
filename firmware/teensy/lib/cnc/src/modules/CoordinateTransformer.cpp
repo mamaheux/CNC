@@ -5,7 +5,6 @@
 CoordinateSystem::CoordinateSystem() : offset(0.f, 0.f, 0.f), rotation(0.f), rotationInv(0.f) {
 }
 
-
 CoordinateTransformer::CoordinateTransformer() :
   m_isIncrementalMode(false),
   m_scale(1.f),
@@ -93,7 +92,7 @@ Vector3<float> CoordinateTransformer::gcodeCoordinateToMachineCoordinate(const V
   }
 }
 
-Vector3<float> CoordinateTransformer::machineCoordinateToUserCurentCoordinate(const Vector3<float> v) {
+Vector3<float> CoordinateTransformer::machineCoordinateToUserCurrentCoordinate(const Vector3<float> v) {
   CoordinateSystem& coordinateSystem = m_coordinateSystems[m_currentCoordinateSystemIndex];
   return coordinateSystem.rotationInv.rotate(v - m_globalOffset - coordinateSystem.offset) / m_scale;
 }

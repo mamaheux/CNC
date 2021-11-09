@@ -5,7 +5,6 @@
 
 #include <cstdint>
 
-//TODO test
 class DigitalOutputConfig {
   uint8_t m_pin;
   bool m_inverted;

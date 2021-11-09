@@ -21,7 +21,6 @@ public:
   CoordinateSystem();
 };
 
-// TODO Test
 class CoordinateTransformer : public Module {
   bool m_isIncrementalMode;
   float m_scale;
@@ -45,7 +44,7 @@ public:
   void onTargetPositionChanged(const Vector3<float>& machinePosition) override;
 
   Vector3<float> gcodeCoordinateToMachineCoordinate(const Vector3<float> v);
-  Vector3<float> machineCoordinateToUserCurentCoordinate(const Vector3<float> v);
+  Vector3<float> machineCoordinateToUserCurrentCoordinate(const Vector3<float> v);
   Vector3<float> machineCoordinateToUserMachineCoordinate(const Vector3<float> v);
 
 private:

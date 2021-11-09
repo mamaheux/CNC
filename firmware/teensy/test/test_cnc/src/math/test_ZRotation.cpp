@@ -1,14 +1,16 @@
 #include <cnc/math/ZRotation.h>
 #include <unity.h>
 
+constexpr float MAX_DELTA = 1e-7;
+
 void test_degToRad() {
-  TEST_ASSERT_EQUAL(degToRad(90.f), M_PI / 2);
-  TEST_ASSERT_EQUAL(degToRad(45.f), M_PI / 4);
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, M_PI / 2, degToRad(90.f));
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, M_PI / 4, degToRad(45.f));
 }
 
 void test_radToDeg() {
-  TEST_ASSERT_EQUAL(radToDeg(M_PI / 2), 90.f);
-  TEST_ASSERT_EQUAL(radToDeg(M_PI / 4), 45.f);
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 90.f, radToDeg(M_PI / 2));
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 45.f, radToDeg(M_PI / 4));
 }
 
 void test_ZRotation_rotate() {
@@ -23,15 +25,15 @@ void test_ZRotation_rotate() {
   rotation.setAngleRad(M_PI / 2);
   Vector3<float> r3 = rotation.rotate(a);
 
-  TEST_ASSERT_EQUAL(r1.x, 1.f);
-  TEST_ASSERT_EQUAL(r1.y, 0.f);
-  TEST_ASSERT_EQUAL(r1.z, 2.f);
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 1.f, r1.x);
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 0.f, r1.y);
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 2.f, r1.z);
 
-  TEST_ASSERT_EQUAL(r2.x, -1.f);
-  TEST_ASSERT_EQUAL(r2.y, 0.f);
-  TEST_ASSERT_EQUAL(r2.z, 2.f);
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, -1.f, r2.x);
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 0.f, r2.y);
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 2.f, r2.z);
 
-  TEST_ASSERT_EQUAL(r3.x, 0.f);
-  TEST_ASSERT_EQUAL(r3.y, 1.f);
-  TEST_ASSERT_EQUAL(r3.z, 2.f);
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 0.f, r3.x);
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 1.f, r3.y);
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 2.f, r3.z);
 }
