@@ -78,7 +78,7 @@
 
 ## M-Codes
 
-| M-Code     | Documentation                                                                                           | Parameters        | Example          | Handled |
+| M-Code     | Documentation                                                                          | Parameters        | Example          | Handled |
 | ---------- | -------------------------------------------------------------------------------------- | ----------------- | ---------------- | ------- |
 | `M3`       | [Link](https://smoothieware.org/m3)                                                    | Spindle Speed (S) | `M3 S500`        | Yes     |
 | `M5`       | [Link](https://smoothieware.org/m5)                                                    |                   | `M5`             | Yes     |
