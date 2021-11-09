@@ -172,7 +172,6 @@ void Spindle::sendCurrentRpm(CommandSource source, uint32_t commandId) {
   stringPrint.print(m_currentRpm);
 
   m_kernel->sendCommandResponse(m_response, source, commandId, false);
-  m_kernel->sendCommandResponse(OK_COMMAND_RESPONSE, source, commandId);
 }
 
 void Spindle::updatePidGains(const MCode& mcode) {
@@ -197,5 +196,4 @@ void Spindle::sendPidGains(CommandSource source, uint32_t commandId) {
   stringPrint.print(*m_d);
 
   m_kernel->sendCommandResponse(m_response, source, commandId, false);
-  m_kernel->sendCommandResponse(OK_COMMAND_RESPONSE, source, commandId);
 }

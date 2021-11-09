@@ -4,6 +4,7 @@
 #include "mcu/modules/Kernel.h"
 #include "mcu/modules/FileSystem.h"
 #include "mcu/modules/CommandSerial.h"
+#include "mcu/modules/CommandFile.h"
 #include "mcu/modules/Stepper.h"
 #include "mcu/modules/Spindle.h"
 
@@ -13,6 +14,7 @@
 
 FileSystem fileSystem;
 CommandSerial commandSerial;
+CommandFile commandFile;
 
 Stepper xStepper(StepperAxis::X);
 Stepper yStepper(StepperAxis::Y);
@@ -28,6 +30,7 @@ void setupKernel() {
 
   kernel.addModule(&fileSystem);
   kernel.addModule(&commandSerial);
+  kernel.addModule(&commandFile);
 
   kernel.addModule(&xStepper);
   kernel.addModule(&yStepper);

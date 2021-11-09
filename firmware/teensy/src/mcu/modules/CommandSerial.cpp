@@ -37,7 +37,7 @@ void CommandSerial::update() {
     if (c == '\r') {
       continue;
     }
-    else if (c == '\n') {
+    else if (c == '\n' || m_lineIndex >= (COMMAND_SERIAL_LINE_BUFFER_SIZE - 1)) {
       m_lineBuffer[m_lineIndex] = '\0';
       m_lineIndex = 0;
       m_kernel->executeCommand(m_lineBuffer, CommandSource::SERIAL_SOURCE, m_pendingCommandId);
