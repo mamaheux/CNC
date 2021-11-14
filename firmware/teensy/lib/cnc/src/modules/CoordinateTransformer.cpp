@@ -2,6 +2,9 @@
 
 #include <cnc/modules/ModuleKernel.h>
 
+constexpr const char* INVALID_COORDINATE_SYSTEM_COMMAND_ERROR_MESSAGE = "The coordindate system (P) is invalid. It must be between 0 and 9.";
+constexpr const char* MISSING_AXIS_COMMAND_ERROR_MESSAGE = "At least one axis must be specified.";
+
 CoordinateSystem::CoordinateSystem() : offset(0.f, 0.f, 0.f), rotation(0.f), rotationInv(0.f) {
 }
 
@@ -72,10 +75,10 @@ CommandResult CoordinateTransformer::onGCodeCommandReceived(const GCode& gcode, 
     m_globalOffset = Vector3<float>(0.f, 0.f, 0.f);
   }
   else {
-    return CommandResult::NOT_HANDLED;
+    return CommandResult::notHandled();
   }
 
-  return CommandResult::OK;
+  return CommandResult::ok();
 }
 
 void CoordinateTransformer::onTargetPositionChanged(const Vector3<float>& machinePosition) {
@@ -104,7 +107,7 @@ Vector3<float> CoordinateTransformer::machineCoordinateToUserMachineCoordinate(c
 CommandResult CoordinateTransformer::setCoordinateSystemL2(const GCode& gcode) {
   tl::optional<size_t> coordinateSystemIndex = getCoordinateSystemIndex(gcode);
   if (!coordinateSystemIndex.has_value()) {
-    return CommandResult::ERROR;
+    return CommandResult::error(INVALID_COORDINATE_SYSTEM_COMMAND_ERROR_MESSAGE);
   }
 
   CoordinateSystem& coordinateSystem = m_coordinateSystems[*coordinateSystemIndex];
@@ -123,13 +126,13 @@ CommandResult CoordinateTransformer::setCoordinateSystemL2(const GCode& gcode) {
     coordinateSystem.rotationInv.setAngleRad(-rad);
   }
 
-  return CommandResult::OK;
+  return CommandResult::ok();
 }
 
 CommandResult CoordinateTransformer::setCoordinateSystemL20(const GCode& gcode) {
   tl::optional<size_t> coordinateSystemIndex = getCoordinateSystemIndex(gcode);
   if (!coordinateSystemIndex.has_value()) {
-    return CommandResult::ERROR;
+    return CommandResult::error(INVALID_COORDINATE_SYSTEM_COMMAND_ERROR_MESSAGE);
   }
 
   CoordinateSystem& coordinateSystem = m_coordinateSystems[*coordinateSystemIndex];
@@ -143,7 +146,7 @@ CommandResult CoordinateTransformer::setCoordinateSystemL20(const GCode& gcode) 
     coordinateSystem.offset.z = m_targetMachinePosition.z - m_globalOffset.z - (*gcode.z() * m_scale);
   }
 
-  return CommandResult::OK;
+  return CommandResult::ok();
 }
 
 tl::optional<size_t> CoordinateTransformer::getCoordinateSystemIndex(const GCode& gcode) {
@@ -164,7 +167,7 @@ tl::optional<size_t> CoordinateTransformer::getCoordinateSystemIndex(const GCode
 
 CommandResult CoordinateTransformer::setGlobalOffset(const GCode& gcode) {
   if (gcode.x() == tl::nullopt && gcode.y() == tl::nullopt && gcode.z() == tl::nullopt) {
-    return CommandResult::ERROR;
+    return CommandResult::error(MISSING_AXIS_COMMAND_ERROR_MESSAGE);
   }
 
   if (gcode.x().has_value()) {
@@ -188,5 +191,5 @@ CommandResult CoordinateTransformer::setGlobalOffset(const GCode& gcode) {
     m_globalOffset.z = 0;
   }
 
-  return CommandResult::OK;
+  return CommandResult::ok();
 }

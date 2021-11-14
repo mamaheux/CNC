@@ -1,5 +1,7 @@
 #include <unity.h>
 
+#include "../include/collections/test_BoundedQueue.h"
+
 #include "../include/config/test_AnalogInputConfig.h"
 #include "../include/config/test_DigitalInputConfig.h"
 #include "../include/config/test_DigitalOutputConfig.h"
@@ -8,6 +10,7 @@
 #include "../include/math/test_Vector3.h"
 #include "../include/math/test_ZRotation.h"
 
+#include "../include/modules/test_Module.h"
 #include "../include/modules/test_CoordinateTransformer.h"
 
 #include "../include/parsing/test_properties.h"
@@ -17,6 +20,13 @@
 #include "../include/parsing/test_MCode.h"
 
 #include "../include/resources/test_ResourceLock.h"
+
+void testCollections() {
+  RUN_TEST(test_BoundedQueue_popPush);
+  RUN_TEST(test_BoundedQueue_isEmpty);
+  RUN_TEST(test_BoundedQueue_isFull);
+  RUN_TEST(test_BoundedQueue_size);
+}
 
 void testConfig() {
   RUN_TEST(test_AnalogInputConfig_constructor);
@@ -35,6 +45,9 @@ void testConfig() {
 void testMath() {
   RUN_TEST(test_Vector3_constructor);
   RUN_TEST(test_Vector3_dot);
+  RUN_TEST(test_Vector3_norm);
+  RUN_TEST(test_Vector3_normalize);
+  RUN_TEST(test_Vector3_normalized);
   RUN_TEST(test_Vector3_add);
   RUN_TEST(test_Vector3_addAssign);
   RUN_TEST(test_Vector3_substract);
@@ -50,6 +63,13 @@ void testMath() {
 }
 
 void testModules() {
+  RUN_TEST(test_CommandResult_ok);
+  RUN_TEST(test_CommandResult_okResponseSent);
+  RUN_TEST(test_CommandResult_pending);
+  RUN_TEST(test_CommandResult_error);
+  RUN_TEST(test_CommandResult_notHandled);
+  RUN_TEST(test_CmmandResult_agregate);
+
   RUN_TEST(test_CoordinateTransformer_G10L2P10);
   RUN_TEST(test_CoordinateTransformer_G10L2);
   RUN_TEST(test_CoordinateTransformer_G10L20);
@@ -167,6 +187,7 @@ void testResources() {
 int main(int argc, char **argv) {
   UNITY_BEGIN();
 
+  testCollections();
   testConfig();
   testMath();
   testModules();

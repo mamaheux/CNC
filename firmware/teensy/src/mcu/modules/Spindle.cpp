@@ -6,19 +6,22 @@
 
 #include <cstring>
 
-static const char* ENABLE_PIN_KEY = "spindle.enable_pin";
-static const char* FEEDBACK_PIN_KEY = "spindle.feedback_pin";
-static const char* PWM_PIN_KEY = "spindle.pwm_pin";
-static const char* PWM_FREQUENCY_KEY = "spindle.pwm_frequency";
+constexpr const char* ENABLE_PIN_KEY = "spindle.enable_pin";
+constexpr const char* FEEDBACK_PIN_KEY = "spindle.feedback_pin";
+constexpr const char* PWM_PIN_KEY = "spindle.pwm_pin";
+constexpr const char* PWM_FREQUENCY_KEY = "spindle.pwm_frequency";
 
-static const char* P_GAIN_KEY = "spindle.control.p";
-static const char* I_GAIN_KEY = "spindle.control.i";
-static const char* D_GAIN_KEY = "spindle.control.d";
-static const char* CONTROL_PERIOD_MS_KEY = "spindle.control.period_ms";
+constexpr const char* P_GAIN_KEY = "spindle.control.p";
+constexpr const char* I_GAIN_KEY = "spindle.control.i";
+constexpr const char* D_GAIN_KEY = "spindle.control.d";
+constexpr const char* CONTROL_PERIOD_MS_KEY = "spindle.control.period_ms";
 
-static const char* RPM_DECAY_KEY = "spindle.rpm.decay";
+constexpr const char* RPM_DECAY_KEY = "spindle.rpm.decay";
 
-static const char* PULSE_PER_ROTATION_KEY = "spindle.feedback.pulse_per_rotation";
+constexpr const char* PULSE_PER_ROTATION_KEY = "spindle.feedback.pulse_per_rotation";
+
+
+constexpr const char* MISSING_SPINDLE_SPEED_COMMAND_ERROR_MESSAGE = "The spindle speed is missing.";
 
 
 static volatile uint32_t* pulseCount;
@@ -110,10 +113,10 @@ CommandResult Spindle::onMCodeCommandReceived(const MCode& mcode, CommandSource 
     sendPidGains(source, commandId);
   }
   else {
-    return CommandResult::NOT_HANDLED;
+    return CommandResult::notHandled();
   }
 
-  return CommandResult::OK;
+  return CommandResult::ok();
 }
 
 void Spindle::enable(float targetRpm) {
@@ -160,10 +163,10 @@ void Spindle::onUpdate(uint32_t elapsedMs) {
 CommandResult Spindle::enable(const MCode& mcode) {
   if (mcode.s().has_value()) {
     enable(*mcode.s());
-    return CommandResult::OK;
+    return CommandResult::ok();
   }
   else {
-    return CommandResult::ERROR;
+    return CommandResult::error(MISSING_SPINDLE_SPEED_COMMAND_ERROR_MESSAGE);
   }
 }
 

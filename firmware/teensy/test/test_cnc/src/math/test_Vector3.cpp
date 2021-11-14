@@ -23,6 +23,30 @@ void test_Vector3_dot() {
   TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 26.f, a.dot(b));
 }
 
+void test_Vector3_norm() {
+  Vector3<float> a(3.f, 4.f, 5.f);
+
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 7.0710678f, a.norm());
+}
+
+void test_Vector3_normalize() {
+  Vector3<float> a(3.f, 4.f, 5.f);
+  a.normalize();
+
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 0.4242640f, a.x);
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 0.5656854f, a.y);
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 0.7071068f, a.z);
+}
+
+void test_Vector3_normalized() {
+  Vector3<float> a(3.f, 4.f, 5.f);
+  Vector3<float> r = a.normalized();
+
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 0.4242640f, r.x);
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 0.5656854f, r.y);
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 0.7071068f, r.z);
+}
+
 void test_Vector3_add() {
   Vector3<float> a(3.f, -4.f, 5.f);
   Vector3<float> b(-1.f, 2.f, 4.f);

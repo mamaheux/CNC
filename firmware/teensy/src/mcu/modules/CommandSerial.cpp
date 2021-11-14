@@ -8,7 +8,7 @@
 
 using namespace std;
 
-static const char* BAUD_RATE_KEY = "command_serial.baud_rate";
+constexpr const char* BAUD_RATE_KEY = "command_serial.baud_rate";
 
 CommandSerial::CommandSerial() : m_lineIndex(0) {
   memset(m_lineBuffer, '\0', COMMAND_SERIAL_LINE_BUFFER_SIZE);

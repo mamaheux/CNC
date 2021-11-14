@@ -1,6 +1,6 @@
 #include <cnc/modules/Module.h>
 
-const char* OK_COMMAND_RESPONSE = "ok";
+constexpr const char* NOT_OVERRIDED_COMMAND_ERROR_MESSAGE = "The module does not override the command methods.";
 
 Module::Module() :
   m_kernel(nullptr) {
@@ -15,15 +15,15 @@ RawCommandResult Module::onRawCommandReceived(const char* command, CommandSource
 }
 
 CommandResult Module::onSystemCommandReceived(const SystemCommand& command, CommandSource source, uint32_t commandId) {
-  return CommandResult::ERROR;
+  return CommandResult::error(NOT_OVERRIDED_COMMAND_ERROR_MESSAGE);
 }
 
 CommandResult Module::onGCodeCommandReceived(const GCode& gcode, CommandSource source, uint32_t commandId) {
-  return CommandResult::ERROR;
+  return CommandResult::error(NOT_OVERRIDED_COMMAND_ERROR_MESSAGE);
 }
 
 CommandResult Module::onMCodeCommandReceived(const MCode& mcode, CommandSource source, uint32_t commandId) {
-  return CommandResult::ERROR;
+  return CommandResult::error(NOT_OVERRIDED_COMMAND_ERROR_MESSAGE);
 }
 
 void Module::onTargetPositionChanged(const Vector3<float>& machinePosition) {

@@ -8,10 +8,14 @@
 
 using namespace std;
 
-static const char* ERROR_RESPONSE_PREFIX = "error:";
+constexpr const char* ERROR_RESPONSE_PREFIX = "error:";
 constexpr size_t ERROR_RESPONSE_PREFIX_SIZE = 6;
 
-static const char* LOG_FILE_PATH = "log.txt";
+constexpr const char* FILE_ALREADY_SELECTED_COMMAND_ERROR_MESSAGE = "A file is already selected.";
+constexpr const char* MISSING_PATH_COMMAND_ERROR_MESSAGE = "The path is missing.";
+constexpr const char* INVALID_PATH_COMMAND_ERROR_MESSAGE = "The path is invalid.";
+
+constexpr const char* LOG_FILE_PATH = "log.txt";
 
 CommandFile::CommandFile() : m_completedLineCount(0), m_lineCount(0), m_isStarted(false), m_lineIndex(0) {
   memset(m_lineBuffer, '\0', COMMAND_FILE_LINE_BUFFER_SIZE);
@@ -54,14 +58,16 @@ void CommandFile::update() {
 
 CommandResult CommandFile::onMCodeCommandReceived(const MCode& mcode, CommandSource source, uint32_t commandId) {
   if (source == CommandSource::FILE_SOURCE) {
-    return CommandResult::NOT_HANDLED;
+    return CommandResult::notHandled();
   }
 
   if ((mcode.code() == 23 && m_commandFile) ||
-      (mcode.code() == 32 && m_commandFile) ||
-      (mcode.code() == 23 && mcode.path() == nullptr && !m_commandFile) ||
-      (mcode.code() == 32 && mcode.path() == nullptr && !m_commandFile)) {
-    return CommandResult::ERROR;
+      (mcode.code() == 32 && m_commandFile)) {
+    return CommandResult::error(FILE_ALREADY_SELECTED_COMMAND_ERROR_MESSAGE);
+  }
+  else if ((mcode.code() == 23 && mcode.path() == nullptr) ||
+      (mcode.code() == 32 && mcode.path() == nullptr)) {
+    return CommandResult::error(MISSING_PATH_COMMAND_ERROR_MESSAGE);
   }
   else if (mcode.code() == 23) {
     return openFiles(mcode);
@@ -83,21 +89,23 @@ CommandResult CommandFile::onMCodeCommandReceived(const MCode& mcode, CommandSou
     m_isStarted = true;
   }
   else {
-    return CommandResult::NOT_HANDLED;
+    return CommandResult::notHandled();
   }
 
-  return CommandResult::OK;
+  return CommandResult::ok();
 }
 
 void CommandFile::onCommandResponse(const char* response, CommandSource source, uint32_t commandId, bool isComplete) {
   if (source == CommandSource::SERIAL_SOURCE && m_pendingCommandId == commandId) {
-    if (strncmp(response, ERROR_RESPONSE_PREFIX, ERROR_RESPONSE_PREFIX_SIZE) != 0) {
+    if (strcmp(response, OK_COMMAND_RESPONSE) != 0) {
       m_logFile.print(m_completedLineCount);
       m_logFile.print(": ");
       m_logFile.print(m_lineBuffer);
       m_logFile.print(" --> ");
       m_logFile.println(response);
-      closeFiles();
+      if (isComplete) {
+        closeFiles();
+      }
     }
     if (isComplete) {
       m_pendingCommandId = tl::nullopt;
@@ -114,11 +122,11 @@ CommandResult CommandFile::openFiles(const MCode& mcode) {
     m_completedLineCount = 0;
     m_lineCount = countLines();
     m_isStarted = false;
-    return CommandResult::OK;
+    return CommandResult::ok();
   }
   else {
     closeFiles();
-    return CommandResult::ERROR;
+    return CommandResult::error(INVALID_PATH_COMMAND_ERROR_MESSAGE);
   }
 }
 

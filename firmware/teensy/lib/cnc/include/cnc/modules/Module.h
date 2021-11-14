@@ -8,14 +8,15 @@
 #include <cnc/parsing/MCode.h>
 #include <cnc/utils/ClassMacro.h>
 
-extern const char* OK_COMMAND_RESPONSE;
+constexpr const char* OK_COMMAND_RESPONSE = "ok";
+constexpr const char* DEFAULT_COMMAND_ERROR_MESSAGE = "";
 
 enum class RawCommandResult {
   HANDLED,
   NOT_HANDLED,
 };
 
-enum class CommandResult {
+enum class CommandResultType {
   OK,
   OK_RESPONSE_SENT,
   PENDING,
@@ -23,20 +24,79 @@ enum class CommandResult {
   NOT_HANDLED,
 };
 
-inline CommandResult agregateCommandResult(CommandResult r1, CommandResult r2) {
-  if (r1 == CommandResult::ERROR || r2 == CommandResult::ERROR) {
-    return CommandResult::ERROR;
+class CommandResult {
+  CommandResultType m_type;
+  const char* m_errorMessage;
+
+  CommandResult(CommandResultType type);
+  CommandResult(const char* errorMessage);
+
+public:
+  static CommandResult ok();
+  static CommandResult okResponseSent();
+  static CommandResult pending();
+  static CommandResult error(const char* message);
+  static CommandResult notHandled();
+
+  CommandResultType type() const;
+  const char* errorMessage() const;
+
+  CommandResult agregate(const CommandResult& r) const;
+};
+
+inline CommandResult::CommandResult(CommandResultType type) :
+    m_type(type), m_errorMessage(DEFAULT_COMMAND_ERROR_MESSAGE) {
+}
+
+inline CommandResult::CommandResult(const char* errorMessage) :
+    m_type(CommandResultType::ERROR), m_errorMessage(errorMessage) {
+}
+
+inline CommandResult CommandResult::ok() {
+  return CommandResult(CommandResultType::OK);
+}
+
+inline CommandResult CommandResult::okResponseSent() {
+  return CommandResult(CommandResultType::OK_RESPONSE_SENT);
+}
+
+inline CommandResult CommandResult::pending() {
+  return CommandResult(CommandResultType::PENDING);
+}
+
+inline CommandResult CommandResult::error(const char* message) {
+  return CommandResult(message);
+}
+
+inline CommandResult CommandResult::notHandled() {
+  return CommandResult(CommandResultType::NOT_HANDLED);
+}
+
+inline CommandResultType CommandResult::type() const {
+  return m_type;
+}
+
+inline const char* CommandResult::errorMessage() const {
+  return m_errorMessage;
+}
+
+inline CommandResult CommandResult::agregate(const CommandResult& r) const {
+  if (type() == CommandResultType::ERROR) {
+    return CommandResult::error(errorMessage());
   }
-  else if (r1 == CommandResult::OK_RESPONSE_SENT || r2 == CommandResult::OK_RESPONSE_SENT) {
-    return CommandResult::OK_RESPONSE_SENT;
+  else if (r.type() == CommandResultType::ERROR) {
+    return CommandResult::error(r.errorMessage());
   }
-  else if (r1 == CommandResult::PENDING || r2 == CommandResult::PENDING) {
-    return CommandResult::PENDING;
+  else if (type() == CommandResultType::OK_RESPONSE_SENT || r.type() == CommandResultType::OK_RESPONSE_SENT) {
+    return CommandResult::okResponseSent();
   }
-  else if (r1 == CommandResult::OK || r2 == CommandResult::OK) {
-    return CommandResult::OK;
+  else if (type() == CommandResultType::PENDING || r.type() == CommandResultType::PENDING) {
+    return CommandResult::pending();
   }
-  return CommandResult::NOT_HANDLED;
+  else if (type() == CommandResultType::OK || r.type() == CommandResultType::OK) {
+    return CommandResult::ok();
+  }
+  return CommandResult::notHandled();
 }
 
 enum class ModuleEventType : size_t {

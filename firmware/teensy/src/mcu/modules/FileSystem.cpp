@@ -2,6 +2,8 @@
 
 #include <cnc/modules/ModuleKernel.h>
 
+constexpr const char* INVALID_PATH_COMMAND_ERROR_MESSAGE = "The path is invalid.";
+
 FileSystem::FileSystem() {
 }
 
@@ -26,8 +28,7 @@ CommandResult FileSystem::onMCodeCommandReceived(const MCode& mcode, CommandSour
   if (mcode.code() == 20) {
     File root = SD.open("/");
     listFiles(root, 0, source, commandId);
-    m_kernel->sendCommandResponse(OK_COMMAND_RESPONSE, source, commandId);
-    return CommandResult::OK_RESPONSE_SENT;
+    return CommandResult::ok();
   }
   else if (mcode.code() == 28) {
     return startNewFile(mcode.path());
@@ -36,7 +37,7 @@ CommandResult FileSystem::onMCodeCommandReceived(const MCode& mcode, CommandSour
     return deleteFile(mcode.path());
   }
 
-  return CommandResult::NOT_HANDLED;
+  return CommandResult::notHandled();
 }
 
 void FileSystem::listFiles(File& directory, size_t spaceCount, CommandSource source, uint32_t commandId) {
@@ -83,10 +84,10 @@ void FileSystem::sendFileEntry(File& file, size_t spaceCount, CommandSource sour
 CommandResult FileSystem::startNewFile(const char* path) {
   m_newFile = SD.open(path, FILE_WRITE);
   if (m_newFile) {
-    return CommandResult::OK;
+    return CommandResult::ok();
   }
   else {
-    return CommandResult::ERROR;
+    return CommandResult::error(INVALID_PATH_COMMAND_ERROR_MESSAGE);
   }
 }
 
@@ -104,9 +105,9 @@ void FileSystem::writeOrStopNewFile(const char* line, CommandSource source, uint
 
 CommandResult FileSystem::deleteFile(const char* path) {
   if (SD.remove(path)) {
-    return CommandResult::OK;
+    return CommandResult::ok();
   }
   else {
-    return CommandResult::ERROR;
+    return CommandResult::error(INVALID_PATH_COMMAND_ERROR_MESSAGE);
   }
 }

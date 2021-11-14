@@ -7,19 +7,19 @@
 
 using namespace std;
 
-static const char* ENABLE_PIN_KEYS_BY_AXIS[STEPPER_AXIS_COUNT] = {
+constexpr const char* ENABLE_PIN_KEYS_BY_AXIS[STEPPER_AXIS_COUNT] = {
   "stepper.x.enable_pin",
   "stepper.y.enable_pin",
   "stepper.z.enable_pin"
 };
 
-static const char* DIRECTION_PIN_KEYS_BY_AXIS[STEPPER_AXIS_COUNT] = {
+constexpr const char* DIRECTION_PIN_KEYS_BY_AXIS[STEPPER_AXIS_COUNT] = {
   "stepper.x.direction_pin",
   "stepper.y.direction_pin",
   "stepper.z.direction_pin"
 };
 
-static const char* STEP_PIN_KEYS_BY_AXIS[STEPPER_AXIS_COUNT] = {
+constexpr const char* STEP_PIN_KEYS_BY_AXIS[STEPPER_AXIS_COUNT] = {
   "stepper.x.step_pin",
   "stepper.y.step_pin",
   "stepper.z.step_pin"
@@ -66,8 +66,8 @@ CommandResult Stepper::onMCodeCommandReceived(const MCode& mcode, CommandSource 
     m_enable.write(false);
   }
   else {
-    return CommandResult::NOT_HANDLED;
+    return CommandResult::notHandled();
   }
 
-  return CommandResult::OK;
+  return CommandResult::ok();
 }

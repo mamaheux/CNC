@@ -1,6 +1,8 @@
 #ifndef CNC_MATH_VECTOR3_H
 #define CNC_MATH_VECTOR3_H
 
+#include <cmath>
+
 template <class T>
 class Vector3 {
 public:
@@ -12,6 +14,10 @@ public:
   Vector3(T x, T y, T z);
 
   T dot(const Vector3<T>& other) const;
+
+  T norm() const;
+  void normalize();
+  Vector3<T> normalized() const;
 };
 
 template <class T>
@@ -25,6 +31,26 @@ Vector3<T>::Vector3(T x, T y, T z) : x(x), y(y), z(z) {
 template <class T>
 T Vector3<T>::dot(const Vector3<T>& other) const {
   return x * other.x + y * other.y + z * other.z;
+}
+
+template <class T>
+T Vector3<T>::norm() const {
+  return std::sqrt(x * x + y * y + z * z);
+}
+
+template <class T>
+void Vector3<T>::normalize() {
+  T n = norm();
+  x /= n;
+  y /= n;
+  z /= n;
+}
+
+template <class T>
+Vector3<T> Vector3<T>::normalized() const {
+  Vector3<T> normalizedVector(*this);
+  normalizedVector.normalize();
+  return normalizedVector;
 }
 
 template <class T>

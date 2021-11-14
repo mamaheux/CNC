@@ -3,6 +3,9 @@
 
 void test_Vector3_constructor();
 void test_Vector3_dot();
+void test_Vector3_norm();
+void test_Vector3_normalize();
+void test_Vector3_normalized();
 void test_Vector3_add();
 void test_Vector3_addAssign();
 void test_Vector3_substract();
