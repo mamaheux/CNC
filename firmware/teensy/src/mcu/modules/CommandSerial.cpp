@@ -51,10 +51,12 @@ void CommandSerial::update() {
 }
 
 void CommandSerial::onCommandResponse(const char* response, CommandSource source, uint32_t commandId, bool isComplete) {
-  if (source == CommandSource::SERIAL_SOURCE && m_pendingCommandId == commandId) {
-    COMMAND_SERIAL.println(response);
-    if (isComplete) {
-      m_pendingCommandId = tl::nullopt;
-    }
+  if (source != CommandSource::SERIAL_SOURCE || m_pendingCommandId != commandId) {
+    return;
+  }
+
+  COMMAND_SERIAL.println(response);
+  if (isComplete) {
+    m_pendingCommandId = tl::nullopt;
   }
 }

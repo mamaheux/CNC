@@ -42,7 +42,7 @@ void CommandFile::update() {
     else if (c == '\n' || m_lineIndex == (COMMAND_FILE_LINE_BUFFER_SIZE - 1)) {
       m_lineBuffer[m_lineIndex] = '\0';
       m_lineIndex = 0;
-      m_kernel->executeCommand(m_lineBuffer, CommandSource::SERIAL_SOURCE, m_pendingCommandId);
+      m_kernel->executeCommand(m_lineBuffer, CommandSource::FILE_SOURCE, m_pendingCommandId);
       m_completedLineCount++;
       break;
     }
@@ -96,20 +96,22 @@ CommandResult CommandFile::onMCodeCommandReceived(const MCode& mcode, CommandSou
 }
 
 void CommandFile::onCommandResponse(const char* response, CommandSource source, uint32_t commandId, bool isComplete) {
-  if (source == CommandSource::SERIAL_SOURCE && m_pendingCommandId == commandId) {
-    if (strcmp(response, OK_COMMAND_RESPONSE) != 0) {
-      m_logFile.print(m_completedLineCount);
-      m_logFile.print(": ");
-      m_logFile.print(m_lineBuffer);
-      m_logFile.print(" --> ");
-      m_logFile.println(response);
-      if (isComplete) {
-        closeFiles();
-      }
-    }
+  if (source != CommandSource::FILE_SOURCE || m_pendingCommandId != commandId) {
+    return;
+  }
+
+  if (strcmp(response, OK_COMMAND_RESPONSE) != 0) {
+    m_logFile.print(m_completedLineCount);
+    m_logFile.print(": ");
+    m_logFile.print(m_lineBuffer);
+    m_logFile.print(" --> ");
+    m_logFile.println(response);
     if (isComplete) {
-      m_pendingCommandId = tl::nullopt;
+      closeFiles();
     }
+  }
+  if (isComplete) {
+    m_pendingCommandId = tl::nullopt;
   }
 }
 
