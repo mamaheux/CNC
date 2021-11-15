@@ -7,11 +7,14 @@
 #include "../include/config/test_DigitalOutputConfig.h"
 #include "../include/config/test_PwmOutputConfig.h"
 
+#include "../include/math/test_FixedPoint.h"
+#include "../include/math/test_Vector2.h"
 #include "../include/math/test_Vector3.h"
 #include "../include/math/test_ZRotation.h"
 
 #include "../include/modules/test_Module.h"
 #include "../include/modules/test_CoordinateTransformer.h"
+#include "../include/modules/test_ArcConverter.h"
 
 #include "../include/parsing/test_properties.h"
 #include "../include/parsing/test_trim.h"
@@ -43,8 +46,101 @@ void testConfig() {
 }
 
 void testMath() {
+  RUN_TEST(test_BitMask);
+
+  RUN_TEST(test_FixedPointQ3_4_multiplyAccumulate);
+  RUN_TEST(test_FixedPointQ3_4_multiplySubtract);
+  RUN_TEST(test_FixedPointQ3_4_operatorAddAssignation);
+  RUN_TEST(test_FixedPointQ3_4_operatorSubtractAssignation);
+  RUN_TEST(test_FixedPointQ3_4_operatorMultiplyAssignation);
+  RUN_TEST(test_FixedPointQ3_4_operatorDivideAssignation);
+  RUN_TEST(test_FixedPointQ3_4_operatorIncrement);
+  RUN_TEST(test_FixedPointQ3_4_operatorDecrement);
+  RUN_TEST(test_FixedPointQ3_4_operatorUnaryMinus);
+  RUN_TEST(test_FixedPointQ3_4_operatorAdd);
+  RUN_TEST(test_FixedPointQ3_4_operatorSubtract);
+  RUN_TEST(test_FixedPointQ3_4_operatorMultiply);
+  RUN_TEST(test_FixedPointQ3_4_operatorDivide);
+  RUN_TEST(test_FixedPointQ3_4_operatorEqualTo);
+  RUN_TEST(test_FixedPointQ3_4_operatorNotEqualTo);
+  RUN_TEST(test_FixedPointQ3_4_operatorLessThan);
+  RUN_TEST(test_FixedPointQ3_4_operatorLessThanOrEqualTo);
+  RUN_TEST(test_FixedPointQ3_4_operatorGreaterThan);
+  RUN_TEST(test_FixedPointQ3_4_operatorGreaterThanOrEqualTo);
+
+  RUN_TEST(test_FixedPointQ7_8_multiplyAccumulate);
+  RUN_TEST(test_FixedPointQ7_8_multiplySubtract);
+  RUN_TEST(test_FixedPointQ7_8_operatorAddAssignation);
+  RUN_TEST(test_FixedPointQ7_8_operatorSubtractAssignation);
+  RUN_TEST(test_FixedPointQ7_8_operatorMultiplyAssignation);
+  RUN_TEST(test_FixedPointQ7_8_operatorDivideAssignation);
+  RUN_TEST(test_FixedPointQ7_8_operatorIncrement);
+  RUN_TEST(test_FixedPointQ7_8_operatorDecrement);
+  RUN_TEST(test_FixedPointQ7_8_operatorUnaryMinus);
+  RUN_TEST(test_FixedPointQ7_8_operatorAdd);
+  RUN_TEST(test_FixedPointQ7_8_operatorSubtract);
+  RUN_TEST(test_FixedPointQ7_8_operatorMultiply);
+  RUN_TEST(test_FixedPointQ7_8_operatorDivide);
+  RUN_TEST(test_FixedPointQ7_8_operatorEqualTo);
+  RUN_TEST(test_FixedPointQ7_8_operatorNotEqualTo);
+  RUN_TEST(test_FixedPointQ7_8_operatorLessThan);
+  RUN_TEST(test_FixedPointQ7_8_operatorLessThanOrEqualTo);
+  RUN_TEST(test_FixedPointQ7_8_operatorGreaterThan);
+  RUN_TEST(test_FixedPointQ7_8_operatorGreaterThanOrEqualTo);
+
+  RUN_TEST(test_FixedPointQ15_16_multiplyAccumulate);
+  RUN_TEST(test_FixedPointQ15_16_multiplySubtract);
+  RUN_TEST(test_FixedPointQ15_16_operatorAddAssignation);
+  RUN_TEST(test_FixedPointQ15_16_operatorSubtractAssignation);
+  RUN_TEST(test_FixedPointQ15_16_operatorMultiplyAssignation);
+  RUN_TEST(test_FixedPointQ15_16_operatorDivideAssignation);
+  RUN_TEST(test_FixedPointQ15_16_operatorIncrement);
+  RUN_TEST(test_FixedPointQ15_16_operatorDecrement);
+  RUN_TEST(test_FixedPointQ15_16_operatorUnaryMinus);
+  RUN_TEST(test_FixedPointQ15_16_operatorAdd);
+  RUN_TEST(test_FixedPointQ15_16_operatorSubtract);
+  RUN_TEST(test_FixedPointQ15_16_operatorMultiply);
+  RUN_TEST(test_FixedPointQ15_16_operatorDivide);
+  RUN_TEST(test_FixedPointQ15_16_operatorEqualTo);
+  RUN_TEST(test_FixedPointQ15_16_operatorNotEqualTo);
+  RUN_TEST(test_FixedPointQ15_16_operatorLessThan);
+  RUN_TEST(test_FixedPointQ15_16_operatorLessThanOrEqualTo);
+  RUN_TEST(test_FixedPointQ15_16_operatorGreaterThan);
+  RUN_TEST(test_FixedPointQ15_16_operatorGreaterThanOrEqualTo);
+
+  RUN_TEST(test_FixedPointQ31_32_operatorAddAssignation);
+  RUN_TEST(test_FixedPointQ31_32_operatorSubtractAssignation);
+  RUN_TEST(test_FixedPointQ31_32_operatorIncrement);
+  RUN_TEST(test_FixedPointQ31_32_operatorDecrement);
+  RUN_TEST(test_FixedPointQ31_32_operatorUnaryMinus);
+  RUN_TEST(test_FixedPointQ31_32_operatorAdd);
+  RUN_TEST(test_FixedPointQ31_32_operatorSubtract);
+  RUN_TEST(test_FixedPointQ31_32_operatorEqualTo);
+  RUN_TEST(test_FixedPointQ31_32_operatorNotEqualTo);
+  RUN_TEST(test_FixedPointQ31_32_operatorLessThan);
+  RUN_TEST(test_FixedPointQ31_32_operatorLessThanOrEqualTo);
+  RUN_TEST(test_FixedPointQ31_32_operatorGreaterThan);
+  RUN_TEST(test_FixedPointQ31_32_operatorGreaterThanOrEqualTo);
+
+  RUN_TEST(test_Vector2_constructor);
+  RUN_TEST(test_Vector2_dot);
+  RUN_TEST(test_Vector2_angle);
+  RUN_TEST(test_Vector2_norm);
+  RUN_TEST(test_Vector2_normalize);
+  RUN_TEST(test_Vector2_normalized);
+  RUN_TEST(test_Vector2_add);
+  RUN_TEST(test_Vector2_addAssign);
+  RUN_TEST(test_Vector2_substract);
+  RUN_TEST(test_Vector2_substractAssign);
+  RUN_TEST(test_Vector2_multiply);
+  RUN_TEST(test_Vector2_multiplyAssign);
+  RUN_TEST(test_Vector2_divide);
+  RUN_TEST(test_Vector2_divideAssign);
+
   RUN_TEST(test_Vector3_constructor);
   RUN_TEST(test_Vector3_dot);
+  RUN_TEST(test_Vector3_angle);
+  RUN_TEST(test_Vector3_cross);
   RUN_TEST(test_Vector3_norm);
   RUN_TEST(test_Vector3_normalize);
   RUN_TEST(test_Vector3_normalized);
@@ -76,6 +172,8 @@ void testModules() {
   RUN_TEST(test_CoordinateTransformer_G20G21);
   RUN_TEST(test_CoordinateTransformer_G90G91);
   RUN_TEST(test_CoordinateTransformer_G92);
+
+  RUN_TEST(test_getCenterPointFromRadius);
 }
 
 void testParsing() {
@@ -114,6 +212,7 @@ void testParsing() {
   RUN_TEST(test_parseSystemCommand_invalid);
   RUN_TEST(test_parseSystemCommand_homing);
 
+  RUN_TEST(test_GCode_g1);
   RUN_TEST(test_parseGCode_empty);
   RUN_TEST(test_parseGCode_tooBig);
   RUN_TEST(test_parseGCode_noModalMove);

@@ -1,6 +1,7 @@
 #ifndef CNC_PARSING_GCODE_H
 #define CNC_PARSING_GCODE_H
 
+#include <cnc/math/Vector3.h>
 #include <cnc/parsing/ParsingResult.h>
 
 #include <tl/optional.hpp>
@@ -47,6 +48,8 @@ public:
   tl::optional<uint32_t> subcode() const;
 
   bool isMachineCoordinateSystem() const;
+
+  static GCode g1(const Vector3<float>& position, tl::optional<float> f, bool isMachineCoordinateSystem);
 
 private:
   void clear();
@@ -110,10 +113,22 @@ inline bool GCode::isMachineCoordinateSystem() const {
   return m_isMachineCoordinateSystem;
 }
 
+inline GCode GCode::g1(const Vector3<float>& position, tl::optional<float> f, bool isMachineCoordinateSystem) {
+  GCode gcode;
+  gcode.m_code = 1;
+  gcode.m_x = position.x;
+  gcode.m_y = position.y;
+  gcode.m_z = position.z;
+  gcode.m_f = f;
+  gcode.m_isMachineCoordinateSystem = isMachineCoordinateSystem;
+  return gcode;
+}
+
+// TODO add a bench on the Teensy 4.1
 class GCodeParser {
   char m_lineBuffer[GCODE_LINE_BUFFER_SIZE];
 
-  tl::optional<uint32_t> m_modalMoveCode; // G0 or G1
+  tl::optional<uint32_t> m_modalMoveCode; // G0, G1, G2 or G3
   bool m_isMachineCoordinateSystem; // G53
 
 public:

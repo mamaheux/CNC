@@ -1,7 +1,6 @@
 #include "mcu/utils/StringPrint.h"
 
 StringPrint::StringPrint(char* buffer, size_t size) : m_buffer(buffer), m_size(size), m_index(0) {
-  memset(m_buffer, '\0', m_size);
 }
 
 size_t StringPrint::write(uint8_t b) {
@@ -15,4 +14,8 @@ size_t StringPrint::write(uint8_t b) {
 
 int StringPrint::availableForWrite() {
   return m_size - m_index - 1;
+}
+
+void StringPrint::finish() {
+  m_buffer[m_index] = '\0';
 }

@@ -44,6 +44,7 @@ public:
   void onTargetPositionChanged(const Vector3<float>& machinePosition) override;
 
   Vector3<float> gcodeCoordinateToMachineCoordinate(const Vector3<float> v);
+  Vector3<float> machineCoordinateToGcode(const Vector3<float> v);
   Vector3<float> machineCoordinateToUserCurrentCoordinate(const Vector3<float> v);
   Vector3<float> machineCoordinateToUserMachineCoordinate(const Vector3<float> v);
 

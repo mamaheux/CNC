@@ -25,15 +25,15 @@ RawCommandResult FileSystem::onRawCommandReceived(const char* line, CommandSourc
 }
 
 CommandResult FileSystem::onMCodeCommandReceived(const MCode& mcode, CommandSource source, uint32_t commandId) {
-  if (mcode.code() == 20) {
+  if (mcode.code() == 20 && mcode.subcode() == tl::nullopt) {
     File root = SD.open("/");
     listFiles(root, 0, source, commandId);
     return CommandResult::ok();
   }
-  else if (mcode.code() == 28) {
+  else if (mcode.code() == 28 && mcode.subcode() == tl::nullopt) {
     return startNewFile(mcode.path());
   }
-  else if (mcode.code() == 30) {
+  else if (mcode.code() == 30 && mcode.subcode() == tl::nullopt) {
     return deleteFile(mcode.path());
   }
 

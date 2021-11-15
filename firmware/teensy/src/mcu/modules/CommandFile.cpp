@@ -61,30 +61,30 @@ CommandResult CommandFile::onMCodeCommandReceived(const MCode& mcode, CommandSou
     return CommandResult::notHandled();
   }
 
-  if ((mcode.code() == 23 && m_commandFile) ||
-      (mcode.code() == 32 && m_commandFile)) {
+  if ((mcode.code() == 23 && mcode.subcode() == tl::nullopt && m_commandFile) ||
+      (mcode.code() == 32 && mcode.subcode() == tl::nullopt && m_commandFile)) {
     return CommandResult::error(FILE_ALREADY_SELECTED_COMMAND_ERROR_MESSAGE);
   }
-  else if ((mcode.code() == 23 && mcode.path() == nullptr) ||
-      (mcode.code() == 32 && mcode.path() == nullptr)) {
+  else if ((mcode.code() == 23 && mcode.subcode() == tl::nullopt && mcode.path() == nullptr) ||
+      (mcode.code() == 32 && mcode.subcode() == tl::nullopt && mcode.path() == nullptr)) {
     return CommandResult::error(MISSING_PATH_COMMAND_ERROR_MESSAGE);
   }
-  else if (mcode.code() == 23) {
+  else if (mcode.code() == 23 && mcode.subcode() == tl::nullopt) {
     return openFiles(mcode);
   }
-  else if (mcode.code() == 24) {
+  else if (mcode.code() == 24 && mcode.subcode() == tl::nullopt) {
     m_isStarted = true;
   }
-  else if (mcode.code() == 25) {
+  else if (mcode.code() == 25 && mcode.subcode() == tl::nullopt) {
     m_isStarted = false;
   }
-  else if (mcode.code() == 26) {
+  else if (mcode.code() == 26 && mcode.subcode() == tl::nullopt) {
     closeFiles();
   }
-  else if (mcode.code() == 27) {
+  else if (mcode.code() == 27 && mcode.subcode() == tl::nullopt) {
     sendProgress(source, commandId);
   }
-  else if (mcode.code() == 32) {
+  else if (mcode.code() == 32 && mcode.subcode() == tl::nullopt) {
     openFiles(mcode);
     m_isStarted = true;
   }
@@ -162,6 +162,7 @@ void CommandFile::sendProgress(CommandSource source, uint32_t commandId) {
   stringPrint.print(m_completedLineCount);
   stringPrint.print("/");
   stringPrint.print(m_lineCount);
+  stringPrint.finish();
 
   m_kernel->sendCommandResponse(m_response, source, commandId, false);
 }

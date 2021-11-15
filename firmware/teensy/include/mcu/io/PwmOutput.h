@@ -15,7 +15,7 @@ class PwmOutput {
 
   uint8_t m_pin;
   bool m_inverted;
-  uint16_t m_value;
+  volatile uint16_t m_value;
 
 public:
   PwmOutput();

@@ -99,16 +99,16 @@ void Spindle::begin() {
 }
 
 CommandResult Spindle::onMCodeCommandReceived(const MCode& mcode, CommandSource source, uint32_t commandId) {
-  if (mcode.code() == 3) {
+  if (mcode.code() == 3 && mcode.subcode() == tl::nullopt) {
     return enable(mcode);
   }
-  else if (mcode.code() == 5) {
+  else if (mcode.code() == 5 && mcode.subcode() == tl::nullopt) {
     disable();
   }
-  else if (mcode.code() == 957) {
+  else if (mcode.code() == 957 && mcode.subcode() == tl::nullopt) {
     sendCurrentRpm(source, commandId);
   }
-  else if (mcode.code() == 958) {
+  else if (mcode.code() == 958 && mcode.subcode() == tl::nullopt) {
     updatePidGains(mcode);
     sendPidGains(source, commandId);
   }
@@ -193,10 +193,11 @@ void Spindle::sendPidGains(CommandSource source, uint32_t commandId) {
   StringPrint stringPrint(m_response, MAX_SPINDLE_RESPONSE_SIZE);
   stringPrint.print("P");
   stringPrint.print(*m_p);
-  stringPrint.print(", I");
+  stringPrint.print(" I");
   stringPrint.print(*m_i);
-  stringPrint.print(", D");
+  stringPrint.print(" D");
   stringPrint.print(*m_d);
+  stringPrint.finish();
 
   m_kernel->sendCommandResponse(m_response, source, commandId, false);
 }

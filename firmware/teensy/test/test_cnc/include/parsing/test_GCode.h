@@ -1,6 +1,8 @@
 #ifndef TEST_CNC_PARSING_GCODE_H
 #define TEST_CNC_PARSING_GCODE_H
 
+void test_GCode_g1();
+
 void test_parseGCode_empty();
 void test_parseGCode_tooBig();
 void test_parseGCode_noModalMove();

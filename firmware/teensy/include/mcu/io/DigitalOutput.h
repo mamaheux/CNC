@@ -12,7 +12,7 @@ class DigitalOutput {
 
   uint8_t m_pin;
   bool m_inverted;
-  bool m_state;
+  volatile bool m_state;
 
 public:
   DigitalOutput();

@@ -124,7 +124,7 @@ ParsingResult GCodeParser::parseNormalGCode(char* start, GCode& gcode) {
   }
 
   gcode.m_code = atoi(start + 1);
-  if (gcode.m_code == 0 || gcode.m_code == 1) {
+  if (0 <= gcode.m_code && gcode.m_code <= 3) {
     m_modalMoveCode = gcode.m_code;
   }
 

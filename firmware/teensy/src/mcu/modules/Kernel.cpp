@@ -4,6 +4,7 @@
 #include "mcu/ConfigFile.h"
 
 constexpr const char* PARSING_ERROR_COMMAND_RESPONSE = "error:parsing";
+constexpr const char* PREVIOUS_COMMAND_NOT_COMPLETED_ERROR_COMMAND_RESPONSE = "error:previous_command_not_completed";
 constexpr const char* EXECUTING_ERROR_COMMAND_RESPONSE = "error:executing";
 constexpr const char* NOT_HANDLED_COMMAND_RESPONSE = "error:not_handled";
 
@@ -64,6 +65,11 @@ void Kernel::executeCommand(const char* line, CommandSource source, tl::optional
   size_t sourceIndex = static_cast<size_t>(source);
   commandId = m_currentCommandIdByCommandSource[sourceIndex];
   m_currentCommandIdByCommandSource[sourceIndex]++;
+  if (m_pendingCommandResponseIdByCommandSource[sourceIndex] != tl::nullopt) {
+    sendCommandResponse(PREVIOUS_COMMAND_NOT_COMPLETED_ERROR_COMMAND_RESPONSE, source, *commandId);
+    return;
+  }
+
   m_pendingCommandResponseIdByCommandSource[sourceIndex] = *commandId;
   if (dispatchRawCommand(line, source, *commandId) == RawCommandResult::HANDLED) {
     m_pendingCommandResponseIdByCommandSource[sourceIndex] = tl::nullopt;

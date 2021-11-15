@@ -15,6 +15,24 @@
   TEST_ASSERT(tl::nullopt == (code).l()); \
   TEST_ASSERT_FALSE(code.isMachineCoordinateSystem())
 
+void test_GCode_g1() {
+  GCode code = GCode::g1(Vector3<float>(1.f, 2.f, 3.f), 5.f, true);
+  TEST_ASSERT_EQUAL(1, code.code());
+  TEST_ASSERT(tl::nullopt == code.subcode());
+  TEST_ASSERT(1.f == code.x());
+  TEST_ASSERT(2.f == code.y());
+  TEST_ASSERT(3.f == code.z());
+  TEST_ASSERT(5.f == code.f());
+  TEST_ASSERT(tl::nullopt == code.i());
+  TEST_ASSERT(tl::nullopt == code.j());
+  TEST_ASSERT(tl::nullopt == code.k());
+  TEST_ASSERT(tl::nullopt == code.s());
+  TEST_ASSERT(tl::nullopt == code.p());
+  TEST_ASSERT(tl::nullopt == code.r());
+  TEST_ASSERT(tl::nullopt == code.l());
+  TEST_ASSERT_TRUE(code.isMachineCoordinateSystem());
+}
+
 void test_parseGCode_empty() {
   GCode code;
   GCodeParser parser;
@@ -164,6 +182,22 @@ void test_parseGCode_G2() {
   TEST_ASSERT(tl::nullopt == code.r());
   TEST_ASSERT(tl::nullopt == code.l());
   TEST_ASSERT_FALSE(code.isMachineCoordinateSystem());
+
+  TEST_ASSERT_EQUAL(ParsingResult::OK, parser.parse(" X2.5 Y2 I-2 J2 F7", code));
+  TEST_ASSERT_EQUAL(2, code.code());
+  TEST_ASSERT(tl::nullopt == code.subcode());
+  TEST_ASSERT(2.5 == code.x());
+  TEST_ASSERT(2 == code.y());
+  TEST_ASSERT(tl::nullopt == code.z());
+  TEST_ASSERT(7.0 == code.f());
+  TEST_ASSERT(-2.0 == code.i());
+  TEST_ASSERT(2.0 == code.j());
+  TEST_ASSERT(tl::nullopt == code.k());
+  TEST_ASSERT(tl::nullopt == code.s());
+  TEST_ASSERT(tl::nullopt == code.p());
+  TEST_ASSERT(tl::nullopt == code.r());
+  TEST_ASSERT(tl::nullopt == code.l());
+  TEST_ASSERT_FALSE(code.isMachineCoordinateSystem());
 }
 
 void test_parseGCode_G3() {
@@ -180,6 +214,22 @@ void test_parseGCode_G3() {
   TEST_ASSERT(tl::nullopt == code.i());
   TEST_ASSERT(-5.0 == code.j());
   TEST_ASSERT(5.0 == code.k());
+  TEST_ASSERT(tl::nullopt == code.s());
+  TEST_ASSERT(tl::nullopt == code.p());
+  TEST_ASSERT(tl::nullopt == code.r());
+  TEST_ASSERT(tl::nullopt == code.l());
+  TEST_ASSERT_FALSE(code.isMachineCoordinateSystem());
+
+  TEST_ASSERT_EQUAL(ParsingResult::OK, parser.parse(" Y2.5 Z2 J-2 K2 F7", code));
+  TEST_ASSERT_EQUAL(3, code.code());
+  TEST_ASSERT(tl::nullopt == code.subcode());
+  TEST_ASSERT(tl::nullopt == code.x());
+  TEST_ASSERT(2.5 == code.y());
+  TEST_ASSERT(2.0 == code.z());
+  TEST_ASSERT(7.0 == code.f());
+  TEST_ASSERT(tl::nullopt == code.i());
+  TEST_ASSERT(-2.0 == code.j());
+  TEST_ASSERT(2.0 == code.k());
   TEST_ASSERT(tl::nullopt == code.s());
   TEST_ASSERT(tl::nullopt == code.p());
   TEST_ASSERT(tl::nullopt == code.r());

@@ -13,6 +13,8 @@ public:
 
   size_t write(uint8_t b) override;
   int availableForWrite() override;
+
+  void finish();
 };
 
 #endif

@@ -32,6 +32,11 @@ void test_CoordinateTransformer_G10L2() {
   TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 21.f, r.y);
   TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 30.f, r.z);
 
+  r = transformer.machineCoordinateToGcode(Vector3<float>(8.f, 21.f, 30.f));
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 1.f, r.x);
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 2.f, r.y);
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 0.f, r.z);
+
   r = transformer.machineCoordinateToUserCurrentCoordinate(Vector3<float>(8.f, 21.f, 30.f));
   TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 1.f, r.x);
   TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 2.f, r.y);
@@ -43,6 +48,11 @@ void test_CoordinateTransformer_G10L2() {
   TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 1.f, r.x);
   TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 2.f, r.y);
   TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 0.f, r.z);
+
+  r = transformer.machineCoordinateToGcode(Vector3<float>(1.f, 2.f, 3.f));
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 1.f, r.x);
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 2.f, r.y);
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 3.f, r.z);
 
   r = transformer.machineCoordinateToUserCurrentCoordinate(Vector3<float>(1.f, 2.f, 3.f));
   TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 1.f, r.x);
@@ -177,6 +187,11 @@ void test_CoordinateTransformer_G20G21() {
   TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 2.f, r.y);
   TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 3.f, r.z);
 
+  r = transformer.machineCoordinateToGcode(Vector3<float>(1.f, 2.f, 3.f));
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 1.f, r.x);
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 2.f, r.y);
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 3.f, r.z);
+
   r = transformer.machineCoordinateToUserCurrentCoordinate(Vector3<float>(1.f, 2.f, 3.f));
   TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 1.f, r.x);
   TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 2.f, r.y);
@@ -195,6 +210,11 @@ void test_CoordinateTransformer_G20G21() {
   TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 50.8f, r.y);
   TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 76.2f, r.z);
 
+  r = transformer.machineCoordinateToGcode(Vector3<float>(25.4f, 50.8f, 76.2f));
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 1.f, r.x);
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 2.f, r.y);
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 3.f, r.z);
+
   r = transformer.machineCoordinateToUserCurrentCoordinate(Vector3<float>(25.4f, 50.8f, 76.2f));
   TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 1.f, r.x);
   TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 2.f, r.y);
@@ -209,6 +229,11 @@ void test_CoordinateTransformer_G20G21() {
   TEST_ASSERT_EQUAL(CommandResultType::OK,
       transformer.onGCodeCommandReceived(toGCode("G21"), CommandSource::SERIAL_SOURCE, 0).type());
   r = transformer.gcodeCoordinateToMachineCoordinate(Vector3<float>(1.f, 2.f, 3.f));
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 1.f, r.x);
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 2.f, r.y);
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 3.f, r.z);
+
+  r = transformer.machineCoordinateToGcode(Vector3<float>(1.f, 2.f, 3.f));
   TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 1.f, r.x);
   TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 2.f, r.y);
   TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 3.f, r.z);
@@ -237,9 +262,20 @@ void test_CoordinateTransformer_G90G91() {
   TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 5.f, r.y);
   TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 7.f, r.z);
 
+  r = transformer.machineCoordinateToGcode(Vector3<float>(3.f, 5.f, 7.f));
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 1.f, r.x);
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 2.f, r.y);
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 3.f, r.z);
+
+
   TEST_ASSERT_EQUAL(CommandResultType::OK,
       transformer.onGCodeCommandReceived(toGCode("G90"), CommandSource::SERIAL_SOURCE, 0).type());
   r = transformer.gcodeCoordinateToMachineCoordinate(Vector3<float>(1.f, 2.f, 3.f));
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 1.f, r.x);
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 2.f, r.y);
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 3.f, r.z);
+
+  r = transformer.machineCoordinateToGcode(Vector3<float>(1.f, 2.f, 3.f));
   TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 1.f, r.x);
   TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 2.f, r.y);
   TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 3.f, r.z);
@@ -258,6 +294,16 @@ void test_CoordinateTransformer_G92() {
   TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 2.f, r.y);
   TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 3.f, r.z);
 
+  r = transformer.machineCoordinateToGcode(Vector3<float>(-23.4f, 2.f, 3.f));
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 1.f, r.x);
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 2.f, r.y);
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 3.f, r.z);
+
+  r = transformer.machineCoordinateToUserCurrentCoordinate(Vector3<float>(-23.4f, 2.f, 3.f));
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 1.f, r.x);
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 2.f, r.y);
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 3.f, r.z);
+
 
   TEST_ASSERT_EQUAL(CommandResultType::OK,
       transformer.onGCodeCommandReceived(toGCode("G20"), CommandSource::SERIAL_SOURCE, 0).type());
@@ -270,6 +316,16 @@ void test_CoordinateTransformer_G92() {
   TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, -21.4f, r.y);
   TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 3.f, r.z);
 
+  r = transformer.machineCoordinateToGcode(Vector3<float>(1.f, -21.4f, 3.f));
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 1.f, r.x);
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 2.f, r.y);
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 3.f, r.z);
+
+  r = transformer.machineCoordinateToUserCurrentCoordinate(Vector3<float>(1.f, -21.4f, 3.f));
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 1.f, r.x);
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 2.f, r.y);
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 3.f, r.z);
+
 
   TEST_ASSERT_EQUAL(CommandResultType::OK,
       transformer.onGCodeCommandReceived(toGCode("G92 Z-1"), CommandSource::SERIAL_SOURCE, 0).type());
@@ -278,10 +334,30 @@ void test_CoordinateTransformer_G92() {
   TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 2.f, r.y);
   TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 7.f, r.z);
 
+  r = transformer.machineCoordinateToGcode(Vector3<float>(1.f, 2.f, 7.f));
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 1.f, r.x);
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 2.f, r.y);
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 3.f, r.z);
+
+  r = transformer.machineCoordinateToUserCurrentCoordinate(Vector3<float>(1.f, 2.f, 7.f));
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 1.f, r.x);
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 2.f, r.y);
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 3.f, r.z);
+
 
   TEST_ASSERT_EQUAL(CommandResultType::OK,
       transformer.onGCodeCommandReceived(toGCode("G92.1"), CommandSource::SERIAL_SOURCE, 0).type());
   r = transformer.gcodeCoordinateToMachineCoordinate(Vector3<float>(1.f, 2.f, 3.f));
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 1.f, r.x);
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 2.f, r.y);
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 3.f, r.z);
+
+  r = transformer.machineCoordinateToGcode(Vector3<float>(1.f, 2.f, 3.f));
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 1.f, r.x);
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 2.f, r.y);
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 3.f, r.z);
+
+  r = transformer.machineCoordinateToUserCurrentCoordinate(Vector3<float>(1.f, 2.f, 3.f));
   TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 1.f, r.x);
   TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 2.f, r.y);
   TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 3.f, r.z);

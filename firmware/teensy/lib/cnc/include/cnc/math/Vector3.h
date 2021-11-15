@@ -14,6 +14,8 @@ public:
   Vector3(T x, T y, T z);
 
   T dot(const Vector3<T>& other) const;
+  T angle(const Vector3<T>& other) const;
+  Vector3<T> cross(const Vector3<T>& other) const;
 
   T norm() const;
   void normalize();
@@ -31,6 +33,18 @@ Vector3<T>::Vector3(T x, T y, T z) : x(x), y(y), z(z) {
 template <class T>
 T Vector3<T>::dot(const Vector3<T>& other) const {
   return x * other.x + y * other.y + z * other.z;
+}
+
+template <class T>
+T Vector3<T>::angle(const Vector3<T>& other) const {
+  return std::acos(dot(other));
+}
+
+template <class T>
+Vector3<T> Vector3<T>::cross(const Vector3<T>& other) const {
+  return Vector3<T>(y * other.z - z * other.y,
+      z * other.x - x * other.z,
+      x * other.y - y * other.x);
 }
 
 template <class T>

@@ -1,5 +1,4 @@
 #include <cnc/modules/CoordinateTransformer.h>
-
 #include <cnc/modules/ModuleKernel.h>
 
 constexpr const char* INVALID_COORDINATE_SYSTEM_COMMAND_ERROR_MESSAGE = "The coordindate system (P) is invalid. It must be between 0 and 9.";
@@ -20,34 +19,35 @@ void CoordinateTransformer::configure(const ConfigItem& item) {
 
 void CoordinateTransformer::begin() {
   m_kernel->registerToEvent(ModuleEventType::GCODE_COMMAND, this);
+  m_kernel->registerToEvent(ModuleEventType::TARGET_POSITION, this);
 }
 
 CommandResult CoordinateTransformer::onGCodeCommandReceived(const GCode& gcode, CommandSource source, uint32_t commandId) {
-  if (gcode.code() == 10 && gcode.l() == 2u) {
+  if (gcode.code() == 10 && gcode.subcode() == tl::nullopt && gcode.l() == 2u) {
     return setCoordinateSystemL2(gcode);
   }
-  else if (gcode.code() == 10 && gcode.l() == 20u) {
+  else if (gcode.code() == 10 && gcode.subcode() == tl::nullopt && gcode.l() == 20u) {
     return setCoordinateSystemL20(gcode);
   }
-  else if (gcode.code() == 20) {
+  else if (gcode.code() == 20 && gcode.subcode() == tl::nullopt) {
     m_scale = INCH_TO_MM_SCALE;
   }
-  else if (gcode.code() == 21) {
+  else if (gcode.code() == 21 && gcode.subcode() == tl::nullopt) {
     m_scale = 1.f;
   }
-  else if (gcode.code() == 54) {
+  else if (gcode.code() == 54 && gcode.subcode() == tl::nullopt) {
     m_currentCoordinateSystemIndex = 0;
   }
-  else if (gcode.code() == 55) {
+  else if (gcode.code() == 55 && gcode.subcode() == tl::nullopt) {
     m_currentCoordinateSystemIndex = 1;
   }
-  else if (gcode.code() == 56) {
+  else if (gcode.code() == 56 && gcode.subcode() == tl::nullopt) {
     m_currentCoordinateSystemIndex = 2;
   }
-  else if (gcode.code() == 57) {
+  else if (gcode.code() == 57 && gcode.subcode() == tl::nullopt) {
     m_currentCoordinateSystemIndex = 3;
   }
-  else if (gcode.code() == 58) {
+  else if (gcode.code() == 58 && gcode.subcode() == tl::nullopt) {
     m_currentCoordinateSystemIndex = 4;
   }
   else if (gcode.code() == 59 && gcode.subcode() == tl::nullopt) {
@@ -62,10 +62,10 @@ CommandResult CoordinateTransformer::onGCodeCommandReceived(const GCode& gcode, 
   else if (gcode.code() == 59 && gcode.subcode() == 3u) {
     m_currentCoordinateSystemIndex = 8;
   }
-  else if (gcode.code() == 90) {
+  else if (gcode.code() == 90 && gcode.subcode() == tl::nullopt) {
     m_isIncrementalMode = false;
   }
-  else if (gcode.code() == 91) {
+  else if (gcode.code() == 91 && gcode.subcode() == tl::nullopt) {
     m_isIncrementalMode = true;
   }
   else if (gcode.code() == 92 && gcode.subcode() == tl::nullopt) {
@@ -92,6 +92,15 @@ Vector3<float> CoordinateTransformer::gcodeCoordinateToMachineCoordinate(const V
     return rotatedV + m_targetMachinePosition;
   } else {
     return rotatedV + coordinateSystem.offset + m_globalOffset;
+  }
+}
+
+Vector3<float>CoordinateTransformer:: machineCoordinateToGcode(const Vector3<float> v) {
+  CoordinateSystem& coordinateSystem = m_coordinateSystems[m_currentCoordinateSystemIndex];
+  if (m_isIncrementalMode) {
+    return coordinateSystem.rotationInv.rotate(v - m_targetMachinePosition) / m_scale;
+  } else {
+    return coordinateSystem.rotationInv.rotate(v - m_globalOffset - coordinateSystem.offset) / m_scale;
   }
 }
 
