@@ -206,7 +206,7 @@ bool ArcConverter::calculateSegments(const GCode& gcode) {
   if (arcAngle < MINIMUM_ARC_ANGLE) {
     arcAngle = 2 * M_PI;
   }
-  else if (startAngle > endAngle && !isCw || startAngle < endAngle && isCw) {
+  else if ((startAngle > endAngle && !isCw) || (startAngle < endAngle && isCw)) {
     arcAngle = 2 * M_PI - arcAngle;
   }
 

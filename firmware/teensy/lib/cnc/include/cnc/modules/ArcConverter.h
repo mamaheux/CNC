@@ -12,7 +12,6 @@ enum class ArcConverterPlan {
   XY, XZ, YZ
 };
 
-// TODO add a bench on the Teensy 4.1
 class ArcConverter : public Module {
   tl::optional<float> m_feedrate;
   Vector2<float> m_startPoint;

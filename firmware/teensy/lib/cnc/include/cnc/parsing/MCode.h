@@ -11,7 +11,6 @@ constexpr size_t MCODE_LINE_BUFFER_SIZE = 256;
 
 class MCodeParser;
 
-// TODO add a bench on the Teensy 4.1
 class MCode {
   tl::optional<float> m_x;
   tl::optional<float> m_y;

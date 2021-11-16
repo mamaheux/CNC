@@ -124,7 +124,6 @@ inline GCode GCode::g1(const Vector3<float>& position, tl::optional<float> f, bo
   return gcode;
 }
 
-// TODO add a bench on the Teensy 4.1
 class GCodeParser {
   char m_lineBuffer[GCODE_LINE_BUFFER_SIZE];
 

@@ -9,6 +9,7 @@
 #include "mcu/modules/Spindle.h"
 
 #include <cnc/modules/CoordinateTransformer.h>
+#include <cnc/modules/ArcConverter.h>
 
 #include <SD.h>
 
@@ -17,6 +18,7 @@ CommandSerial commandSerial;
 CommandFile commandFile;
 
 CoordinateTransformer coordinateTransformer;
+ArcConverter arcConverter(&coordinateTransformer);
 
 StepperController stepperController(&coordinateTransformer);
 Spindle spindle;
@@ -31,6 +33,7 @@ void setupKernel() {
   kernel.addModule(&commandFile);
 
   kernel.addModule(&coordinateTransformer);
+  kernel.addModule(&arcConverter);
 
   kernel.addModule(&stepperController);
   kernel.addModule(&spindle);
