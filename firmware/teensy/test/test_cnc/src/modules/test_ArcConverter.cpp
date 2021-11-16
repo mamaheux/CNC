@@ -319,8 +319,8 @@ void test_ArcConverter_rXY() {
   arcConverter.onTargetPositionChanged(Vector3<float>(1.f, 0.f, 0.f));
   TEST_ASSERT_EQUAL(CommandResultType::OK, arcConverter.setArc(toGCode("G3 X0 Y1 R-1")).type());
   assertArc(arcConverter,
-      {1.7846, 1.97291, 1.4218, 0.550127, 0.0203568, 0.f},
-      {0.38, 1.2312, 1.90669, 1.89309, 1.20075, 1.f},
+      {1.7846f, 1.97291f, 1.4218f, 0.550127f, 0.0203568f, 0.f},
+      {0.38f, 1.2312f, 1.90669f, 1.89309f, 1.20075f, 1.f},
       {0.f, 0.f, 0.f, 0.f, 0.f, 0.f});
 }
 
@@ -339,9 +339,9 @@ void test_ArcConverter_p2XY() {
   arcConverter.onTargetPositionChanged(Vector3<float>(-0.f, 0.f, 0.f));
   TEST_ASSERT_EQUAL(CommandResultType::OK, arcConverter.setArc(toGCode("G2 Z1 I2 P2")).type());
   assertArc(arcConverter,
-      {0.39, 1.4079, 2.65672, 3.64942, 3.99884, 3.56872, 2.5268, 1.27942, 0.313072, 0.00462544, 0.474375, 1.53912, 2.7836, 3.72249, 3.9896, 3.48077, 2.39444, 1.15427, 0.243947, 0.f},
-      {1.18655, 1.91034, 1.88911, 1.13112, -0.0680103, -1.24061, -1.92937, -1.86568, -1.07437, 0.135942, 1.29324, 1.94617, 1.8401, 1.01639, -0.203717, -1.34437, -1.96072, -1.81239, -0.957224, 0.f},
-      {0.0505413, 0.101083, 0.151624, 0.202165, 0.252707, 0.303248, 0.353789, 0.404331, 0.454872, 0.505413, 0.555955, 0.606496, 0.657037, 0.707579, 0.75812, 0.808661, 0.859203, 0.909744, 0.960285, 1.f});
+      {0.39f, 1.4079f, 2.65672f, 3.64942f, 3.99884f, 3.56872f, 2.5268f, 1.27942f, 0.313072f, 0.00462544f, 0.474375f, 1.53912f, 2.7836f, 3.72249f, 3.9896f, 3.48077f, 2.39444f, 1.15427f, 0.243947f, 0.f},
+      {1.18655f, 1.91034f, 1.88911f, 1.13112f, -0.0680103f, -1.24061f, -1.92937f, -1.86568f, -1.07437f, 0.135942f, 1.29324f, 1.94617f, 1.8401f, 1.01639f, -0.203717f, -1.34437f, -1.96072f, -1.81239f, -0.957224f, 0.f},
+      {0.0505413f, 0.101083f, 0.151624f, 0.202165f, 0.252707f, 0.303248f, 0.353789f, 0.404331f, 0.454872f, 0.505413f, 0.555955f, 0.606496f, 0.657037f, 0.707579f, 0.75812f, 0.808661f, 0.859203f, 0.909744f, 0.960285f, 1.f});
 }
 
 void test_ArcConverter_offsetAndAbsolute() {
@@ -353,8 +353,8 @@ void test_ArcConverter_offsetAndAbsolute() {
   arcConverter.onTargetPositionChanged(Vector3<float>(0.f, 0.f, 0.f));
   TEST_ASSERT_EQUAL(CommandResultType::OK, arcConverter.setArc(toGCode("G2 X1 I1")).type());
   assertArc(arcConverter,
-      {0.38, 1.2312, 1.90669, 2.f},
-      {0.784602, 0.972906, 0.421802, 0.f},
+      {0.38f, 1.2312f, 1.90669f, 2.f},
+      {0.784602f, 0.972906f, 0.421802f, 0.f},
       {0.f, 0.f, 0.f, 0.f});
 
   TEST_ASSERT_EQUAL(CommandResultType::OK,
@@ -362,10 +362,33 @@ void test_ArcConverter_offsetAndAbsolute() {
   arcConverter.onTargetPositionChanged(Vector3<float>(0.f, 0.f, 0.f));
   TEST_ASSERT_EQUAL(CommandResultType::OK, arcConverter.setArc(toGCode("G2 X1 I0 F10")).type());
   assertArc(arcConverter,
-      {0.38, 1.2312, 1.90669, 2.f},
-      {0.784602, 0.972906, 0.421802, 0.f},
+      {0.38f, 1.2312f, 1.90669f, 2.f},
+      {0.784602f, 0.972906f, 0.421802f, 0.f},
       {0.f, 0.f, 0.f, 0.f},
       10);
+}
+
+void test_ArcConverter_g53() {
+  CoordinateTransformer coordinateTransformer;
+  coordinateTransformer.onGCodeCommandReceived(toGCode("G10 L2 P0 X1 Y1"), CommandSource::SERIAL_SOURCE, 0);
+  ArcConverter arcConverter(&coordinateTransformer);
+
+  arcConverter.configure(createMaxErrorInMmConfigItem());
+  arcConverter.onTargetPositionChanged(Vector3<float>(0.f, 0.f, 0.f));
+  TEST_ASSERT_EQUAL(CommandResultType::OK, arcConverter.setArc(toGCode("G53 G2 X1 Y1 I1")).type());
+  assertArc(arcConverter,
+      {0.38, 1.f},
+      {0.784602f, 1.f},
+      {0.f, 0.f});
+
+  TEST_ASSERT_EQUAL(CommandResultType::OK,
+      arcConverter.onGCodeCommandReceived(toGCode("G90.1"), CommandSource::SERIAL_SOURCE, 0).type());
+  arcConverter.onTargetPositionChanged(Vector3<float>(1.f, 1.f, 0.f));
+  TEST_ASSERT_EQUAL(CommandResultType::OK, arcConverter.setArc(toGCode("G53 G3 X0 Y0 I1 J0")).type());
+  assertArc(arcConverter,
+      {0.215398f, 0.f, },
+      {0.62f, 0.f},
+      {0.f, 0.f});
 }
 
 void test_ArcConverter_g2XZ() {

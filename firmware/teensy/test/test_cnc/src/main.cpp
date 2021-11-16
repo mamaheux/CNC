@@ -186,6 +186,7 @@ void testModules() {
   RUN_TEST(test_ArcConverter_rXY);
   RUN_TEST(test_ArcConverter_p2XY);
   RUN_TEST(test_ArcConverter_offsetAndAbsolute);
+  RUN_TEST(test_ArcConverter_g53);
   RUN_TEST(test_ArcConverter_g2XZ);
   RUN_TEST(test_ArcConverter_g3XZ);
   RUN_TEST(test_ArcConverter_g2YZ);

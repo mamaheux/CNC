@@ -15,6 +15,7 @@ void test_ArcConverter_fullXY();
 void test_ArcConverter_rXY();
 void test_ArcConverter_p2XY();
 void test_ArcConverter_offsetAndAbsolute();
+void test_ArcConverter_g53();
 void test_ArcConverter_g2XZ();
 void test_ArcConverter_g3XZ();
 void test_ArcConverter_g2YZ();

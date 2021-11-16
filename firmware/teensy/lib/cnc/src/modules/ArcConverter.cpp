@@ -17,6 +17,8 @@ constexpr float MINIMUM_RADIUS = 0.1;
 constexpr float RADIUS_TOLERANCE = 1e-3;
 constexpr float MINIMUM_ARC_ANGLE = 1e-5;
 
+constexpr float PI = 3.1415926535897932384626433832795f;
+
 ArcConverter::ArcConverter(CoordinateTransformer* coordinateTransformer) :
     m_startOtherAxis(0.f),
     m_endOtherAxis(0.f),
@@ -204,10 +206,10 @@ bool ArcConverter::calculateSegments(const GCode& gcode) {
   float arcAngle = abs(endAngle - startAngle);
 
   if (arcAngle < MINIMUM_ARC_ANGLE) {
-    arcAngle = 2 * M_PI;
+    arcAngle = 2 * PI;
   }
   else if ((startAngle > endAngle && !isCw) || (startAngle < endAngle && isCw)) {
-    arcAngle = 2 * M_PI - arcAngle;
+    arcAngle = 2 * PI - arcAngle;
   }
 
   if (gcode.p().has_value()) {
@@ -215,7 +217,7 @@ bool ArcConverter::calculateSegments(const GCode& gcode) {
     if (p < 0 || p != *gcode.p()) {
       return false;
     }
-    arcAngle += 2 * M_PI * (p - 1.0);
+    arcAngle += 2 * PI * (p - 1.0);
   }
 
   m_currentAngle = startAngle;
@@ -325,7 +327,7 @@ Vector3<float> ArcConverter::fromPlan(Vector2<float> position, float otherAxis) 
 float atan2Pos(float a, float b) {
   float angle = atan2(a, b);
   if (angle < 0.f) {
-    angle = 2 * M_PI + angle;
+    angle = 2 * PI + angle;
   }
   return angle;
 }
