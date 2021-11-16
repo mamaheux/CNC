@@ -1,6 +1,8 @@
 #ifndef CNC_MATH_VECTOR3_H
 #define CNC_MATH_VECTOR3_H
 
+#include <cnc/math/Vector2.h>
+
 #include <cmath>
 
 template <class T>
@@ -11,6 +13,7 @@ public:
   T z;
 
   Vector3();
+  Vector3(const Vector2<T>& other);
   Vector3(T x, T y, T z);
 
   T dot(const Vector3<T>& other) const;
@@ -24,6 +27,10 @@ public:
 
 template <class T>
 Vector3<T>::Vector3() : x(0), y(0), z(0) {
+}
+
+template <class T>
+Vector3<T>::Vector3(const Vector2<T>& other) : x(other.x), y(other.y), z(0) {
 }
 
 template <class T>

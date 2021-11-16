@@ -105,13 +105,13 @@ bool ArcConverter::getNextSegment(GCode& gcode) {
 
   m_segmentIndex++;
   m_currentAngle += m_angleStep;
+  m_currentOtherAxis += m_otherAxisStep;
   if (isFinished()) {
     gcode = GCode::g1(fromPlan(m_endPoint, m_endOtherAxis), m_feedrate, true);
   }
   else {
     Vector2<float> position = m_centerPoint + Vector2<float>(cos(m_currentAngle), sin(m_currentAngle)) * m_radius;
-    float otherAxis = m_startOtherAxis + (m_endOtherAxis - m_startOtherAxis) * m_segmentIndex / m_segmentCount;
-    gcode = GCode::g1(fromPlan(position, otherAxis), m_feedrate, true);
+    gcode = GCode::g1(fromPlan(position, m_currentOtherAxis), m_feedrate, true);
   }
 
   return true;
@@ -138,7 +138,7 @@ bool ArcConverter::setCenterPoint(const GCode& gcode) {
     Vector2<double> centerPoint = getCenterPointFromRadius(m_startPoint.x, m_startPoint.y, m_endPoint.x, m_endPoint.y, *gcode.r(), isClockwise(gcode));
     m_centerPoint.x = static_cast<float>(centerPoint.x);
     m_centerPoint.y = static_cast<float>(centerPoint.y);
-    return true;
+    return isfinite(centerPoint.x) && isfinite(centerPoint.y);
   }
 
   if (m_currentPlan == ArcConverterPlan::XY) {
@@ -185,7 +185,7 @@ bool ArcConverter::setRadius() {
   float startRadius = (m_centerPoint - m_startPoint).norm();
   float endRadius = (m_centerPoint - m_endPoint).norm();
 
-  if (abs(startRadius - endRadius) < RADIUS_TOLERANCE) {
+  if (abs(startRadius - endRadius) > RADIUS_TOLERANCE) {
     return false;
   } else {
     m_radius = startRadius;
@@ -194,23 +194,22 @@ bool ArcConverter::setRadius() {
 }
 
 bool ArcConverter::calculateSegments(const GCode& gcode) {
-  float maxAngleStep = abs(2.f * acos(m_radius - m_maxError / m_radius));
+  float maxAngleStep = abs(2.f * acos((m_radius - m_maxError) / m_radius));
   bool isCw = isClockwise(gcode);
 
-  Vector2<float> start = m_startPoint - m_centerPoint;
-  Vector2<float> end = m_endPoint - m_centerPoint;
-  float startAngle = atan2(start.y, start.x);
-  float endAngle = atan2(end.y, end.x);
+  Vector3<float> start(m_startPoint - m_centerPoint);
+  Vector3<float> end(m_endPoint - m_centerPoint);
+  float startAngle = atan2Pos(start.y, start.x);
+  float endAngle = atan2Pos(end.y, end.x);
   float arcAngle = abs(endAngle - startAngle);
 
   if (arcAngle < MINIMUM_ARC_ANGLE) {
     arcAngle = 2 * M_PI;
   }
-  else {
-    if (isCw) {
-      arcAngle = 2 * M_PI - arcAngle;
-    }
+  else if (startAngle > endAngle && !isCw || startAngle < endAngle && isCw) {
+    arcAngle = 2 * M_PI - arcAngle;
   }
+
   if (gcode.p().has_value()) {
     float p = ceil(*gcode.p());
     if (p < 0 || p != *gcode.p()) {
@@ -221,8 +220,12 @@ bool ArcConverter::calculateSegments(const GCode& gcode) {
 
   m_currentAngle = startAngle;
   m_angleStep = min(arcAngle, maxAngleStep);
-  m_segmentCount = static_cast<size_t>(floor(arcAngle / m_angleStep));
+  m_segmentCount = static_cast<size_t>(ceil(arcAngle / m_angleStep));
   m_segmentIndex = 0;
+
+  m_currentOtherAxis = m_startOtherAxis;
+  m_otherAxisStep = (m_endOtherAxis - m_startOtherAxis)  * m_angleStep / arcAngle;
+
   if (isCw) {
     m_angleStep = -m_angleStep;
   }
@@ -319,6 +322,14 @@ Vector3<float> ArcConverter::fromPlan(Vector2<float> position, float otherAxis) 
   return Vector3<float>();
 }
 
+float atan2Pos(float a, float b) {
+  float angle = atan2(a, b);
+  if (angle < 0.f) {
+    angle = 2 * M_PI + angle;
+  }
+  return angle;
+}
+
 Vector2<double> getCenterPointFromRadius(double x1, double y1, double x2, double y2, float radius, bool isClockwise) {
   // double is required here to prevent to have the wrong center from rounding errors
   // See : https://stackoverflow.com/questions/36211171/finding-center-of-a-circle-given-two-points-and-radius
@@ -329,7 +340,7 @@ Vector2<double> getCenterPointFromRadius(double x1, double y1, double x2, double
   double x3 = (x1 + x2) / 2.0;
   double y3 = (x1 + x2) / 2.0;
 
-  if (abs(qHalf - radius) < RADIUS_TOLERANCE) {
+  if (abs(qHalf - abs(radius)) < RADIUS_TOLERANCE) {
     return Vector2<double>(x3, y3);
   }
 
@@ -345,6 +356,9 @@ Vector2<double> getCenterPointFromRadius(double x1, double y1, double x2, double
   Vector3<double> start1(x1 - centerPoint1.x, y1 - centerPoint1.y, 0.f);
   Vector3<double> end1(x2 - centerPoint1.x, y2 - centerPoint1.y, 0.f);
   bool is1Clockwise = start1.cross(end1).z < 0.f;
+  if (radius < 0.f) {
+    is1Clockwise = !is1Clockwise;
+  }
 
   if (isClockwise == is1Clockwise) {
     return centerPoint1;

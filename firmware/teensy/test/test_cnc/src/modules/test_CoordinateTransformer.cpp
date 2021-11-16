@@ -3,7 +3,7 @@
 
 constexpr float MAX_DELTA = 1e-6;
 
-GCode toGCode(const char* command) {
+static GCode toGCode(const char* command) {
   GCodeParser parser;
   GCode gcode;
   TEST_ASSERT_EQUAL(ParsingResult::OK, parser.parse(command, gcode));

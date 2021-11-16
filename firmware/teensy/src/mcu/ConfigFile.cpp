@@ -3,11 +3,6 @@
 
 #include <cnc/parsing/properties.h>
 
-ConfigItem::ConfigItem() {
-  memset(m_key, '\0', CONFIG_ITEM_BUFFER_SIZE);
-  memset(m_value, '\0', CONFIG_ITEM_BUFFER_SIZE);
-}
-
 ConfigFile::ConfigFile(const char* path) {
   CRITICAL_ERROR_CHECK_3(SD.exists(path), "The configuration file does not exist (", path, ")");
   m_file = SD.open(path, FILE_READ);

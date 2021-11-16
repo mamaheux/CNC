@@ -12,15 +12,17 @@ enum class ArcConverterPlan {
   XY, XZ, YZ
 };
 
-// TODO add tests
 // TODO add a bench on the Teensy 4.1
 class ArcConverter : public Module {
   tl::optional<float> m_feedrate;
   Vector2<float> m_startPoint;
   Vector2<float> m_endPoint;
   Vector2<float> m_centerPoint;
+
   float m_startOtherAxis;
   float m_endOtherAxis;
+  float m_currentOtherAxis;
+  float m_otherAxisStep;
 
   float m_radius;
   float m_currentAngle; // Rad
@@ -75,6 +77,7 @@ inline bool ArcConverter::isFinished() const {
   return m_segmentIndex == m_segmentCount;
 }
 
+float atan2Pos(float a, float b);
 Vector2<double> getCenterPointFromRadius(double x1, double y1, double x2, double y2, float radius, bool isClockwise);
 
 #endif

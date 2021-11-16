@@ -174,6 +174,22 @@ void testModules() {
   RUN_TEST(test_CoordinateTransformer_G92);
 
   RUN_TEST(test_getCenterPointFromRadius);
+  RUN_TEST(test_ArcConverter_invalidCode);
+  RUN_TEST(test_ArcConverter_invalidCenterPoint);
+  RUN_TEST(test_ArcConverter_invalidRadius);
+  RUN_TEST(test_ArcConverter_invalidP);
+  RUN_TEST(test_ArcConverter_absoluteR);
+  RUN_TEST(test_ArcConverter_g2XY);
+  RUN_TEST(test_ArcConverter_g3XY);
+  RUN_TEST(test_ArcConverter_helixXY);
+  RUN_TEST(test_ArcConverter_fullXY);
+  RUN_TEST(test_ArcConverter_rXY);
+  RUN_TEST(test_ArcConverter_p2XY);
+  RUN_TEST(test_ArcConverter_offsetAndAbsolute);
+  RUN_TEST(test_ArcConverter_g2XZ);
+  RUN_TEST(test_ArcConverter_g3XZ);
+  RUN_TEST(test_ArcConverter_g2YZ);
+  RUN_TEST(test_ArcConverter_g3YZ);
 }
 
 void testParsing() {

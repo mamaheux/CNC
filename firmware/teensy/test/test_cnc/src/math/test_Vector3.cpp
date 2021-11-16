@@ -5,7 +5,8 @@ constexpr float MAX_DELTA = 1e-7;
 
 void test_Vector3_constructor() {
   Vector3<float> a;
-  Vector3<float> b(1.f, 2.f, 3.f);
+  Vector3<float> b(Vector2<float>(1.f, 2.f));
+  Vector3<float> c(1.f, 2.f, 3.f);
 
   TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 0.f, a.x);
   TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 0.f, a.y);
@@ -13,7 +14,11 @@ void test_Vector3_constructor() {
 
   TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 1.f, b.x);
   TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 2.f, b.y);
-  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 3.f, b.z);
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 0.f, b.z);
+
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 1.f, c.x);
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 2.f, c.y);
+  TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 3.f, c.z);
 }
 
 void test_Vector3_dot() {
