@@ -12,6 +12,9 @@ public:
 	SystemCommandParser();
 
 	ParsingResult parse(const char* line, SystemCommand& gcode);
+
+private:
+	bool isComment(const char* line);
 };
 
 #endif

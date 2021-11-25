@@ -5,8 +5,10 @@ void test_parseSystemCommand_empty() {
   SystemCommand command;
   SystemCommandParser parser;
 
-  TEST_ASSERT_EQUAL(ParsingResult::ERROR, parser.parse("", command));
-  TEST_ASSERT_EQUAL(ParsingResult::ERROR, parser.parse(" ", command));
+  TEST_ASSERT_EQUAL(ParsingResult::NEXT_LINE_NEEDED, parser.parse("", command));
+  TEST_ASSERT_EQUAL(ParsingResult::NEXT_LINE_NEEDED, parser.parse(" ", command));
+  TEST_ASSERT_EQUAL(ParsingResult::NEXT_LINE_NEEDED, parser.parse("; bob", command));
+  TEST_ASSERT_EQUAL(ParsingResult::NEXT_LINE_NEEDED, parser.parse(" ; bob", command));
 }
 
 void test_parseSystemCommand_invalid() {
@@ -21,5 +23,7 @@ void test_parseSystemCommand_homing() {
   SystemCommandParser parser;
 
   TEST_ASSERT_EQUAL(ParsingResult::OK, parser.parse("$H", command));
+  TEST_ASSERT_EQUAL(ParsingResult::OK, parser.parse("$H; comment", command));
+  TEST_ASSERT_EQUAL(ParsingResult::OK, parser.parse("$H ; comment", command));
   TEST_ASSERT_EQUAL(SystemCommand::HOMING, command);
 }

@@ -61,7 +61,7 @@ void test_parseGCode_G0() {
   GCode code;
   GCodeParser parser;
 
-  TEST_ASSERT_EQUAL(ParsingResult::OK, parser.parse("G0 X10", code));
+  TEST_ASSERT_EQUAL(ParsingResult::OK, parser.parse("G0 X10; comment", code));
   TEST_ASSERT_EQUAL(0, code.code());
   TEST_ASSERT(tl::nullopt == code.subcode());
   TEST_ASSERT(10.0 == code.x());
@@ -77,7 +77,7 @@ void test_parseGCode_G0() {
   TEST_ASSERT(tl::nullopt == code.l());
   TEST_ASSERT_FALSE(code.isMachineCoordinateSystem());
 
-  TEST_ASSERT_EQUAL(ParsingResult::OK, parser.parse("G0  Y9  F5", code));
+  TEST_ASSERT_EQUAL(ParsingResult::OK, parser.parse("G0  Y9  F5 ; comment", code));
   TEST_ASSERT_EQUAL(0, code.code());
   TEST_ASSERT(tl::nullopt == code.subcode());
   TEST_ASSERT(tl::nullopt == code.x());

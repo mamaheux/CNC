@@ -226,7 +226,7 @@ void test_parseGCode_M114D1() {
   MCode code;
   MCodeParser parser;
 
-  TEST_ASSERT_EQUAL(ParsingResult::OK, parser.parse("M114.1", code));
+  TEST_ASSERT_EQUAL(ParsingResult::OK, parser.parse("M114.1 ; comment", code));
   TEST_ASSERT_EQUAL(114, code.code());
   TEST_ASSERT(1 == code.subcode());
   TEST_ASSERT_NO_PARAMETERS(code);
@@ -236,7 +236,7 @@ void test_parseGCode_M114D2() {
   MCode code;
   MCodeParser parser;
 
-  TEST_ASSERT_EQUAL(ParsingResult::OK, parser.parse("M114.2", code));
+  TEST_ASSERT_EQUAL(ParsingResult::OK, parser.parse("M114.2; comment", code));
   TEST_ASSERT_EQUAL(114, code.code());
   TEST_ASSERT(2 == code.subcode());
   TEST_ASSERT_NO_PARAMETERS(code);
