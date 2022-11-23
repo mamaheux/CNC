@@ -17,6 +17,9 @@ CoordinateTransformer::CoordinateTransformer() :
 void CoordinateTransformer::configure(const ConfigItem& item) {
 }
 
+void CoordinateTransformer::checkConfigErrors(std::function<void(const char*, const char*, const char*)> onMissingConfigItem) {
+}
+
 void CoordinateTransformer::begin() {
   m_kernel->registerToEvent(ModuleEventType::GCODE_COMMAND, this);
   m_kernel->registerToEvent(ModuleEventType::TARGET_POSITION, this);
@@ -182,22 +185,11 @@ CommandResult CoordinateTransformer::setGlobalOffset(const GCode& gcode) {
   if (gcode.x().has_value()) {
     m_globalOffset.x = m_targetMachinePosition.x - (*gcode.x() * m_scale);
   }
-  else {
-    m_globalOffset.x = 0;
-  }
-
   if (gcode.y().has_value()) {
     m_globalOffset.y = m_targetMachinePosition.y - (*gcode.y() * m_scale);
   }
-  else {
-    m_globalOffset.y = 0;
-  }
-
   if (gcode.z().has_value()) {
     m_globalOffset.z = m_targetMachinePosition.z - (*gcode.z() * m_scale);
-  }
-  else {
-    m_globalOffset.z = 0;
   }
 
   return CommandResult::ok();

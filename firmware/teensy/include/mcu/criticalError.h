@@ -3,10 +3,10 @@
 
 #include "config.h"
 
+#include <cnc/utils/macro.h>
+
 #include <cstring>
 
-#define __FUNCTION_NAME__ __PRETTY_FUNCTION__
-#define __FILENAME__ (std::strrchr(__FILE__, '/') ? std::strrchr(__FILE__, '/') + 1 : __FILE__)
 constexpr uint32_t ERROR_DELAY_MS = 1000;
 
 #define CRITICAL_ERROR_CHECK(code, reason) \
@@ -73,6 +73,42 @@ constexpr uint32_t ERROR_DELAY_MS = 1000;
     toogleErrorLed(); \
     delay(ERROR_DELAY_MS); \
   }
+
+#define ON_CRITICAL_ERROR(reason1, functionName, filename) \
+  while (true) { \
+      DEBUG_SERIAL.print((reason1)); \
+      DEBUG_SERIAL.print("Function name: "); \
+      DEBUG_SERIAL.println((functionName)); \
+      DEBUG_SERIAL.print("Filename: "); \
+      DEBUG_SERIAL.println((filename)); \
+      toogleErrorLed(); \
+      delay(ERROR_DELAY_MS); \
+    }
+
+#define ON_CRITICAL_ERROR_2(reason1, reason2, functionName, filename) \
+  while (true) { \
+      DEBUG_SERIAL.print((reason1)); \
+      DEBUG_SERIAL.print((reason2)); \
+      DEBUG_SERIAL.print("Function name: "); \
+      DEBUG_SERIAL.println((functionName)); \
+      DEBUG_SERIAL.print("Filename: "); \
+      DEBUG_SERIAL.println((filename)); \
+      toogleErrorLed(); \
+      delay(ERROR_DELAY_MS); \
+    }
+
+#define ON_CRITICAL_ERROR_3(reason1, reason2, reason3, functionName, filename) \
+  while (true) { \
+      DEBUG_SERIAL.print((reason1)); \
+      DEBUG_SERIAL.print((reason2)); \
+      DEBUG_SERIAL.print((reason3)); \
+      DEBUG_SERIAL.print("Function name: "); \
+      DEBUG_SERIAL.println((functionName)); \
+      DEBUG_SERIAL.print("Filename: "); \
+      DEBUG_SERIAL.println((filename)); \
+      toogleErrorLed(); \
+      delay(ERROR_DELAY_MS); \
+    }
 
 void setupCriticalErrorCheck();
 void toogleErrorLed();

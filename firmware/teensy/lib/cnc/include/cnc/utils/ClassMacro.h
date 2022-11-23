@@ -1,5 +1,5 @@
-#ifndef UTILS_CLASS_MACRO_H
-#define UTILS_CLASS_MACRO_H
+#ifndef CNC_UTILS_CLASS_MACRO_H
+#define CNC_UTILS_CLASS_MACRO_H
 
 #define DECLARE_NOT_COPYABLE(className) \
     className(const className&) = delete; \

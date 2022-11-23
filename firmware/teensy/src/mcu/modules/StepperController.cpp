@@ -11,20 +11,17 @@ using namespace std;
 constexpr const char* X_ENABLE_PIN_KEY = "stepper.x.enable_pin";
 constexpr const char* X_DIRECTION_PIN_KEY = "stepper.x.direction_pin";
 constexpr const char* X_STEP_PIN_KEY = "stepper.x.step_pin";
-constexpr const char* X_STEP_COUNT_PER_MM_PIN_KEY = "stepper.x.step_count_per_mm";
 
 constexpr const char* Y_ENABLE_PIN_KEY = "stepper.y.enable_pin";
 constexpr const char* Y_DIRECTION_PIN_KEY = "stepper.y.direction_pin";
 constexpr const char* Y_STEP_PIN_KEY = "stepper.y.step_pin";
-constexpr const char* Y_STEP_COUNT_PER_MM_PIN_KEY = "stepper.y.step_count_per_mm";
 
 constexpr const char* Z_ENABLE_PIN_KEY = "stepper.z.enable_pin";
 constexpr const char* Z_DIRECTION_PIN_KEY = "stepper.z.direction_pin";
 constexpr const char* Z_STEP_PIN_KEY = "stepper.z.step_pin";
-constexpr const char* Z_STEP_COUNT_PER_MM_PIN_KEY = "stepper.z.step_count_per_mm";
 
-StepperController::StepperController(CoordinateTransformer* coordinateTransformer) :
-    m_coordinateTransformer(coordinateTransformer) {
+StepperController::StepperController(CoordinateTransformer* coordinateTransformer, Planner* planner) :
+    m_coordinateTransformer(coordinateTransformer), m_planner(planner), m_manualStepEnabled(false) {
 }
 
 void StepperController::configure(const ConfigItem& item) {
@@ -37,9 +34,6 @@ void StepperController::configure(const ConfigItem& item) {
   else if (strcmp(item.getKey(), X_STEP_PIN_KEY) == 0) {
     m_xStepConfig = DigitalOutputConfig::parse(item.getValueString());
   }
-  else if (strcmp(item.getKey(), X_STEP_COUNT_PER_MM_PIN_KEY) == 0) {
-    m_xStepCountPerMm = item.getValueInt();
-  }
   else if (strcmp(item.getKey(), Y_ENABLE_PIN_KEY) == 0) {
     m_yEnableConfig = DigitalOutputConfig::parse(item.getValueString());
   }
@@ -48,9 +42,6 @@ void StepperController::configure(const ConfigItem& item) {
   }
   else if (strcmp(item.getKey(), Y_STEP_PIN_KEY) == 0) {
     m_yStepConfig = DigitalOutputConfig::parse(item.getValueString());
-  }
-  else if (strcmp(item.getKey(), Y_STEP_COUNT_PER_MM_PIN_KEY) == 0) {
-    m_yStepCountPerMm = item.getValueInt();
   }
   else if (strcmp(item.getKey(), Z_ENABLE_PIN_KEY) == 0) {
     m_zEnableConfig = DigitalOutputConfig::parse(item.getValueString());
@@ -61,37 +52,23 @@ void StepperController::configure(const ConfigItem& item) {
   else if (strcmp(item.getKey(), Z_STEP_PIN_KEY) == 0) {
     m_zStepConfig = DigitalOutputConfig::parse(item.getValueString());
   }
-  else if (strcmp(item.getKey(), Z_STEP_COUNT_PER_MM_PIN_KEY) == 0) {
-    m_zStepCountPerMm = item.getValueInt();
-  }
+}
+
+void StepperController::checkConfigErrors(std::function<void(const char*, const char*, const char*)> onMissingConfigItem) {
+  CHECK_CONFIG_ERROR(onMissingConfigItem, m_xEnableConfig.has_value(), X_ENABLE_PIN_KEY);
+  CHECK_CONFIG_ERROR(onMissingConfigItem, m_xDirectionConfig.has_value(), X_DIRECTION_PIN_KEY);
+  CHECK_CONFIG_ERROR(onMissingConfigItem, m_xStepConfig.has_value(), X_STEP_PIN_KEY);
+
+  CHECK_CONFIG_ERROR(onMissingConfigItem, m_yEnableConfig.has_value(), Y_ENABLE_PIN_KEY);
+  CHECK_CONFIG_ERROR(onMissingConfigItem, m_yDirectionConfig.has_value(), Y_DIRECTION_PIN_KEY);
+  CHECK_CONFIG_ERROR(onMissingConfigItem, m_yStepConfig.has_value(), Y_STEP_PIN_KEY);
+
+  CHECK_CONFIG_ERROR(onMissingConfigItem, m_zEnableConfig.has_value(), Z_ENABLE_PIN_KEY);
+  CHECK_CONFIG_ERROR(onMissingConfigItem, m_zDirectionConfig.has_value(), Z_DIRECTION_PIN_KEY);
+  CHECK_CONFIG_ERROR(onMissingConfigItem, m_zStepConfig.has_value(), Z_STEP_PIN_KEY);
 }
 
 void StepperController::begin() {
-  CRITICAL_ERROR_CHECK_3(m_xEnableConfig.has_value(),
-      "Missing item in config.properties (key = ", X_ENABLE_PIN_KEY, ")");
-  CRITICAL_ERROR_CHECK_3(m_xDirectionConfig.has_value(),
-      "Missing item in config.properties (key = ", X_DIRECTION_PIN_KEY, ")");
-  CRITICAL_ERROR_CHECK_3(m_xStepConfig.has_value(),
-      "Missing item in config.properties (key = ", X_STEP_PIN_KEY, ")");
-  CRITICAL_ERROR_CHECK_3(m_xStepCountPerMm.has_value(),
-      "Missing item in config.properties (key = ", X_STEP_COUNT_PER_MM_PIN_KEY, ")");
-  CRITICAL_ERROR_CHECK_3(m_yEnableConfig.has_value(),
-      "Missing item in config.properties (key = ", Y_ENABLE_PIN_KEY, ")");
-  CRITICAL_ERROR_CHECK_3(m_yDirectionConfig.has_value(),
-      "Missing item in config.properties (key = ", Y_DIRECTION_PIN_KEY, ")");
-  CRITICAL_ERROR_CHECK_3(m_yStepConfig.has_value(),
-      "Missing item in config.properties (key = ", Y_STEP_PIN_KEY, ")");
-  CRITICAL_ERROR_CHECK_3(m_yStepCountPerMm.has_value(),
-      "Missing item in config.properties (key = ", Y_STEP_COUNT_PER_MM_PIN_KEY, ")");
-  CRITICAL_ERROR_CHECK_3(m_zEnableConfig.has_value(),
-      "Missing item in config.properties (key = ", Z_ENABLE_PIN_KEY, ")");
-  CRITICAL_ERROR_CHECK_3(m_zDirectionConfig.has_value(),
-      "Missing item in config.properties (key = ", Z_DIRECTION_PIN_KEY, ")");
-  CRITICAL_ERROR_CHECK_3(m_zStepConfig.has_value(),
-      "Missing item in config.properties (key = ", Z_STEP_PIN_KEY, ")");
-  CRITICAL_ERROR_CHECK_3(m_zStepCountPerMm.has_value(),
-      "Missing item in config.properties (key = ", Z_STEP_COUNT_PER_MM_PIN_KEY, ")");
-
   m_xStepper.begin(*m_xEnableConfig, *m_xDirectionConfig, *m_xStepConfig);
   m_yStepper.begin(*m_yEnableConfig, *m_yDirectionConfig, *m_yStepConfig);
   m_zStepper.begin(*m_zEnableConfig, *m_zDirectionConfig, *m_zStepConfig);
@@ -137,9 +114,9 @@ CommandResult StepperController::onMCodeCommandReceived(const MCode& mcode, Comm
 }
 
 Vector3<float> StepperController::getMachinePosition() {
-  return Vector3<float>(static_cast<float>(m_xStepper.position()) / static_cast<float>(*m_xStepCountPerMm),
-      static_cast<float>(m_yStepper.position()) / static_cast<float>(*m_yStepCountPerMm),
-      static_cast<float>(m_zStepper.position()) / static_cast<float>(*m_zStepCountPerMm));
+  return Vector3<float>(static_cast<float>(m_xStepper.position()) / m_planner->xStepCountPerMm(),
+      static_cast<float>(m_yStepper.position()) / m_planner->yStepCountPerMm(),
+      static_cast<float>(m_zStepper.position()) / m_planner->zStepCountPerMm());
 }
 
 void StepperController::sendRealTimePositionInSelectedCoordinateSystem(CommandSource source, uint32_t commandId) {

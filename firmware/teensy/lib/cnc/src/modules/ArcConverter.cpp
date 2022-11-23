@@ -6,7 +6,6 @@
 
 using namespace std;
 
-constexpr float DEFAULT_MAX_ERROR = 0.01;
 constexpr const char* MAX_ERROR_KEY = "arc_converter.max_error_in_mm";
 
 constexpr const char* CENTER_POINT_ERROR_COMMAND_ERROR_MESSAGE = "Unable to set the center of the arc.";
@@ -27,7 +26,6 @@ ArcConverter::ArcConverter(CoordinateTransformer* coordinateTransformer) :
     m_angleStep(0.f),
     m_segmentCount(0),
     m_segmentIndex(0),
-    m_maxError(DEFAULT_MAX_ERROR),
     m_coordinateTransformer(coordinateTransformer),
     m_isIncrementalArcDistanceMode(true),
     m_currentPlan(ArcConverterPlan::XY) {
@@ -38,6 +36,10 @@ void ArcConverter::configure(const ConfigItem& item) {
     m_maxError = item.getValueFloat();
   }
 }
+
+void ArcConverter::checkConfigErrors(function<void(const char*, const char*, const char*)> onMissingConfigItem) {
+  CHECK_CONFIG_ERROR(onMissingConfigItem, m_maxError.has_value(), MAX_ERROR_KEY);
+};
 
 void ArcConverter::begin() {
   m_kernel->registerToEvent(ModuleEventType::GCODE_COMMAND, this);
@@ -196,7 +198,7 @@ bool ArcConverter::setRadius() {
 }
 
 bool ArcConverter::calculateSegments(const GCode& gcode) {
-  float maxAngleStep = abs(2.f * acos((m_radius - m_maxError) / m_radius));
+  float maxAngleStep = abs(2.f * acos((m_radius - *m_maxError) / m_radius));
   bool isCw = isClockwise(gcode);
 
   Vector3<float> start(m_startPoint - m_centerPoint);

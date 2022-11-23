@@ -38,9 +38,9 @@ private:
 
 public:
   FixedPoint();
-  FixedPoint(T fixedPointValue);
-  FixedPoint(float value);
-  FixedPoint(double value);
+  constexpr FixedPoint(T fixedPointValue);
+  constexpr FixedPoint(float value);
+  constexpr FixedPoint(double value);
   FixedPoint(const FixedPoint& other);
   virtual ~FixedPoint();
 
@@ -130,13 +130,13 @@ inline FixedPoint<IntegerSize, FractionSize>::FixedPoint() : m_value(0)
 }
 
 template <size_t IntegerSize, size_t FractionSize>
-inline FixedPoint<IntegerSize, FractionSize>::FixedPoint(T fixedPointValue) : m_value(fixedPointValue)
+inline constexpr FixedPoint<IntegerSize, FractionSize>::FixedPoint(T fixedPointValue) : m_value(fixedPointValue)
 {
   static_assert(IntegerSize + FractionSize + 1 == sizeof(T) * 8, "All bits of the type must be used");
 }
 
 template <size_t IntegerSize, size_t FractionSize>
-inline FixedPoint<IntegerSize, FractionSize>::FixedPoint(float value)
+inline constexpr FixedPoint<IntegerSize, FractionSize>::FixedPoint(float value)
 {
   static_assert(IntegerSize + FractionSize + 1 == sizeof(T) * 8, "All bits of the type must be used");
 
@@ -146,7 +146,7 @@ inline FixedPoint<IntegerSize, FractionSize>::FixedPoint(float value)
 }
 
 template <size_t IntegerSize, size_t FractionSize>
-inline FixedPoint<IntegerSize, FractionSize>::FixedPoint(double value)
+inline constexpr FixedPoint<IntegerSize, FractionSize>::FixedPoint(double value)
 {
   static_assert(IntegerSize + FractionSize + 1 == sizeof(T) * 8, "All bits of the type must be used");
 

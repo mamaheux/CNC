@@ -19,18 +19,20 @@ public:
   bool pop(T& value);
   bool push(const T& value);
 
+  bool last(T& value) const;
+
   bool isEmpty() const;
   bool isFull() const;
   size_t size();
 };
 
 template <class T, size_t MAX_SIZE>
-BoundedQueue<T, MAX_SIZE>::BoundedQueue() : m_writeIndex(0), m_readIndex(0), m_size(0) {
+inline BoundedQueue<T, MAX_SIZE>::BoundedQueue() : m_writeIndex(0), m_readIndex(0), m_size(0) {
 }
 
 template <class T, size_t MAX_SIZE>
-tl::optional<T> BoundedQueue<T, MAX_SIZE>::pop() {
-  if (m_size == 0) {
+inline tl::optional<T> BoundedQueue<T, MAX_SIZE>::pop() {
+  if (isEmpty()) {
     return tl::nullopt;
   }
 
@@ -41,7 +43,7 @@ tl::optional<T> BoundedQueue<T, MAX_SIZE>::pop() {
 }
 
 template <class T, size_t MAX_SIZE>
-bool BoundedQueue<T, MAX_SIZE>::pop(T& value) {
+inline bool BoundedQueue<T, MAX_SIZE>::pop(T& value) {
   if (isEmpty()) {
     return false;
   }
@@ -54,7 +56,7 @@ bool BoundedQueue<T, MAX_SIZE>::pop(T& value) {
 }
 
 template <class T, size_t MAX_SIZE>
-bool BoundedQueue<T, MAX_SIZE>::push(const T& value) {
+inline bool BoundedQueue<T, MAX_SIZE>::push(const T& value) {
   if (isFull()) {
     return false;
   }
@@ -66,17 +68,33 @@ bool BoundedQueue<T, MAX_SIZE>::push(const T& value) {
 }
 
 template <class T, size_t MAX_SIZE>
-bool BoundedQueue<T, MAX_SIZE>::isEmpty() const {
+inline bool BoundedQueue<T, MAX_SIZE>::last(T& value) const {
+  if (isEmpty()) {
+    return false;
+  }
+
+  if (m_writeIndex == 0) {
+    value = m_data[MAX_SIZE - 1];
+  }
+  else {
+    value = m_data[m_writeIndex - 1];
+  }
+
+  return true;
+}
+
+template <class T, size_t MAX_SIZE>
+inline bool BoundedQueue<T, MAX_SIZE>::isEmpty() const {
   return m_size == 0;
 }
 
 template <class T, size_t MAX_SIZE>
-bool BoundedQueue<T, MAX_SIZE>::isFull() const {
+inline bool BoundedQueue<T, MAX_SIZE>::isFull() const {
   return m_size >= MAX_SIZE;
 }
 
 template <class T, size_t MAX_SIZE>
-size_t BoundedQueue<T, MAX_SIZE>::size() {
+inline size_t BoundedQueue<T, MAX_SIZE>::size() {
   return m_size;
 }
 

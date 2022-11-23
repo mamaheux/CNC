@@ -24,6 +24,9 @@ CommandFile::CommandFile() : m_completedLineCount(0), m_lineCount(0), m_isStarte
 void CommandFile::configure(const ConfigItem& item) {
 }
 
+void CommandFile::checkConfigErrors(std::function<void(const char*, const char*, const char*)> onMissingConfigItem) {
+}
+
 void CommandFile::begin() {
   m_kernel->registerToEvent(ModuleEventType::MCODE_COMMAND, this);
   m_kernel->registerToEvent(ModuleEventType::COMMAND_RESPONSE, this);

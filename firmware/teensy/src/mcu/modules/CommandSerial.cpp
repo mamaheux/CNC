@@ -20,8 +20,11 @@ void CommandSerial::configure(const ConfigItem& item) {
   }
 }
 
+void CommandSerial::checkConfigErrors(std::function<void(const char*, const char*, const char*)> onMissingConfigItem) {
+  CHECK_CONFIG_ERROR(onMissingConfigItem, m_baudRate.has_value(), BAUD_RATE_KEY);
+}
+
 void CommandSerial::begin() {
-  CRITICAL_ERROR_CHECK_3(m_baudRate.has_value(), "Missing item in config.properties (key = ", BAUD_RATE_KEY, ")");
   COMMAND_SERIAL.begin(*m_baudRate);
 
   m_kernel->registerToEvent(ModuleEventType::COMMAND_RESPONSE, this);

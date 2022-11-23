@@ -4,8 +4,8 @@
 #include <cnc/modules/Module.h>
 
 class IntervalModule : public Module {
-  uint32_t m_updatePeriodMs;
-  uint32_t m_updateLastTimeMs;
+  uint32_t m_updatePeriodUs;
+  uint32_t m_updateLastTimeUs;
 
 public:
   IntervalModule();
@@ -15,10 +15,10 @@ public:
   DECLARE_NOT_MOVABLE(IntervalModule);
 
   void update() override;
-  void setUpdatePeriodMs(uint32_t updatePeriodMs);
+  void setUpdatePeriodUs(uint32_t updatePeriodUs);
 
 protected:
-  virtual void onUpdate(uint32_t elapsedMs) = 0; // Best effort period
+  virtual void onUpdate(uint32_t elapsedUs) = 0; // Best effort period
 };
 
 #endif

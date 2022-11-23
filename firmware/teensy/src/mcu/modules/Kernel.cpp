@@ -51,6 +51,12 @@ void Kernel::begin() {
   }
 
   for (size_t i = 0; i < m_moduleCount; i++) {
+    m_modules[i]->checkConfigErrors([](const char* key, const char* function, const char* filename) {
+      ON_CRITICAL_ERROR_3("Missing item in config.properties (key = ", key, ")", function, filename);
+    });
+  }
+
+  for (size_t i = 0; i < m_moduleCount; i++) {
     m_modules[i]->begin();
   }
 }

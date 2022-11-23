@@ -6,7 +6,10 @@
 #include <cnc/parsing/SystemCommand.h>
 #include <cnc/parsing/GCode.h>
 #include <cnc/parsing/MCode.h>
+#include <cnc/utils/macro.h>
 #include <cnc/utils/ClassMacro.h>
+
+#include <functional>
 
 constexpr const char* OK_COMMAND_RESPONSE = "ok";
 constexpr const char* DEFAULT_COMMAND_ERROR_MESSAGE = "";
@@ -133,6 +136,7 @@ public:
   DECLARE_NOT_MOVABLE(Module);
 
   virtual void configure(const ConfigItem& item) = 0;
+  virtual void checkConfigErrors(std::function<void(const char* key, const char* function, const char* filename)> onMissingConfigItem) = 0;
   virtual void begin() = 0;
 
   void setKernel(ModuleKernel* kernel);
@@ -149,5 +153,10 @@ public:
 
   virtual void update();
 };
+
+#define CHECK_CONFIG_ERROR(callback, condition, key) \
+  if (!(condition)) { \
+    (callback)(key, __FUNCTION_NAME__, __FILENAME__);\
+  }
 
 #endif

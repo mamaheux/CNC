@@ -115,6 +115,32 @@ void test_BoundedQueue_popPush() {
   TEST_ASSERT_EQUAL(0, c.size());
 }
 
+void test_BoundedQueue_last() {
+  BoundedQueue<int, 2> a;
+  int va;
+
+  TEST_ASSERT_FALSE(a.last(va));
+
+  TEST_ASSERT_TRUE(a.push(1));
+  TEST_ASSERT_TRUE(a.last(va));
+  TEST_ASSERT_EQUAL(1, va);
+
+  TEST_ASSERT_TRUE(a.push(2));
+  TEST_ASSERT_TRUE(a.last(va));
+  TEST_ASSERT_EQUAL(2, va);
+
+  TEST_ASSERT_TRUE(a.pop(va));
+  TEST_ASSERT_TRUE(a.pop(va));
+
+  TEST_ASSERT_TRUE(a.push(3));
+  TEST_ASSERT_TRUE(a.last(va));
+  TEST_ASSERT_EQUAL(3, va);
+
+  TEST_ASSERT_TRUE(a.push(4));
+  TEST_ASSERT_TRUE(a.last(va));
+  TEST_ASSERT_EQUAL(4, va);
+}
+
 void test_BoundedQueue_isEmpty() {
   BoundedQueue<int, 1> a;
   BoundedQueue<int, 2> b;

@@ -10,6 +10,9 @@ FileSystem::FileSystem() {
 void FileSystem::configure(const ConfigItem& item) {
 }
 
+void FileSystem::checkConfigErrors(std::function<void(const char*, const char*, const char*)> onMissingConfigItem) {
+}
+
 void FileSystem::begin() {
   m_kernel->registerToEvent(ModuleEventType::RAW_COMMAND, this);
   m_kernel->registerToEvent(ModuleEventType::MCODE_COMMAND, this);

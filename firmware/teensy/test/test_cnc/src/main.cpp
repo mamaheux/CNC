@@ -8,6 +8,7 @@
 #include "../include/config/test_PwmOutputConfig.h"
 
 #include "../include/math/test_FixedPoint.h"
+#include "../include/math/test_Range.h"
 #include "../include/math/test_Vector2.h"
 #include "../include/math/test_Vector3.h"
 #include "../include/math/test_ZRotation.h"
@@ -26,6 +27,7 @@
 
 void testCollections() {
   RUN_TEST(test_BoundedQueue_popPush);
+  RUN_TEST(test_BoundedQueue_last);
   RUN_TEST(test_BoundedQueue_isEmpty);
   RUN_TEST(test_BoundedQueue_isFull);
   RUN_TEST(test_BoundedQueue_size);
@@ -121,6 +123,8 @@ void testMath() {
   RUN_TEST(test_FixedPointQ31_32_operatorLessThanOrEqualTo);
   RUN_TEST(test_FixedPointQ31_32_operatorGreaterThan);
   RUN_TEST(test_FixedPointQ31_32_operatorGreaterThanOrEqualTo);
+
+  RUN_TEST(test_InclusiveRange3);
 
   RUN_TEST(test_Vector2_constructor);
   RUN_TEST(test_Vector2_dot);

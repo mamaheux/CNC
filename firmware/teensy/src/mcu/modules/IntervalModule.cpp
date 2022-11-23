@@ -3,21 +3,21 @@
 #include <Arduino.h>
 
 IntervalModule::IntervalModule() :
-  m_updatePeriodMs(0), // As fast as possible
-  m_updateLastTimeMs(0)
+  m_updatePeriodUs(0), // As fast as possible
+  m_updateLastTimeUs(0)
 {
 }
 
 void IntervalModule::update() {
-  uint32_t currentTimeMs = millis();
-  uint32_t elapsedMs = (currentTimeMs - m_updateLastTimeMs);
-  if (elapsedMs >= m_updatePeriodMs) {
-    m_updateLastTimeMs = currentTimeMs;
-    onUpdate(elapsedMs);
+  uint32_t currentTimeUs = micros();
+  uint32_t elapsedUs = (currentTimeUs - m_updateLastTimeUs);
+  if (elapsedUs >= m_updatePeriodUs) {
+    m_updateLastTimeUs = currentTimeUs;
+    onUpdate(elapsedUs);
   }
 }
 
-void IntervalModule::setUpdatePeriodMs(uint32_t updatePeriodMs) {
-  m_updatePeriodMs = updatePeriodMs;
-  m_updateLastTimeMs = millis();
+void IntervalModule::setUpdatePeriodUs(uint32_t updatePeriodUs) {
+  m_updatePeriodUs = updatePeriodUs;
+  m_updateLastTimeUs = micros();
 }

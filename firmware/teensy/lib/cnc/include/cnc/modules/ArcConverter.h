@@ -29,7 +29,7 @@ class ArcConverter : public Module {
   size_t m_segmentCount;
   size_t m_segmentIndex;
 
-  float m_maxError;
+  tl::optional<float> m_maxError;
 
   CoordinateTransformer* m_coordinateTransformer;
   bool m_isIncrementalArcDistanceMode;
@@ -39,11 +39,13 @@ class ArcConverter : public Module {
 
 public:
   ArcConverter(CoordinateTransformer* coordinateTransformer);
+  ~ArcConverter() override = default;
 
   DECLARE_NOT_COPYABLE(ArcConverter);
   DECLARE_NOT_MOVABLE(ArcConverter);
 
   void configure(const ConfigItem& item) override;
+  void checkConfigErrors(std::function<void(const char*, const char*, const char*)> onMissingConfigItem) override;
   void begin() override;
 
   CommandResult onGCodeCommandReceived(const GCode& gcode, CommandSource source, uint32_t commandId) override;

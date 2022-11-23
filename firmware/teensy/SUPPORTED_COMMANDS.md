@@ -106,7 +106,7 @@
 | `M957`     | Print the spindle speed (RPM)                                                          |                   | `M957`           | Yes     |
 | `M958`     | Print the spindle PID gain values and set the spindle PID gain values.                 | P, I, D           | `M958 P0.1 I0.2` | Yes     |
 
-## Supported G-Code Parameter Names
+## Supported M-Code Parameter Names
 - X
 - Y
 - Z

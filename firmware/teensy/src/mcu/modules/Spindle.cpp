@@ -14,12 +14,11 @@ constexpr const char* PWM_FREQUENCY_KEY = "spindle.pwm_frequency";
 constexpr const char* P_GAIN_KEY = "spindle.control.p";
 constexpr const char* I_GAIN_KEY = "spindle.control.i";
 constexpr const char* D_GAIN_KEY = "spindle.control.d";
-constexpr const char* CONTROL_PERIOD_MS_KEY = "spindle.control.period_ms";
+constexpr const char* CONTROL_PERIOD_US_KEY = "spindle.control.period_us";
 
 constexpr const char* RPM_DECAY_KEY = "spindle.rpm.decay";
-
 constexpr const char* PULSE_PER_ROTATION_KEY = "spindle.feedback.pulse_per_rotation";
-
+constexpr const char* MAX_CUMULATIVE_ERROR_KEY = "spindle.max_cumulative_error";
 
 constexpr const char* MISSING_SPINDLE_SPEED_COMMAND_ERROR_MESSAGE = "The spindle speed is missing.";
 
@@ -66,8 +65,8 @@ void Spindle::configure(const ConfigItem& item) {
   else if (strcmp(item.getKey(), D_GAIN_KEY) == 0) {
     m_d = item.getValueFloat();
   }
-  else if (strcmp(item.getKey(), CONTROL_PERIOD_MS_KEY) == 0) {
-    m_controlPeriodMs = item.getValueInt();
+  else if (strcmp(item.getKey(), CONTROL_PERIOD_US_KEY) == 0) {
+    m_controlPeriodUs = item.getValueInt();
   }
   else if (strcmp(item.getKey(), RPM_DECAY_KEY) == 0) {
     m_rpmDecay = item.getValueInt();
@@ -75,26 +74,32 @@ void Spindle::configure(const ConfigItem& item) {
   else if (strcmp(item.getKey(), PULSE_PER_ROTATION_KEY) == 0) {
     m_pulsePerRotation = item.getValueFloat();
   }
+  else if (strcmp(item.getKey(), MAX_CUMULATIVE_ERROR_KEY) == 0) {
+    m_maxCumulativeError = item.getValueFloat();
+  }
+}
+
+void Spindle::checkConfigErrors(std::function<void(const char*, const char*, const char*)> onMissingConfigItem) {
+  CHECK_CONFIG_ERROR(onMissingConfigItem, m_enableConfig.has_value(), ENABLE_PIN_KEY);
+  CHECK_CONFIG_ERROR(onMissingConfigItem, m_feedbackConfig.has_value(), FEEDBACK_PIN_KEY);
+  CHECK_CONFIG_ERROR(onMissingConfigItem, m_pwmConfig.has_value(), PWM_PIN_KEY);
+  CHECK_CONFIG_ERROR(onMissingConfigItem, m_p.has_value(), P_GAIN_KEY);
+  CHECK_CONFIG_ERROR(onMissingConfigItem, m_i.has_value(), I_GAIN_KEY);
+  CHECK_CONFIG_ERROR(onMissingConfigItem, m_d.has_value(), D_GAIN_KEY);
+  CHECK_CONFIG_ERROR(onMissingConfigItem, m_controlPeriodUs.has_value(), CONTROL_PERIOD_US_KEY);
+  CHECK_CONFIG_ERROR(onMissingConfigItem, m_rpmDecay.has_value(), RPM_DECAY_KEY);
+  CHECK_CONFIG_ERROR(onMissingConfigItem, m_pulsePerRotation.has_value(), PULSE_PER_ROTATION_KEY);
+  CHECK_CONFIG_ERROR(onMissingConfigItem, m_maxCumulativeError.has_value(), MAX_CUMULATIVE_ERROR_KEY);
 }
 
 void Spindle::begin() {
-  CRITICAL_ERROR_CHECK_3(m_enableConfig.has_value(), "Missing item in config.properties (key = ", ENABLE_PIN_KEY, ")");
-  CRITICAL_ERROR_CHECK_3(m_feedbackConfig.has_value(), "Missing item in config.properties (key = ", FEEDBACK_PIN_KEY, ")");
-  CRITICAL_ERROR_CHECK_5(m_pwmConfig.has_value(), "Missing item in config.properties (key = ", PWM_PIN_KEY, " and ", PWM_FREQUENCY_KEY, ")");
-  CRITICAL_ERROR_CHECK_3(m_p.has_value(), "Missing item in config.properties (key = ", P_GAIN_KEY, ")");
-  CRITICAL_ERROR_CHECK_3(m_i.has_value(), "Missing item in config.properties (key = ", I_GAIN_KEY, ")");
-  CRITICAL_ERROR_CHECK_3(m_d.has_value(), "Missing item in config.properties (key = ", D_GAIN_KEY, ")");
-  CRITICAL_ERROR_CHECK_3(m_controlPeriodMs.has_value(), "Missing item in config.properties (key = ", CONTROL_PERIOD_MS_KEY, ")");
-  CRITICAL_ERROR_CHECK_3(m_rpmDecay.has_value(), "Missing item in config.properties (key = ", RPM_DECAY_KEY, ")");
-  CRITICAL_ERROR_CHECK_3(m_pulsePerRotation.has_value(), "Missing item in config.properties (key = ", PULSE_PER_ROTATION_KEY, ")");
-
   m_enable.begin(*m_enableConfig, false);
   m_feedback.begin(*m_feedbackConfig);
   pulseCount = &m_pulseCount;
   m_feedback.attachInterrupt(&onFeedbackPulse, DigitalInputInterruptMode::INTERRUPT_RISING);
   m_pwm.begin(*m_pwmConfig, 0);
 
-  setUpdatePeriodMs(*m_controlPeriodMs);
+  setUpdatePeriodUs(*m_controlPeriodUs);
   m_kernel->registerToEvent(ModuleEventType::MCODE_COMMAND, this);
 }
 
@@ -138,11 +143,11 @@ void Spindle::disable() {
   m_targetRpm = 0;
 }
 
-void Spindle::onUpdate(uint32_t elapsedMs) {
+void Spindle::onUpdate(uint32_t elapsedUs) {
   uint32_t pulseCount = m_pulseCount;
   m_pulseCount = 0;
 
-  float elapsedS = elapsedMs / 1000.f;
+  float elapsedS = elapsedUs / 1000000.f;
   float instantRpm = static_cast<float>(pulseCount) / *m_pulsePerRotation / elapsedS * 60;
   m_currentRpm = *m_rpmDecay * instantRpm + (1.f - *m_rpmDecay) * m_currentRpm;
 
@@ -152,6 +157,9 @@ void Spindle::onUpdate(uint32_t elapsedMs) {
 
   float error = m_targetRpm - m_currentRpm;
   m_cumulativeError += error;
+  if (m_cumulativeError > *m_maxCumulativeError) {
+    m_cumulativeError = *m_maxCumulativeError;
+  }
 
   float pwm = *m_p * error + *m_i * m_cumulativeError + *m_d * (error - m_previousError);
   pwm = max(0.f, min(pwm, 1.f));
@@ -173,6 +181,9 @@ CommandResult Spindle::enable(const MCode& mcode) {
 void Spindle::sendCurrentRpm(CommandSource source, uint32_t commandId) {
   StringPrint stringPrint(m_response, MAX_SPINDLE_RESPONSE_SIZE);
   stringPrint.print(m_currentRpm);
+  stringPrint.print('/');
+  stringPrint.print(m_targetRpm);
+  stringPrint.finish();
 
   m_kernel->sendCommandResponse(m_response, source, commandId, false);
 }

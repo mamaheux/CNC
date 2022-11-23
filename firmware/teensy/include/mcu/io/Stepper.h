@@ -3,12 +3,9 @@
 
 #include "mcu/io/DigitalOutput.h"
 
-#include <cstdint>
+#include <cnc/LinearBlock.h>
 
-enum class Direction : bool {
-  FORWARD = false,
-  BACKWARD = true
-};
+#include <cstdint>
 
 inline float directionToFloat(Direction direction) {
   constexpr float VALUES[] = { 1.f, -1.f };

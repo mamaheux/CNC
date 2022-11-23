@@ -5,11 +5,13 @@
 #include "mcu/modules/FileSystem.h"
 #include "mcu/modules/CommandSerial.h"
 #include "mcu/modules/CommandFile.h"
+#include "mcu/modules/Endstops.h"
 #include "mcu/modules/StepperController.h"
 #include "mcu/modules/Spindle.h"
 
 #include <cnc/modules/CoordinateTransformer.h>
 #include <cnc/modules/ArcConverter.h>
+#include <cnc/modules/Planner.h>
 
 #include <SD.h>
 
@@ -19,8 +21,10 @@ CommandFile commandFile;
 
 CoordinateTransformer coordinateTransformer;
 ArcConverter arcConverter(&coordinateTransformer);
+Planner planner(&coordinateTransformer, &arcConverter);
 
-StepperController stepperController(&coordinateTransformer);
+Endstops endstops;
+StepperController stepperController(&coordinateTransformer, &planner);
 Spindle spindle;
 
 Kernel kernel;
@@ -34,7 +38,9 @@ void setupKernel() {
 
   kernel.addModule(&coordinateTransformer);
   kernel.addModule(&arcConverter);
+  kernel.addModule(&planner);
 
+  kernel.addModule(&endstops);
   kernel.addModule(&stepperController);
   kernel.addModule(&spindle);
   kernel.begin();

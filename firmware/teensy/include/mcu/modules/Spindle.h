@@ -21,11 +21,11 @@ class Spindle : public IntervalModule {
   tl::optional<float> m_p;
   tl::optional<float> m_i;
   tl::optional<float> m_d;
-  tl::optional<uint32_t> m_controlPeriodMs;
+  tl::optional<uint32_t> m_controlPeriodUs;
 
   tl::optional<float> m_rpmDecay;
-
   tl::optional<float> m_pulsePerRotation;
+  tl::optional<float> m_maxCumulativeError;
 
   DigitalOutput m_enable;
   DigitalInput m_feedback;
@@ -48,30 +48,21 @@ public:
   DECLARE_NOT_MOVABLE(Spindle);
 
   void configure(const ConfigItem& item) override;
+  void checkConfigErrors(std::function<void(const char*, const char*, const char*)> onMissingConfigItem) override;
   void begin() override;
 
   CommandResult onMCodeCommandReceived(const MCode& mcode, CommandSource source, uint32_t commandId) override;
 
+protected:
   void enable(float targetRpm);
   void disable();
-  float currentRpm() const;
-  float targetRpm() const;
 
-protected:
-  void onUpdate(uint32_t elapsedMs) override;
+  void onUpdate(uint32_t elapsedUs) override;
 
   CommandResult enable(const MCode& mcode);
   void sendCurrentRpm(CommandSource source, uint32_t commandId);
   void updatePidGains(const MCode& mcode);
   void sendPidGains(CommandSource source, uint32_t commandId);
 };
-
-inline float Spindle::currentRpm() const {
-  return m_currentRpm;
-}
-
-inline float Spindle::targetRpm() const {
-  return m_targetRpm;
-}
 
 #endif
