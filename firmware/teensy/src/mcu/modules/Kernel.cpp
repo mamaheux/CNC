@@ -3,10 +3,10 @@
 #include "mcu/criticalError.h"
 #include "mcu/ConfigFile.h"
 
-constexpr const char* PARSING_ERROR_COMMAND_RESPONSE = "error:parsing";
-constexpr const char* PREVIOUS_COMMAND_NOT_COMPLETED_ERROR_COMMAND_RESPONSE = "error:previous_command_not_completed";
-constexpr const char* EXECUTING_ERROR_COMMAND_RESPONSE = "error:executing";
-constexpr const char* NOT_HANDLED_COMMAND_RESPONSE = "error:not_handled";
+constexpr const char* PARSING_ERROR_COMMAND_RESPONSE = "error parsing";
+constexpr const char* PREVIOUS_COMMAND_NOT_COMPLETED_ERROR_COMMAND_RESPONSE = "error previous_command_not_completed";
+constexpr const char* EXECUTING_ERROR_COMMAND_RESPONSE = "error executing";
+constexpr const char* NOT_HANDLED_COMMAND_RESPONSE = "error not_handled";
 
 Kernel::Kernel() : m_moduleCount(0) {
   for (size_t i = 0; i < MAX_MODULE_COUNT; i++) {
@@ -65,6 +65,8 @@ void Kernel::update() {
   for (size_t i = 0; i < m_moduleCount; i++) {
     m_modules[i]->update();
   }
+
+  // TODO check the source lock timeout
 }
 
 void Kernel::executeCommand(const char* line, CommandSource source, tl::optional<uint32_t>& commandId) {
@@ -82,17 +84,20 @@ void Kernel::executeCommand(const char* line, CommandSource source, tl::optional
     return;
   }
 
-  if (line[0] == '\0') {
+  char firstCharacter = '\0';
+  for (size_t i = 0; line[i] == ' '; i++) { firstCharacter = line[i + 1]; }
+
+  if (firstCharacter == '\0' || firstCharacter == '(' || firstCharacter == ';') {
     sendCommandResponse(OK_COMMAND_RESPONSE, source, *commandId);
   }
-  else if (line[0] == 'G' || line[0] == ' ') {
-    executeGCodeCommand(line, source, *commandId);
+  else if (firstCharacter == '$') {
+    executeSystemCommand(line, source, *commandId);
   }
-  else if (line[0] == 'M') {
+  else if (firstCharacter == 'M' || firstCharacter == 'm') {
     executeMCodeCommand(line, source, *commandId);
   }
   else {
-    executeSystemCommand(line, source, *commandId);
+    executeGCodeCommand(line, source, *commandId);
   }
 }
 
@@ -125,6 +130,7 @@ void Kernel::dispatchTargetPosition(const Vector3<float> machinePosition) {
 void Kernel::executeSystemCommand(const char* line, CommandSource source, uint32_t commandId) {
   SystemCommand command;
   ParsingResult result = m_systemCommandParser.parse(line, command);
+  // TODO add a lock for for homing depending on the source
   switch (result)
   {
   case ParsingResult::OK:
@@ -140,6 +146,7 @@ void Kernel::executeSystemCommand(const char* line, CommandSource source, uint32
 
 void Kernel::executeGCodeCommand(const char* line, CommandSource source, uint32_t commandId) {
   ParsingResult result = m_gcodeParser.parse(line, m_gcode);
+  // TODO add a lock for G code depending on the source
   switch (result)
   {
   case ParsingResult::OK:
@@ -155,6 +162,7 @@ void Kernel::executeGCodeCommand(const char* line, CommandSource source, uint32_
 
 void Kernel::executeMCodeCommand(const char* line, CommandSource source, uint32_t commandId) {
   ParsingResult result = m_mcodeParser.parse(line, m_mcode);
+  // TODO add a lock for M3, M5, M17, M18, M24, M32 depending on the source
   switch (result)
   {
   case ParsingResult::OK:
@@ -221,8 +229,10 @@ void Kernel::handleAgregatedCommandResult(CommandResult result, CommandSource so
   case CommandResultType::ERROR:
     sendCommandResponse(EXECUTING_ERROR_COMMAND_RESPONSE, source, commandId, false);
     sendCommandResponse(result.errorMessage(), source, commandId);
+    break;
   case CommandResultType::NOT_HANDLED:
     sendCommandResponse(NOT_HANDLED_COMMAND_RESPONSE, source, commandId);
+    break;
   case CommandResultType::OK_RESPONSE_SENT:
   case CommandResultType::PENDING:
     break;

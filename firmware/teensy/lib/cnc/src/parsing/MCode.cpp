@@ -66,7 +66,7 @@ ParsingResult MCodeParser::parse(const char* line, MCode& mcode) {
 }
 
 ParsingResult MCodeParser::parseNormalMCode(char* start, MCode& mcode) {
-  if (start[0] != 'M') {
+  if (start[0] != 'M' && start[0] != 'm') {
     return ParsingResult::ERROR;
   }
 
@@ -102,24 +102,31 @@ ParsingResult MCodeParser::parseParameters(char* start, MCode& mcode) {
   case ' ':
     return parseParameters(start + 1, mcode);
   case 'X':
+  case 'x':
     mcode.m_x = atof(start + 1);
     break;
   case 'Y':
+  case 'y':
     mcode.m_y = atof(start + 1);
     break;
   case 'Z':
+  case 'z':
     mcode.m_z = atof(start + 1);
     break;
   case 'S':
+  case 's':
     mcode.m_s = atof(start + 1);
     break;
   case 'P':
+  case 'p':
     mcode.m_p = atof(start + 1);
     break;
   case 'I':
+  case 'i':
     mcode.m_i = atof(start + 1);
     break;
   case 'D':
+  case 'd':
     mcode.m_d = atof(start + 1);
     break;
   default:

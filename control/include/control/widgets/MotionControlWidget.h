@@ -1,6 +1,9 @@
 #ifndef CONTROL_WIDGETS_MOTION_CONTROL_WIDGET_H
 #define CONTROL_WIDGETS_MOTION_CONTROL_WIDGET_H
 
+#include "control/Cnc.h"
+#include "control/models/SettingsModel.h"
+
 #include <QWidget>
 #include <QPushButton>
 #include <QButtonGroup>
@@ -12,12 +15,17 @@ class MotionControlWidget : public QWidget
 {
     Q_OBJECT
 
+    Cnc* m_cnc;
+
 public:
-    explicit MotionControlWidget(QWidget* parent = nullptr);
+    MotionControlWidget(SettingsModel* settings, Cnc* cnc, QWidget* parent = nullptr);
 
 private slots:
-    void onEnableStepperButtonPressed();
-    void onDisableStepperButtonPressed();
+    void onCncConnected();
+    void onCncDisconnected();
+
+    void onEnableSteppersButtonPressed();
+    void onDisableSteppersButtonPressed();
 
     void onXBackwardButtonPressed();
     void onXForwardButtonPressed();
@@ -29,12 +37,14 @@ private slots:
     void onSpeedFactorSliderValueChanged(int value);
     void onResetSpeedFactorButtonPressed();
 
+    void onSettingsChanged(const SettingsModel& settings);
+
 private:
-    void createUi();
+    void createUi(SettingsModel* settings);
 
     // UI members
-    QPushButton* m_enableStepperButton;
-    QPushButton* m_disableStepperButton;
+    QPushButton* m_enableSteppersButton;
+    QPushButton* m_disableSteppersButton;
 
     QPushButton* m_xBackwardButton;
     QPushButton* m_xForwardButton;
@@ -48,7 +58,7 @@ private:
     QPushButton* m_10DistanceButton;
     QPushButton* m_100DistanceButton;
     QButtonGroup* m_distanceButtonGroup;
-    QSpinBox* m_feedrateSpinBox;
+    QSpinBox* m_feedRateSpinBox;
 
     QSlider* m_speedFactorSlider;
     QLabel* m_speedFactorLabel;

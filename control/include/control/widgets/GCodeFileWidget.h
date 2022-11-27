@@ -1,6 +1,8 @@
 #ifndef CONTROL_WIDGETS_GCODE_WIDGET_H
 #define CONTROL_WIDGETS_GCODE_WIDGET_H
 
+#include "control/Cnc.h"
+
 #include <QWidget>
 #include <QPushButton>
 #include <QLineEdit>
@@ -9,10 +11,15 @@ class GCodeFileWidget : public QWidget
 {
     Q_OBJECT
 
+    Cnc* m_cnc;
+
 public:
-    explicit GCodeFileWidget(QWidget* parent = nullptr);
+    explicit GCodeFileWidget(Cnc* cnc, QWidget* parent = nullptr);
 
 private slots:
+    void onCncConnected();
+    void onCncDisconnected();
+
     void onLoadFileButtonPressed();
     void onStartButtonPressed();
     void onPauseButtonPressed();

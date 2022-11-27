@@ -3,19 +3,32 @@
 #include <QGridLayout>
 #include <QLabel>
 
-SpindleStatusWidget::SpindleStatusWidget(QWidget* parent) : QWidget(parent)
+SpindleStatusWidget::SpindleStatusWidget(Cnc* cnc, QWidget* parent) : QWidget(parent), m_cnc(cnc)
 {
     createUi();
 
-    m_timer = new QTimer;
-    m_timer->setInterval(100);
-    connect(m_timer, &QTimer::timeout, this, &SpindleStatusWidget::updateChart);
-    m_timer->start();
+    connect(m_cnc, &Cnc::cncConnected, this, &SpindleStatusWidget::onCncConnected);
+    connect(m_cnc, &Cnc::cncDisconnected, this, &SpindleStatusWidget::onCncDisconnected);
+    connect(m_cnc, &Cnc::currentRpmChanged, this, &SpindleStatusWidget::onCurrentRpmChanged);
+
+    onCncDisconnected();
 }
 
-void SpindleStatusWidget::updateChart()
+void SpindleStatusWidget::onCncConnected()
 {
-    m_lastRpmValues.append(rand() % 20000);
+    setEnabled(true);
+}
+
+void SpindleStatusWidget::onCncDisconnected()
+{
+    setEnabled(false);
+    m_lastRpmValues.clear();
+    onCurrentRpmChanged(0.f);
+}
+
+void SpindleStatusWidget::onCurrentRpmChanged(float rpm)
+{
+    m_lastRpmValues.append(rpm);
     if (m_lastRpmValues.size() > 200)
     {
         m_lastRpmValues.removeFirst();
@@ -51,8 +64,10 @@ void SpindleStatusWidget::createUi()
 
     auto globalLayout = new QGridLayout;
     globalLayout->setRowMinimumHeight(0, MINIMUM_ROW_HEIGHT);
+    globalLayout->setColumnStretch(0, 0);
+    globalLayout->setColumnStretch(1, 1);
 
-    globalLayout->addWidget(new QLabel("Spindle RPM"), 0, 0);
+    globalLayout->addWidget(new QLabel("Current RPM:"), 0, 0);
     globalLayout->addWidget(m_rpmLcdNumber, 0, 1);
 
     globalLayout->addWidget(m_rpmChartView, 1, 0, 1, 2);

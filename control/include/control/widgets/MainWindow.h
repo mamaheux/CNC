@@ -1,7 +1,9 @@
 #ifndef CONTROL_WIDGETS_MAIN_WINDOW_H
 #define CONTROL_WIDGETS_MAIN_WINDOW_H
 
-#include "control/widgets/PrinterWidget.h"
+#include "control/Cnc.h"
+#include "control/models/SettingsModel.h"
+#include "control/widgets/CncWidget.h"
 
 #include "control/widgets/CoordinateWidget.h"
 #include "control/widgets/MotionControlWidget.h"
@@ -18,14 +20,17 @@ class MainWindow : public QWidget
 {
     Q_OBJECT
 
+    SettingsModel* m_settings;
+    Cnc* m_cnc;
+
 public:
-    explicit MainWindow(QWidget* parent = nullptr);
+    explicit MainWindow(SettingsModel* settings, Cnc* cnc, QWidget* parent = nullptr);
 
 private:
     void createUi();
 
     // UI members
-    PrinterWidget* m_printerWidget;
+    CncWidget* m_cncWidget;
 
     CoordinateWidget* m_coordinateWidget;
     MotionControlWidget* m_motionControlWidget;

@@ -19,7 +19,7 @@ void FileSystem::begin() {
 }
 
 RawCommandResult FileSystem::onRawCommandReceived(const char* line, CommandSource source, uint32_t commandId) {
-  if (m_newFile && source != CommandSource::FILE_SOURCE) {
+  if (m_newFile && source != CommandSource::FILE_SOURCE) { // Check the source of the M28 command
     writeOrStopNewFile(line, source, commandId);
     return RawCommandResult::HANDLED;
   }

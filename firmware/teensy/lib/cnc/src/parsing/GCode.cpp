@@ -73,7 +73,7 @@ ParsingResult GCodeParser::parse(const char* line, GCode& gcode) {
   else if (m_lineBuffer[0] == ' ') {
     return parseModalMove(gcode);
   }
-  else if (lineSize >= 3 && m_lineBuffer[0] == 'G' && m_lineBuffer[1] == '5' && m_lineBuffer[2] == '3') {
+  else if (lineSize >= 3 && (m_lineBuffer[0] == 'G' || m_lineBuffer[0] == 'g') && m_lineBuffer[1] == '5' && m_lineBuffer[2] == '3') {
     return parseG53(gcode, lineSize);
   }
 
@@ -119,7 +119,7 @@ ParsingResult GCodeParser::parseG53FollowingLine(GCode& gcode) {
 }
 
 ParsingResult GCodeParser::parseNormalGCode(char* start, GCode& gcode) {
-  if (start[0] != 'G') {
+  if (start[0] != 'G' && start[0] != 'g') {
     return ParsingResult::ERROR;
   }
 
@@ -151,36 +151,47 @@ ParsingResult GCodeParser::parseParameters(char* start, GCode& gcode) {
   case ' ':
     return parseParameters(start + 1, gcode);
   case 'X':
+  case 'x':
     gcode.m_x = atof(start + 1);
     break;
   case 'Y':
+  case 'y':
     gcode.m_y = atof(start + 1);
     break;
   case 'Z':
+  case 'z':
     gcode.m_z = atof(start + 1);
     break;
   case 'F':
+  case 'f':
     gcode.m_f = atof(start + 1);
     break;
   case 'I':
+  case 'i':
     gcode.m_i = atof(start + 1);
     break;
   case 'J':
+  case 'j':
     gcode.m_j = atof(start + 1);
     break;
   case 'K':
+  case 'k':
     gcode.m_k = atof(start + 1);
     break;
   case 'S':
+  case 's':
     gcode.m_s = atof(start + 1);
     break;
   case 'P':
+  case 'p':
     gcode.m_p = atof(start + 1);
     break;
   case 'R':
+  case 'r':
     gcode.m_r = atof(start + 1);
     break;
   case 'L':
+  case 'l':
     l = atoi(start + 1);
     if  (l >= 0) {
       gcode.m_l = l;

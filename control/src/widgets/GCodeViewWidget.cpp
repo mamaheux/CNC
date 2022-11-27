@@ -30,13 +30,59 @@ void GCodeViewWidget::resizeGL(int w, int h)
 void GCodeViewWidget::paintGL()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glLineWidth(2.0);
 
-    glBegin(GL_TRIANGLES);
+    glBegin(GL_LINES);
+    // Line 1
     glColor3f(1.0, 0.0, 0.0);
     glVertex3f(-0.5, -0.5, 0);
+    glVertex3f(0.5, -0.5, 0);
+
+    // Line 2
     glColor3f(0.0, 1.0, 0.0);
     glVertex3f(0.5, -0.5, 0);
-    glColor3f(0.0, 0.0, 1.0);
     glVertex3f(0.0, 0.5, 0);
     glEnd();
+
+    // TODO print the bottom of the CNC
+}
+
+bool GCodeViewWidget::event(QEvent* event)
+{
+    switch (event->type())
+    {
+        case QEvent::TouchBegin:
+        case QEvent::TouchEnd:
+        case QEvent::TouchUpdate:
+        case QEvent::TouchCancel:
+            touchEvent(reinterpret_cast<QTouchEvent*>(event));
+            return true;
+        default:
+            return QOpenGLWidget::event(event);
+    }
+}
+
+void GCodeViewWidget::touchEvent(QTouchEvent* event)
+{
+    // TODO
+}
+
+void GCodeViewWidget::mousePressEvent(QMouseEvent* event)
+{
+    // TODO
+}
+
+void GCodeViewWidget::mouseReleaseEvent(QMouseEvent* event)
+{
+    // TODO
+}
+
+void GCodeViewWidget::mouseMoveEvent(QMouseEvent* event)
+{
+    // TODO
+}
+
+void GCodeViewWidget::wheelEvent(QWheelEvent* event)
+{
+    // TODO
 }

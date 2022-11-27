@@ -29,6 +29,7 @@ class GCode {
   tl::optional<uint32_t> m_subcode;
 
   bool m_isMachineCoordinateSystem; // G53
+
 public:
   GCode();
 

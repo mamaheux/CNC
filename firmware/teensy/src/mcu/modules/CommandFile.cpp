@@ -8,9 +8,6 @@
 
 using namespace std;
 
-constexpr const char* ERROR_RESPONSE_PREFIX = "error:";
-constexpr size_t ERROR_RESPONSE_PREFIX_SIZE = 6;
-
 constexpr const char* FILE_ALREADY_SELECTED_COMMAND_ERROR_MESSAGE = "A file is already selected.";
 constexpr const char* MISSING_PATH_COMMAND_ERROR_MESSAGE = "The path is missing.";
 constexpr const char* INVALID_PATH_COMMAND_ERROR_MESSAGE = "The path is invalid.";
@@ -86,6 +83,7 @@ CommandResult CommandFile::onMCodeCommandReceived(const MCode& mcode, CommandSou
   }
   else if (mcode.code() == 27 && mcode.subcode() == tl::nullopt) {
     sendProgress(source, commandId);
+    return CommandResult::okResponseSent();
   }
   else if (mcode.code() == 32 && mcode.subcode() == tl::nullopt) {
     openFiles(mcode);
@@ -162,10 +160,12 @@ void CommandFile::closeFiles() {
 
 void CommandFile::sendProgress(CommandSource source, uint32_t commandId) {
   StringPrint stringPrint(m_response, MAX_COMMAND_FILE_RESPONSE_SIZE);
+  stringPrint.print(OK_COMMAND_RESPONSE);
+  stringPrint.print(" ");
   stringPrint.print(m_completedLineCount);
   stringPrint.print("/");
   stringPrint.print(m_lineCount);
   stringPrint.finish();
 
-  m_kernel->sendCommandResponse(m_response, source, commandId, false);
+  m_kernel->sendCommandResponse(m_response, source, commandId);
 }

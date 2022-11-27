@@ -5,9 +5,25 @@
 
 #include <QFileDialog>
 
-GCodeFileWidget::GCodeFileWidget(QWidget* parent) : QWidget(parent)
+GCodeFileWidget::GCodeFileWidget(Cnc* cnc, QWidget* parent) : QWidget(parent), m_cnc(cnc)
 {
     createUi();
+
+    connect(m_cnc, &Cnc::cncConnected, this, &GCodeFileWidget::onCncConnected);
+    connect(m_cnc, &Cnc::cncDisconnected, this, &GCodeFileWidget::onCncDisconnected);
+
+    onCncDisconnected();
+}
+
+void GCodeFileWidget::onCncConnected()
+{
+}
+
+void GCodeFileWidget::onCncDisconnected()
+{
+    m_startButton->setEnabled(false);
+    m_pauseButton->setEnabled(false);
+    m_abortButton->setEnabled(false);
 }
 
 void GCodeFileWidget::onLoadFileButtonPressed()
@@ -58,7 +74,6 @@ void GCodeFileWidget::createUi()
     connect(m_abortButton, &QPushButton::pressed, this, &GCodeFileWidget::onAbortButtonPressed);
 
     auto globalLayout = new QHBoxLayout;
-    globalLayout->addWidget(new QLabel("GCode: "), 0);
     globalLayout->addWidget(m_loadFileButton, 0);
     globalLayout->addWidget(m_pathLineEdit, 1);
     globalLayout->addWidget(m_startButton, 0);

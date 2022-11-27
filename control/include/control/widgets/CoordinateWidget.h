@@ -1,6 +1,8 @@
 #ifndef CONTROL_WIDGETS_STATUS_WIDGET_H
 #define CONTROL_WIDGETS_STATUS_WIDGET_H
 
+#include "control/Cnc.h"
+
 #include <QWidget>
 #include <QComboBox>
 #include <QLCDNumber>
@@ -10,10 +12,17 @@ class CoordinateWidget : public QWidget
 {
     Q_OBJECT
 
+    Cnc* m_cnc;
+
 public:
-    explicit CoordinateWidget(QWidget* parent = nullptr);
+    explicit CoordinateWidget(Cnc* cnc, QWidget* parent = nullptr);
 
 private slots:
+    void onCncConnected();
+    void onCncDisconnected();
+    void onCurrentWorkPositionChanged(float x, float y, float z);
+    void onCurrentMachinePositionChanged(float x, float y, float z);
+
     void onCoordinateSystemComboBoxIndexChanged(int index);
     void onZeroAllButtonPressed();
     void onZeroXButtonPressed();

@@ -102,9 +102,11 @@ CommandResult StepperController::onMCodeCommandReceived(const MCode& mcode, Comm
   }
   else if (mcode.code() == 114 && mcode.subcode() == 1u) {
     sendRealTimePositionInSelectedCoordinateSystem(source, commandId);
+    return CommandResult::okResponseSent();
   }
   else if (mcode.code() == 114 && mcode.subcode() == 3u) {
     sendRealTimePositionInMachineCoordinateSystem(source, commandId);
+    return CommandResult::okResponseSent();
   }
   else {
     return CommandResult::notHandled();
@@ -131,7 +133,8 @@ void StepperController::sendRealTimePositionInMachineCoordinateSystem(CommandSou
 
 void StepperController::sendPosition(CommandSource source, uint32_t commandId, const Vector3<float> position) {
   StringPrint stringPrint(m_response, MAX_STEPPER_CONTROLLER_RESPONSE_SIZE);
-  stringPrint.print("X");
+  stringPrint.print(OK_COMMAND_RESPONSE);
+  stringPrint.print(" X");
   stringPrint.print(position.x);
   stringPrint.print(" Y");
   stringPrint.print(position.y);
@@ -139,5 +142,5 @@ void StepperController::sendPosition(CommandSource source, uint32_t commandId, c
   stringPrint.print(position.z);
   stringPrint.finish();
 
-  m_kernel->sendCommandResponse(m_response, source, commandId, false);
+  m_kernel->sendCommandResponse(m_response, source, commandId);
 }

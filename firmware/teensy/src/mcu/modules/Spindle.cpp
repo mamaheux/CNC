@@ -112,10 +112,12 @@ CommandResult Spindle::onMCodeCommandReceived(const MCode& mcode, CommandSource 
   }
   else if (mcode.code() == 957 && mcode.subcode() == tl::nullopt) {
     sendCurrentRpm(source, commandId);
+    return CommandResult::okResponseSent();
   }
   else if (mcode.code() == 958 && mcode.subcode() == tl::nullopt) {
     updatePidGains(mcode);
     sendPidGains(source, commandId);
+    return CommandResult::okResponseSent();
   }
   else {
     return CommandResult::notHandled();
@@ -129,7 +131,7 @@ void Spindle::enable(float targetRpm) {
     disable();
   }
   else {
-    m_targetRpm = 0;
+    m_targetRpm = targetRpm;
     m_cumulativeError = 0.f;
     m_previousError = 0.f;
     m_enable.write(true);
@@ -180,12 +182,14 @@ CommandResult Spindle::enable(const MCode& mcode) {
 
 void Spindle::sendCurrentRpm(CommandSource source, uint32_t commandId) {
   StringPrint stringPrint(m_response, MAX_SPINDLE_RESPONSE_SIZE);
+  stringPrint.print(OK_COMMAND_RESPONSE);
+  stringPrint.print(' ');
   stringPrint.print(m_currentRpm);
   stringPrint.print('/');
   stringPrint.print(m_targetRpm);
   stringPrint.finish();
 
-  m_kernel->sendCommandResponse(m_response, source, commandId, false);
+  m_kernel->sendCommandResponse(m_response, source, commandId);
 }
 
 void Spindle::updatePidGains(const MCode& mcode) {
@@ -202,6 +206,8 @@ void Spindle::updatePidGains(const MCode& mcode) {
 
 void Spindle::sendPidGains(CommandSource source, uint32_t commandId) {
   StringPrint stringPrint(m_response, MAX_SPINDLE_RESPONSE_SIZE);
+  stringPrint.print(OK_COMMAND_RESPONSE);
+  stringPrint.print(' ');
   stringPrint.print("P");
   stringPrint.print(*m_p);
   stringPrint.print(" I");
@@ -210,5 +216,5 @@ void Spindle::sendPidGains(CommandSource source, uint32_t commandId) {
   stringPrint.print(*m_d);
   stringPrint.finish();
 
-  m_kernel->sendCommandResponse(m_response, source, commandId, false);
+  m_kernel->sendCommandResponse(m_response, source, commandId);
 }

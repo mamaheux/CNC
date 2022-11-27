@@ -11,34 +11,66 @@ static void setPositionLcdNumber(QLCDNumber* lcdNumber, double value)
     lcdNumber->display(QString("%1").arg(value, LCD_DISPLAY_NUM_DIGITS, 'f', 2, QChar('0')));
 }
 
-CoordinateWidget::CoordinateWidget(QWidget* parent) : QWidget(parent)
+CoordinateWidget::CoordinateWidget(Cnc* cnc, QWidget* parent) : QWidget(parent), m_cnc(cnc)
 {
     createUi();
+
+    connect(m_cnc, &Cnc::cncConnected, this, &CoordinateWidget::onCncConnected);
+    connect(m_cnc, &Cnc::cncDisconnected, this, &CoordinateWidget::onCncDisconnected);
+    connect(m_cnc, &Cnc::currentWorkPositionChanged, this, &CoordinateWidget::onCurrentWorkPositionChanged);
+    connect(m_cnc, &Cnc::currentMachinePositionChanged, this, &CoordinateWidget::onCurrentMachinePositionChanged);
+
+    onCncDisconnected();
+}
+
+void CoordinateWidget::onCncConnected()
+{
+    setEnabled(true);
+    m_cnc->setCoordinateSystem(m_coordinateSystemComboBox->currentData().toInt());
+}
+
+void CoordinateWidget::onCncDisconnected()
+{
+    setEnabled(false);
+}
+
+void CoordinateWidget::onCurrentWorkPositionChanged(float x, float y, float z)
+{
+    setPositionLcdNumber(m_xWorkPositionLcdNumber, x);
+    setPositionLcdNumber(m_yWorkPositionLcdNumber, y);
+    setPositionLcdNumber(m_zWorkPositionLcdNumber, z);
+}
+
+void CoordinateWidget::onCurrentMachinePositionChanged(float x, float y, float z)
+{
+    setPositionLcdNumber(m_xMachinePositionLcdNumber, x);
+    setPositionLcdNumber(m_yMachinePositionLcdNumber, y);
+    setPositionLcdNumber(m_zMachinePositionLcdNumber, z);
 }
 
 void CoordinateWidget::onCoordinateSystemComboBoxIndexChanged(int index)
 {
-    // TODO
+    m_cnc->setCoordinateSystem(m_coordinateSystemComboBox->currentData().toInt());
 }
 
 void CoordinateWidget::onZeroAllButtonPressed()
 {
-    // TODO
+    m_cnc->zeroXYZ();
 }
 
 void CoordinateWidget::onZeroXButtonPressed()
 {
-    // TODO
+    m_cnc->zeroX();
 }
 
 void CoordinateWidget::onZeroYButtonPressed()
 {
-    // TODO
+    m_cnc->zeroY();
 }
 
 void CoordinateWidget::onZeroZButtonPressed()
 {
-    // TODO
+    m_cnc->zeroZ();
 }
 
 void CoordinateWidget::createUi()
@@ -47,15 +79,15 @@ void CoordinateWidget::createUi()
     constexpr int MINIMUM_POSITION_COLUMN_WIDTH = 150;
 
     m_coordinateSystemComboBox = new QComboBox;
-    m_coordinateSystemComboBox->addItem("Coordinate System 1");
-    m_coordinateSystemComboBox->addItem("Coordinate System 2");
-    m_coordinateSystemComboBox->addItem("Coordinate System 3");
-    m_coordinateSystemComboBox->addItem("Coordinate System 4");
-    m_coordinateSystemComboBox->addItem("Coordinate System 5");
-    m_coordinateSystemComboBox->addItem("Coordinate System 6");
-    m_coordinateSystemComboBox->addItem("Coordinate System 7");
-    m_coordinateSystemComboBox->addItem("Coordinate System 8");
-    m_coordinateSystemComboBox->addItem("Coordinate System 9");
+    m_coordinateSystemComboBox->addItem("Coordinate System 1", 1);
+    m_coordinateSystemComboBox->addItem("Coordinate System 2", 2);
+    m_coordinateSystemComboBox->addItem("Coordinate System 3", 3);
+    m_coordinateSystemComboBox->addItem("Coordinate System 4", 4);
+    m_coordinateSystemComboBox->addItem("Coordinate System 5", 5);
+    m_coordinateSystemComboBox->addItem("Coordinate System 6", 6);
+    m_coordinateSystemComboBox->addItem("Coordinate System 7", 7);
+    m_coordinateSystemComboBox->addItem("Coordinate System 8", 8);
+    m_coordinateSystemComboBox->addItem("Coordinate System 9", 9);
     connect(m_coordinateSystemComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged),
             this, &CoordinateWidget::onCoordinateSystemComboBoxIndexChanged);
 

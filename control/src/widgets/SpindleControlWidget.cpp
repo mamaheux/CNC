@@ -4,31 +4,56 @@
 #include <QHBoxLayout>
 #include <QLabel>
 
-constexpr int MINIMUM_SPINDLE_RPM = 100;
-constexpr int MAXIMUM_SPINDLE_RPM = 20000;
-constexpr int DEFAULT_SPINDLE_RPM = 5000;
-
-SpindleControlWidget::SpindleControlWidget(QWidget* parent) : QWidget(parent)
+SpindleControlWidget::SpindleControlWidget(SettingsModel* settings, Cnc* cnc, QWidget* parent) : QWidget(parent), m_cnc(cnc)
 {
-    createUi();
+    createUi(settings);
+    connect(settings, &SettingsModel::settingsChanged, this, &SpindleControlWidget::onSettingsChanged);
+    connect(m_cnc, &Cnc::cncConnected, this, &SpindleControlWidget::onCncConnected);
+    connect(m_cnc, &Cnc::cncDisconnected, this, &SpindleControlWidget::onCncDisconnected);
+
+    onCncDisconnected();
+}
+
+void SpindleControlWidget::onCncConnected()
+{
+    setEnabled(true);
+    m_enableSpindleButton->setEnabled(true);
+    m_disableSpindleButton->setEnabled(false);
+}
+
+void SpindleControlWidget::onCncDisconnected()
+{
+    setEnabled(false);
 }
 
 void SpindleControlWidget::onEnableSpindleButtonPressed()
 {
-    // TODO
+    m_cnc->enableSpindle(m_spindleRpmSpinBox->value());
+    m_enableSpindleButton->setEnabled(false);
+    m_disableSpindleButton->setEnabled(true);
 }
 
 void SpindleControlWidget::onDisableSpindleButtonPressed()
 {
-    // TODO
+    m_cnc->disableSpindle();
+    m_enableSpindleButton->setEnabled(true);
+    m_disableSpindleButton->setEnabled(false);
 }
 
 void SpindleControlWidget::onSpindleRpmSpinBoxValueChanged(int value)
 {
-    // TODO
+    if (!m_enableSpindleButton->isEnabled())
+    {
+        m_cnc->enableSpindle(m_spindleRpmSpinBox->value());
+    }
 }
 
-void SpindleControlWidget::createUi()
+void SpindleControlWidget::onSettingsChanged(const SettingsModel& settings)
+{
+    m_spindleRpmSpinBox->setRange(settings.minimumSpindleRpm(), settings.maximumSpindleRpm());
+}
+
+void SpindleControlWidget::createUi(SettingsModel* settings)
 {
     m_enableSpindleButton = new QPushButton("Enable Spindle");
     connect(m_enableSpindleButton, &QPushButton::pressed, this, &SpindleControlWidget::onEnableSpindleButtonPressed);
@@ -42,12 +67,12 @@ void SpindleControlWidget::createUi()
 
 
     m_spindleRpmSpinBox = new QSpinBox;
-    m_spindleRpmSpinBox->setRange(MINIMUM_SPINDLE_RPM, MAXIMUM_SPINDLE_RPM);
-    m_spindleRpmSpinBox->setValue(DEFAULT_SPINDLE_RPM);
+    m_spindleRpmSpinBox->setRange(settings->minimumSpindleRpm(), settings->maximumSpindleRpm());
+    m_spindleRpmSpinBox->setValue(settings->defaultSpindleRpm());
     connect(m_spindleRpmSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), this, &SpindleControlWidget::onSpindleRpmSpinBoxValueChanged);
 
     auto rpmLayout = new QHBoxLayout;
-    rpmLayout->addWidget(new QLabel("Spindle RPM: "));
+    rpmLayout->addWidget(new QLabel("Target RPM: "));
     rpmLayout->addWidget(m_spindleRpmSpinBox);
 
 

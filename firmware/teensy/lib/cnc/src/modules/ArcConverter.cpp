@@ -107,6 +107,7 @@ bool ArcConverter::getNextSegment(GCode& gcode) {
     return false;
   }
 
+  // TODO add spindle speed if specified
   m_segmentIndex++;
   m_currentAngle += m_angleStep;
   m_currentOtherAxis += m_otherAxisStep;
