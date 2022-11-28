@@ -10,7 +10,7 @@
 #include <QFile>
 #include <QTextStream>
 
-#include <QDebug>
+#include <clocale>
 
 class GuiKernel : public ModuleKernel
 {
@@ -243,6 +243,8 @@ void LineCreator::begin()
 
 CommandResult LineCreator::onGCodeCommandReceived(const GCode& gcode, CommandSource source, uint32_t commandId)
 {
+    bool fast = gcode.code() == 0;
+
     if (gcode.code() == 0 || gcode.code() == 1)
     {
         float x = *gcode.x().or_else([this]() {return m_startPoint.x;});
@@ -252,7 +254,8 @@ CommandResult LineCreator::onGCodeCommandReceived(const GCode& gcode, CommandSou
         m_lines.push_back(GCodeLine{
             QVector3D(m_startPoint.x, m_startPoint.y, m_startPoint.z),
             QVector3D(endPoint.x, endPoint.y, endPoint.z),
-            m_fileLine});
+            m_fileLine,
+            fast});
         m_startPoint = endPoint;
         m_kernel->dispatchTargetPosition(endPoint);
     }
@@ -263,15 +266,16 @@ CommandResult LineCreator::onGCodeCommandReceived(const GCode& gcode, CommandSou
         GCode lineGCode;
         while (m_arcConverter->getNextSegment(lineGCode))
         {
-            float x = *gcode.x().or_else([this]() {return m_startPoint.x;});
-            float y = *gcode.y().or_else([this]() {return m_startPoint.y;});
-            float z = *gcode.z().or_else([this]() {return m_startPoint.z;});
+            float x = *lineGCode.x().or_else([this]() {return m_startPoint.x;});
+            float y = *lineGCode.y().or_else([this]() {return m_startPoint.y;});
+            float z = *lineGCode.z().or_else([this]() {return m_startPoint.z;});
             auto endPoint = m_coordinateTransformer->gcodeCoordinateToMachineCoordinate(Vector3<float>(x, y, z));
 
             m_lines.push_back(GCodeLine{
                 QVector3D(m_startPoint.x, m_startPoint.y, m_startPoint.z),
                 QVector3D(endPoint.x, endPoint.y, endPoint.z),
-                m_fileLine});
+                m_fileLine,
+                fast});
             m_startPoint = endPoint;
         }
         m_kernel->dispatchTargetPosition(m_startPoint);
@@ -317,10 +321,12 @@ void GCodeModel::readCommands(const QString& path)
 
 bool GCodeModel::calculateLines(QString& lastLine)
 {
+    std::setlocale(LC_ALL, "C");
+
     GuiKernel kernel;
     CoordinateTransformer coordinateTransformer;
     ArcConverter arcConverter(&coordinateTransformer);
-    arcConverter.configure(ConfigItem("arc_converter.max_error_in_mm", "1.0"));
+    arcConverter.configure(ConfigItem("arc_converter.max_error_in_mm", "0.1"));
     LineCreator lineCreator(&coordinateTransformer, &arcConverter, m_lines);
 
     kernel.addModule(&coordinateTransformer);

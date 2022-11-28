@@ -46,6 +46,7 @@ private:
     QMatrix4x4 rotationMatrix() const;
 
     void drawWorkspace();
+    void drawAxis();
     void drawLines();
 };
 

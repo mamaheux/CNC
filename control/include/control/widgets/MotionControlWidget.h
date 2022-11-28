@@ -27,6 +27,9 @@ private slots:
     void onEnableSteppersButtonPressed();
     void onDisableSteppersButtonPressed();
 
+    void onGotoMachineX0Y0ButtonPressed();
+    void onGotoWorkX0Y0ButtonPressed();
+
     void onXBackwardButtonPressed();
     void onXForwardButtonPressed();
     void onYBackwardButtonPressed();
@@ -45,6 +48,9 @@ private:
     // UI members
     QPushButton* m_enableSteppersButton;
     QPushButton* m_disableSteppersButton;
+
+    QPushButton* m_gotoMachineX0Y0Button;
+    QPushButton* m_gotoWorkX0Y0Button;
 
     QPushButton* m_xBackwardButton;
     QPushButton* m_xForwardButton;

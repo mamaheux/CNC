@@ -2,7 +2,7 @@
 
 #include <QDebug>
 
-constexpr int STATUS_TIMER_INTERVAL_MS = 1000;
+constexpr int STATUS_TIMER_INTERVAL_MS = 250;
 
 Cnc::Cnc() : m_serialPort(nullptr)
 {
@@ -137,6 +137,16 @@ void Cnc::enableSteppers()
 void Cnc::disableSteppers()
 {
     sendCommand("M18");
+}
+
+void Cnc::gotoMachineX0Y0(int feedRate)
+{
+    sendCommand("G53 G1 X0 Y0 F" + QString::number(feedRate));
+}
+
+void Cnc::gotoWorkX0Y0(int feedRate)
+{
+    sendCommand("G1 X0 Y0 F" + QString::number(feedRate));
 }
 
 void Cnc::jogX(float distance, int feedRate)

@@ -33,6 +33,9 @@ public:
     void enableSteppers();
     void disableSteppers();
 
+    void gotoMachineX0Y0(int feedRate);
+    void gotoWorkX0Y0(int feedRate);
+
     void jogX(float distance, int feedRate);
     void jogY(float distance, int feedRate);
     void jogZ(float distance, int feedRate);

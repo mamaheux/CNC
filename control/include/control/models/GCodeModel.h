@@ -11,6 +11,7 @@ struct GCodeLine
     QVector3D start;
     QVector3D end;
     int fileLine;
+    bool fast;
 };
 
 class GCodeModel : public QObject

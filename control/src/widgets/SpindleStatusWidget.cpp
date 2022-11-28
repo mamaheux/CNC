@@ -3,6 +3,14 @@
 #include <QGridLayout>
 #include <QLabel>
 
+constexpr uint LCD_DISPLAY_NUM_DIGITS = 8;
+constexpr int MAXIMUM_LAST_RPM_VALUES_SIZE = 40;
+
+static void setRpmLcdNumber(QLCDNumber* lcdNumber, double value)
+{
+    lcdNumber->display(QString("%1").arg(value, LCD_DISPLAY_NUM_DIGITS, 'f', 1, QChar('0')));
+}
+
 SpindleStatusWidget::SpindleStatusWidget(Cnc* cnc, QWidget* parent) : QWidget(parent), m_cnc(cnc)
 {
     createUi();
@@ -28,8 +36,9 @@ void SpindleStatusWidget::onCncDisconnected()
 
 void SpindleStatusWidget::onCurrentRpmChanged(float rpm)
 {
+    setRpmLcdNumber(m_rpmLcdNumber, rpm);
     m_lastRpmValues.append(rpm);
-    if (m_lastRpmValues.size() > 200)
+    if (m_lastRpmValues.size() > MAXIMUM_LAST_RPM_VALUES_SIZE)
     {
         m_lastRpmValues.removeFirst();
     }
@@ -56,6 +65,7 @@ void SpindleStatusWidget::createUi()
     constexpr int MINIMUM_ROW_HEIGHT = 45;
 
     m_rpmLcdNumber = new QLCDNumber;
+    m_rpmLcdNumber->setDigitCount(LCD_DISPLAY_NUM_DIGITS);
 
 
     m_rpmChart = new QChart;

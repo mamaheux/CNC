@@ -10,7 +10,7 @@
 using namespace std;
 
 constexpr float PI = M_PI;
-constexpr float EPS = 1e-3;
+constexpr float EPS = 1e-6;
 constexpr float MM_TO_M = 0.001;
 
 constexpr float MOUSE_WHEEL_LINEAR_SPEED = 0.01f;
@@ -21,7 +21,10 @@ GCodeViewWidget::GCodeViewWidget(SettingsModel* settings, GCodeModel* gcodeModel
     : QOpenGLWidget(parent),
       m_settings(settings),
       m_gcodeModel(gcodeModel),
+      m_lastMousePosition(0, 0),
       m_r(1.f),
+      m_theta(0.f),
+      m_phi(0.f),
       m_center(0.f, 0.f, 0.f)
 {
     connect(m_gcodeModel, &GCodeModel::gcodeChanged, this, &GCodeViewWidget::onGCodeChanged);
@@ -114,6 +117,7 @@ void GCodeViewWidget::paintGL()
     glLineWidth(2.0);
 
     drawWorkspace();
+    drawAxis();
     drawLines();
 }
 
@@ -138,7 +142,7 @@ void GCodeViewWidget::drawWorkspace()
 
     glBegin(GL_QUADS);
 
-    glColor3f(1.0f, 1.0f, 1.0f);
+    glColor3f(1.f, 1.f, 1.f);
     glVertex3f(0.f, 0.f, -z);
     glVertex3f(x, 0.f, -z);
     glVertex3f(x, y, -z);
@@ -146,6 +150,33 @@ void GCodeViewWidget::drawWorkspace()
 
     glEnd();
 }
+
+void GCodeViewWidget::drawAxis()
+{
+    float x = m_settings->xCncSizeInMm() * MM_TO_M;
+    float y = m_settings->yCncSizeInMm() * MM_TO_M;
+    float z = m_settings->zCncSizeInMm() * MM_TO_M;
+
+    glBegin(GL_LINES);
+
+    // X Axis
+    glColor3f(1.f, 0.f, 0.f);
+    glVertex3f(0.f, 0.f, -z + EPS);
+    glVertex3f(x, 0.f, -z + EPS);
+
+    // Y Axis
+    glColor3f(0.f, 1.f, 0.f);
+    glVertex3f(0.f, 0.f, -z + EPS);
+    glVertex3f(0.f, y, -z + EPS);
+
+    // Z Axis
+    glColor3f(0.f, 0.f, 1.f);
+    glVertex3f(0.f, 0.f, -z + EPS);
+    glVertex3f(0.f, 0.f, 0.f);
+
+    glEnd();
+}
+
 
 void GCodeViewWidget::drawLines()
 {
@@ -155,7 +186,7 @@ void GCodeViewWidget::drawLines()
     for (; i < m_gcodeModel->lines().size() && i < m_gcodeModel->completedCommandCount(); i++)
     {
         auto& line = m_gcodeModel->lines()[i];
-        glColor3f(0.0, 1.0, 0.0); // Green
+        glColor3f(0.0f, 1.f, 1.f); // Cyan
         glVertex3f(line.start.x() * MM_TO_M, line.start.y() * MM_TO_M, line.start.z() * MM_TO_M);
         glVertex3f(line.end.x() * MM_TO_M, line.end.y() * MM_TO_M, line.end.z() * MM_TO_M);
     }
@@ -163,7 +194,14 @@ void GCodeViewWidget::drawLines()
     for (; i < m_gcodeModel->lines().size(); i++)
     {
         auto& line = m_gcodeModel->lines()[i];
-        glColor3f(1.0, 0.0, 0.0); // Red
+        if (line.fast)
+        {
+            glColor3f(1.0f, 1.0f, 0.0f); // Yellow
+        }
+        else
+        {
+            glColor3f(1.0f, 0.0f, 1.0f); // Pink
+        }
         glVertex3f(line.start.x() * MM_TO_M, line.start.y() * MM_TO_M, line.start.z() * MM_TO_M);
         glVertex3f(line.end.x() * MM_TO_M, line.end.y() * MM_TO_M, line.end.z() * MM_TO_M);
     }

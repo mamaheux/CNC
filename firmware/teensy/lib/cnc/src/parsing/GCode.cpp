@@ -61,7 +61,7 @@ ParsingResult GCodeParser::parse(const char* line, GCode& gcode) {
     memcpy(m_lineBuffer, line, lineSize);
     m_lineBuffer[lineSize] = '\0';
   }
-  rtrim(m_lineBuffer);
+  trim(m_lineBuffer);
   lineSize = strlen(m_lineBuffer);
 
   if (lineSize == 0) {
@@ -70,7 +70,7 @@ ParsingResult GCodeParser::parse(const char* line, GCode& gcode) {
   else if (m_isMachineCoordinateSystem) {
     return parseG53FollowingLine(gcode);
   }
-  else if (m_lineBuffer[0] == ' ') {
+  else if (m_lineBuffer[0] != 'G' && m_lineBuffer[0] != 'g') {
     return parseModalMove(gcode);
   }
   else if (lineSize >= 3 && (m_lineBuffer[0] == 'G' || m_lineBuffer[0] == 'g') && m_lineBuffer[1] == '5' && m_lineBuffer[2] == '3') {
@@ -86,7 +86,7 @@ ParsingResult GCodeParser::parseModalMove(GCode& gcode) {
   }
 
   gcode.m_code = *m_modalMoveCode;
-  return parseParameters(m_lineBuffer + 1, gcode);
+  return parseParameters(m_lineBuffer, gcode);
 }
 
 ParsingResult GCodeParser::parseG53(GCode& gcode, size_t lineSize) {
@@ -97,7 +97,7 @@ ParsingResult GCodeParser::parseG53(GCode& gcode, size_t lineSize) {
 
   gcode.m_isMachineCoordinateSystem = true;
   ltrim(m_lineBuffer + 3);
-  if (m_lineBuffer[3] != 'G') {
+  if (m_lineBuffer[3] != 'G' && m_lineBuffer[3] != 'g') {
     gcode.m_code = *m_modalMoveCode;
     return parseParameters(m_lineBuffer + 3, gcode);
   }
@@ -110,7 +110,7 @@ ParsingResult GCodeParser::parseG53FollowingLine(GCode& gcode) {
   m_isMachineCoordinateSystem = false;
   gcode.m_isMachineCoordinateSystem = true;
 
-  if (m_lineBuffer[0] == ' ') {
+  if (m_lineBuffer[0] != 'G' && m_lineBuffer[0] != 'g') {
     return parseModalMove(gcode);
   }
   else {

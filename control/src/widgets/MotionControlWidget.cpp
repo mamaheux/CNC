@@ -42,6 +42,20 @@ void MotionControlWidget::onEnableSteppersButtonPressed()
     m_disableSteppersButton->setEnabled(true);
 }
 
+void MotionControlWidget::onGotoMachineX0Y0ButtonPressed()
+{
+    m_cnc->gotoMachineX0Y0(m_feedRateSpinBox->value());
+    m_enableSteppersButton->setEnabled(false);
+    m_disableSteppersButton->setEnabled(true);
+}
+
+void MotionControlWidget::onGotoWorkX0Y0ButtonPressed()
+{
+    m_cnc->gotoWorkX0Y0(m_feedRateSpinBox->value());
+    m_enableSteppersButton->setEnabled(false);
+    m_disableSteppersButton->setEnabled(true);
+}
+
 void MotionControlWidget::onDisableSteppersButtonPressed()
 {
     m_cnc->disableSteppers();
@@ -118,6 +132,17 @@ void MotionControlWidget::createUi(SettingsModel* settings)
     auto stepperButtonsLayout = new QHBoxLayout;
     stepperButtonsLayout->addWidget(m_enableSteppersButton);
     stepperButtonsLayout->addWidget(m_disableSteppersButton);
+
+
+    m_gotoMachineX0Y0Button = new QPushButton("Go to Machine X0 Y0");
+    connect(m_gotoMachineX0Y0Button, &QPushButton::pressed, this, &MotionControlWidget::onGotoMachineX0Y0ButtonPressed);
+
+    m_gotoWorkX0Y0Button = new QPushButton("Go to Work X0 Y0");
+    connect(m_gotoWorkX0Y0Button, &QPushButton::pressed, this, &MotionControlWidget::onGotoWorkX0Y0ButtonPressed);
+
+    auto gotoButtonsLayout = new QHBoxLayout;
+    gotoButtonsLayout->addWidget(m_gotoMachineX0Y0Button);
+    gotoButtonsLayout->addWidget(m_gotoWorkX0Y0Button);
 
 
     m_xBackwardButton = new QPushButton("X-");
@@ -215,6 +240,7 @@ void MotionControlWidget::createUi(SettingsModel* settings)
 
     auto globalLayout = new QVBoxLayout;
     globalLayout->addLayout(stepperButtonsLayout);
+    globalLayout->addLayout(gotoButtonsLayout);
     globalLayout->addLayout(arrowButtonsLayout);
     globalLayout->addLayout(distanceButtonsLayout);
     globalLayout->addLayout(feedRateLayout);

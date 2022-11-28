@@ -84,7 +84,7 @@ void Kernel::executeCommand(const char* line, CommandSource source, tl::optional
     return;
   }
 
-  char firstCharacter = '\0';
+  char firstCharacter = line[0];
   for (size_t i = 0; line[i] == ' '; i++) { firstCharacter = line[i + 1]; }
 
   if (firstCharacter == '\0' || firstCharacter == '(' || firstCharacter == ';') {
