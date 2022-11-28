@@ -88,8 +88,11 @@ void CoordinateWidget::createUi()
     m_coordinateSystemComboBox->addItem("Coordinate System 7", 7);
     m_coordinateSystemComboBox->addItem("Coordinate System 8", 8);
     m_coordinateSystemComboBox->addItem("Coordinate System 9", 9);
-    connect(m_coordinateSystemComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged),
-            this, &CoordinateWidget::onCoordinateSystemComboBoxIndexChanged);
+    connect(
+        m_coordinateSystemComboBox,
+        QOverload<int>::of(&QComboBox::currentIndexChanged),
+        this,
+        &CoordinateWidget::onCoordinateSystemComboBoxIndexChanged);
 
     m_xMachinePositionLcdNumber = new QLCDNumber(LCD_DISPLAY_NUM_DIGITS);
     setPositionLcdNumber(m_xMachinePositionLcdNumber, 0.0);

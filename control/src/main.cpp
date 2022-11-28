@@ -1,10 +1,11 @@
 #include "control/Cnc.h"
 #include "control/models/SettingsModel.h"
+#include "control/models/GCodeModel.h"
 #include "control/widgets/MainWindow.h"
 
 #include <QApplication>
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
     QApplication a(argc, argv);
 
@@ -13,20 +14,20 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationName("CNC - Control");
 
     auto settings = SettingsModel::loadOrDefault();
+    auto gcodeModel = new GCodeModel;
     auto cnc = new Cnc;
 
-    MainWindow mainWindow(settings, cnc);
-    mainWindow.setStyleSheet(
-        "QWidget {font-size: 15pt;} "
-        "QPushButton {qproperty-iconSize: 25px;} "
-        "QGroupBox {font-weight: bold;} ");
+    MainWindow mainWindow(settings, gcodeModel, cnc);
+    mainWindow.setStyleSheet("QWidget {font-size: 15pt;} "
+                             "QPushButton {qproperty-iconSize: 25px;} "
+                             "QGroupBox {font-weight: bold;} ");
     mainWindow.show();
 
     int code = a.exec();
 
     settings->save();
     delete settings;
-
+    delete gcodeModel;
     delete cnc;
 
     return code;

@@ -4,7 +4,11 @@
 #include <QHBoxLayout>
 #include <QTextEdit>
 
-MainWindow::MainWindow(SettingsModel* settings, Cnc* cnc, QWidget* parent) : QWidget(parent), m_settings(settings), m_cnc(cnc)
+MainWindow::MainWindow(SettingsModel* settings, GCodeModel* gcodeModel, Cnc* cnc, QWidget* parent)
+    : QWidget(parent),
+      m_settings(settings),
+      m_gcodeModel(gcodeModel),
+      m_cnc(cnc)
 {
     createUi();
 }
@@ -37,8 +41,8 @@ void MainWindow::createUi()
     leftLayout->addWidget(spindleGroupBox);
 
 
-    m_gcodeFileWidget = new GCodeFileWidget(m_cnc);
-    m_gcodeViewWidget = new GCodeViewWidget;
+    m_gcodeFileWidget = new GCodeFileWidget(m_gcodeModel, m_cnc);
+    m_gcodeViewWidget = new GCodeViewWidget(m_settings, m_gcodeModel);
 
     auto gcodeLayout = new QVBoxLayout;
     gcodeLayout->addWidget(m_gcodeFileWidget, 0);

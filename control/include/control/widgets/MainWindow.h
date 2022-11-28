@@ -3,6 +3,7 @@
 
 #include "control/Cnc.h"
 #include "control/models/SettingsModel.h"
+#include "control/models/GCodeModel.h"
 #include "control/widgets/CncWidget.h"
 
 #include "control/widgets/CoordinateWidget.h"
@@ -21,10 +22,11 @@ class MainWindow : public QWidget
     Q_OBJECT
 
     SettingsModel* m_settings;
+    GCodeModel* m_gcodeModel;
     Cnc* m_cnc;
 
 public:
-    explicit MainWindow(SettingsModel* settings, Cnc* cnc, QWidget* parent = nullptr);
+    explicit MainWindow(SettingsModel* settings, GCodeModel* gcodeModel, Cnc* cnc, QWidget* parent = nullptr);
 
 private:
     void createUi();

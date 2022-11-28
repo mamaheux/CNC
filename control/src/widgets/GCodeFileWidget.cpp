@@ -2,28 +2,42 @@
 
 #include <QHBoxLayout>
 #include <QLabel>
-
 #include <QFileDialog>
+#include <QMessageBox>
 
-GCodeFileWidget::GCodeFileWidget(Cnc* cnc, QWidget* parent) : QWidget(parent), m_cnc(cnc)
+GCodeFileWidget::GCodeFileWidget(GCodeModel* gcodeModel, Cnc* cnc, QWidget* parent)
+    : QWidget(parent),
+      m_gcodeModel(gcodeModel),
+      m_cnc(cnc)
 {
     createUi();
 
     connect(m_cnc, &Cnc::cncConnected, this, &GCodeFileWidget::onCncConnected);
     connect(m_cnc, &Cnc::cncDisconnected, this, &GCodeFileWidget::onCncDisconnected);
+    connect(m_gcodeModel, &GCodeModel::gcodeChanged, this, &GCodeFileWidget::onGCodeChanged);
+    connect(m_gcodeModel, &GCodeModel::invalidLine, this, &GCodeFileWidget::onGCodeInvalidLine);
 
     onCncDisconnected();
 }
 
-void GCodeFileWidget::onCncConnected()
-{
-}
+void GCodeFileWidget::onCncConnected() {}
 
 void GCodeFileWidget::onCncDisconnected()
 {
     m_startButton->setEnabled(false);
     m_pauseButton->setEnabled(false);
     m_abortButton->setEnabled(false);
+}
+
+void GCodeFileWidget::onGCodeChanged()
+{
+    m_progressBar->setRange(0, m_gcodeModel->commandCount());
+    m_progressBar->setValue(m_gcodeModel->completedCommandCount());
+}
+
+void GCodeFileWidget::onGCodeInvalidLine(const QString& line)
+{
+    QMessageBox::critical(this, "Invalid GCode Line", "The following GCode line is invalid. " + line);
 }
 
 void GCodeFileWidget::onLoadFileButtonPressed()
@@ -34,10 +48,10 @@ void GCodeFileWidget::onLoadFileButtonPressed()
     dialog.setViewMode(QFileDialog::Detail);
     dialog.setAcceptMode(QFileDialog::AcceptOpen);
 
-    if (dialog.exec())
+    if (dialog.exec() && !dialog.selectedFiles().empty())
     {
-        auto fileNames = dialog.selectedFiles();
-        // TODO
+        m_pathLineEdit->setText(dialog.selectedFiles().first());
+        m_gcodeModel->load(dialog.selectedFiles().first());
     }
 }
 
@@ -73,12 +87,18 @@ void GCodeFileWidget::createUi()
     m_abortButton = new QPushButton("Abort");
     connect(m_abortButton, &QPushButton::pressed, this, &GCodeFileWidget::onAbortButtonPressed);
 
+    m_progressBar = new QProgressBar;
+    m_progressBar->setRange(0, 0);
+    m_progressBar->setFormat("%v/%m (%p%)");
+    m_progressBar->setValue(0);
+
     auto globalLayout = new QHBoxLayout;
     globalLayout->addWidget(m_loadFileButton, 0);
     globalLayout->addWidget(m_pathLineEdit, 1);
     globalLayout->addWidget(m_startButton, 0);
     globalLayout->addWidget(m_pauseButton, 0);
     globalLayout->addWidget(m_abortButton, 0);
+    globalLayout->addWidget(m_progressBar, 1);
 
     setLayout(globalLayout);
 }

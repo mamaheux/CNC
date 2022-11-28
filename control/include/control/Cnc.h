@@ -21,6 +21,7 @@ public:
 
     void connect(const QString& portName, qint32 baudRate);
     void disconnect();
+    bool isConnected() const;
 
     void home();
     void setCoordinateSystem(int id);

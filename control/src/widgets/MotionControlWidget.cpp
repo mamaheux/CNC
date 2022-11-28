@@ -9,7 +9,9 @@ constexpr int MINIMUM_SPEED_FACTOR = 10;
 constexpr int MAXIMUM_SPEED_FACTOR = 200;
 constexpr int DEFAULT_SPEED_FACTOR = 100;
 
-MotionControlWidget::MotionControlWidget(SettingsModel* settings, Cnc* cnc, QWidget* parent) : QWidget(parent), m_cnc(cnc)
+MotionControlWidget::MotionControlWidget(SettingsModel* settings, Cnc* cnc, QWidget* parent)
+    : QWidget(parent),
+      m_cnc(cnc)
 {
     createUi(settings);
     onSpeedFactorSliderValueChanged(DEFAULT_SPEED_FACTOR);
@@ -154,7 +156,7 @@ void MotionControlWidget::createUi(SettingsModel* settings)
     m_01DistanceButton = new QPushButton("0.1 mm");
     m_01DistanceButton->setCheckable(true);
 
-    m_1DistanceButton  =new QPushButton("1 mm");
+    m_1DistanceButton = new QPushButton("1 mm");
     m_1DistanceButton->setCheckable(true);
     m_1DistanceButton->setChecked(true);
 
@@ -198,7 +200,11 @@ void MotionControlWidget::createUi(SettingsModel* settings)
     m_speedFactorLabel->setAlignment(Qt::AlignRight);
 
     m_resetSpeedFactorButton = new QPushButton("Reset");
-    connect(m_resetSpeedFactorButton, &QPushButton::pressed, this, &MotionControlWidget::onResetSpeedFactorButtonPressed);
+    connect(
+        m_resetSpeedFactorButton,
+        &QPushButton::pressed,
+        this,
+        &MotionControlWidget::onResetSpeedFactorButtonPressed);
 
     auto speedFactorLayout = new QHBoxLayout;
     speedFactorLayout->addWidget(new QLabel("Speed Factor: "), 0);

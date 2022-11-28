@@ -37,11 +37,11 @@ void Cnc::connect(const QString& portName, qint32 baudRate)
 
     if (!m_serialPort->open(QIODevice::ReadWrite))
     {
-        //return; TODO remove comment
+        // return; TODO remove comment
     }
 
     QObject::connect(m_serialPort, &QSerialPort::errorOccurred, this, &Cnc::onSerialPortErrorOccurred);
-    sendCommand("G21"); // Set units to MM
+    sendCommand("G21");  // Set units to MM
     disableSteppers();
     disableSpindle();
     emit cncConnected();
@@ -60,6 +60,11 @@ void Cnc::disconnect()
     m_serialPort = nullptr;
 
     emit cncDisconnected();
+}
+
+bool Cnc::isConnected() const
+{
+    return m_serialPort != nullptr;
 }
 
 void Cnc::home()
@@ -178,6 +183,7 @@ void Cnc::sendCommand(const QString& command)
     }
 
     qDebug() << command;
+    // TODO
 }
 
 void Cnc::onSerialPortErrorOccurred(QSerialPort::SerialPortError error)
@@ -193,12 +199,14 @@ void Cnc::onStatusTimerTimeout()
         // TODO send M114.3 and get result
         // TODO send M957 and get result
 
-        emit currentWorkPositionChanged(static_cast<float>(rand()) / RAND_MAX * 10,
-                                        static_cast<float>(rand()) / RAND_MAX * 10,
-                                        static_cast<float>(rand()) / RAND_MAX * 10);
-        emit currentMachinePositionChanged(static_cast<float>(rand()) / RAND_MAX * 10,
-                                           static_cast<float>(rand()) / RAND_MAX * 10,
-                                           static_cast<float>(rand()) / RAND_MAX * 10);
+        emit currentWorkPositionChanged(
+            static_cast<float>(rand()) / RAND_MAX * 10,
+            static_cast<float>(rand()) / RAND_MAX * 10,
+            static_cast<float>(rand()) / RAND_MAX * 10);
+        emit currentMachinePositionChanged(
+            static_cast<float>(rand()) / RAND_MAX * 10,
+            static_cast<float>(rand()) / RAND_MAX * 10,
+            static_cast<float>(rand()) / RAND_MAX * 10);
         emit currentRpmChanged(static_cast<float>(rand()) / RAND_MAX * 1000);
     }
     else

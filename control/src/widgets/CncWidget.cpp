@@ -3,7 +3,10 @@
 
 #include <QHBoxLayout>
 
-CncWidget::CncWidget(SettingsModel* settings, Cnc* cnc, QWidget* parent) : QGroupBox("Cnc", parent), m_settings(settings), m_cnc(cnc)
+CncWidget::CncWidget(SettingsModel* settings, Cnc* cnc, QWidget* parent)
+    : QGroupBox("Cnc", parent),
+      m_settings(settings),
+      m_cnc(cnc)
 {
     createUi();
 

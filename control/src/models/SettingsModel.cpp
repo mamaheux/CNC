@@ -19,18 +19,20 @@ constexpr const char* Z_CNC_SIZE_IN_MM_KEY = "cnc/zCncSizeInMm";
 
 constexpr const char* LAST_COMMANDS_KEY = "gui/lastCommands";
 
-SettingsModel::SettingsModel(QString portName,
-              qint32 baudRate,
-              int minimumFeedRateInMmPerMin,
-              int maximumFeedRateInMmPerMin,
-              int defaultFeedRateInMmPerMin,
-              int minimumSpindleRpm,
-              int maximumSpindleRpm,
-              int defaultSpindleRpm,
-              float xCncSizeInMm,
-              float yCncSizeInMm,
-              float zCncSizeInMm,
-              QStringList lastCommands) : m_portName(std::move(portName)),
+SettingsModel::SettingsModel(
+    QString portName,
+    qint32 baudRate,
+    int minimumFeedRateInMmPerMin,
+    int maximumFeedRateInMmPerMin,
+    int defaultFeedRateInMmPerMin,
+    int minimumSpindleRpm,
+    int maximumSpindleRpm,
+    int defaultSpindleRpm,
+    float xCncSizeInMm,
+    float yCncSizeInMm,
+    float zCncSizeInMm,
+    QStringList lastCommands)
+    : m_portName(std::move(portName)),
       m_baudRate(baudRate),
       m_minimumFeedRateInMmPerMin(minimumFeedRateInMmPerMin),
       m_maximumFeedRateInMmPerMin(maximumFeedRateInMmPerMin),
@@ -72,16 +74,17 @@ SettingsModel* SettingsModel::loadOrDefault()
 {
     QSettings settings;
 
-    return new SettingsModel(settings.value(PORT_NAME_KEY, "").toString(),
-                         settings.value(BAUD_RATE_KEY, 115200).toInt(),
-                         settings.value(MINIMUM_FEED_RATE_IN_MM_PER_MIN_KEY, 1).toInt(),
-                         settings.value(MAXIMUM_FEED_RATE_IN_MM_PER_MIN_KEY, 1000).toInt(),
-                         settings.value(DEFAULT_FEED_RATE_IN_MM_PER_MIN_KEY, 500).toInt(),
-                         settings.value(MINIMUM_SPINDLE_RPM_KEY, 100).toInt(),
-                         settings.value(MAXIMUM_SPINDLE_RPM_KEY, 10000).toInt(),
-                         settings.value(DEFAULT_SPINDLE_RPM_KEY, 5000).toInt(),
-                         settings.value(X_CNC_SIZE_IN_MM_KEY, 100).toFloat(),
-                         settings.value(Y_CNC_SIZE_IN_MM_KEY, 100).toFloat(),
-                         settings.value(Z_CNC_SIZE_IN_MM_KEY, 100).toFloat(),
-                         settings.value(LAST_COMMANDS_KEY, QStringList()).toStringList());
+    return new SettingsModel(
+        settings.value(PORT_NAME_KEY, "").toString(),
+        settings.value(BAUD_RATE_KEY, 115200).toInt(),
+        settings.value(MINIMUM_FEED_RATE_IN_MM_PER_MIN_KEY, 1).toInt(),
+        settings.value(MAXIMUM_FEED_RATE_IN_MM_PER_MIN_KEY, 1000).toInt(),
+        settings.value(DEFAULT_FEED_RATE_IN_MM_PER_MIN_KEY, 500).toInt(),
+        settings.value(MINIMUM_SPINDLE_RPM_KEY, 100).toInt(),
+        settings.value(MAXIMUM_SPINDLE_RPM_KEY, 10000).toInt(),
+        settings.value(DEFAULT_SPINDLE_RPM_KEY, 5000).toInt(),
+        settings.value(X_CNC_SIZE_IN_MM_KEY, 100).toFloat(),
+        settings.value(Y_CNC_SIZE_IN_MM_KEY, 100).toFloat(),
+        settings.value(Z_CNC_SIZE_IN_MM_KEY, 100).toFloat(),
+        settings.value(LAST_COMMANDS_KEY, QStringList()).toStringList());
 }

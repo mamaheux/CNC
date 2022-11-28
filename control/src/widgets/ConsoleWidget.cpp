@@ -7,7 +7,10 @@
 
 constexpr int MAXIMUM_LOG_LINES = 1000;
 
-ConsoleWidget::ConsoleWidget(SettingsModel* settings, Cnc* cnc, QWidget* parent) : QGroupBox("Console", parent), m_settings(settings), m_cnc(cnc)
+ConsoleWidget::ConsoleWidget(SettingsModel* settings, Cnc* cnc, QWidget* parent)
+    : QGroupBox("Console", parent),
+      m_settings(settings),
+      m_cnc(cnc)
 {
     createUi();
 

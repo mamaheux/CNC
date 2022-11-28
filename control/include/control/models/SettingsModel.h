@@ -26,18 +26,19 @@ class SettingsModel : public QObject
 
     QStringList m_lastCommands;
 
-    SettingsModel(QString portName,
-                  qint32 baudRate,
-                  int minimumFeedRateInMmPerMin,
-                  int maximumFeedRateInMmPerMin,
-                  int defaultFeedRateInMmPerMin,
-                  int minimumSpindleRpm,
-                  int maximumSpindleRpm,
-                  int defaultSpindleRpm,
-                  float xCncSizeInMm,
-                  float yCncSizeInMm,
-                  float zCncSizeInMm,
-                  QStringList lastCommands);
+    SettingsModel(
+        QString portName,
+        qint32 baudRate,
+        int minimumFeedRateInMmPerMin,
+        int maximumFeedRateInMmPerMin,
+        int defaultFeedRateInMmPerMin,
+        int minimumSpindleRpm,
+        int maximumSpindleRpm,
+        int defaultSpindleRpm,
+        float xCncSizeInMm,
+        float yCncSizeInMm,
+        float zCncSizeInMm,
+        QStringList lastCommands);
 
 public:
     QString portName() const;

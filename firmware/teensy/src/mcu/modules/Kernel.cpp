@@ -119,7 +119,7 @@ void Kernel::sendCommandResponse(const char* response, CommandSource source,
   }
 }
 
-void Kernel::dispatchTargetPosition(const Vector3<float> machinePosition) {
+void Kernel::dispatchTargetPosition(const Vector3<float>& machinePosition) {
   constexpr size_t EVENT_INDEX = static_cast<size_t>(ModuleEventType::TARGET_POSITION);
 
   for (size_t i = 0; i < m_moduleCountByEventType[EVENT_INDEX]; i++) {

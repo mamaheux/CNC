@@ -21,7 +21,7 @@ public:
   virtual void sendCommandResponse(const char* commandResponse, CommandSource source,
       uint32_t commandId, bool isComplete = true) = 0;
 
-  virtual void dispatchTargetPosition(const Vector3<float> machinePosition) = 0;
+  virtual void dispatchTargetPosition(const Vector3<float>& machinePosition) = 0;
 };
 
 #endif

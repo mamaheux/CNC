@@ -4,7 +4,9 @@
 #include <QHBoxLayout>
 #include <QLabel>
 
-SpindleControlWidget::SpindleControlWidget(SettingsModel* settings, Cnc* cnc, QWidget* parent) : QWidget(parent), m_cnc(cnc)
+SpindleControlWidget::SpindleControlWidget(SettingsModel* settings, Cnc* cnc, QWidget* parent)
+    : QWidget(parent),
+      m_cnc(cnc)
 {
     createUi(settings);
     connect(settings, &SettingsModel::settingsChanged, this, &SpindleControlWidget::onSettingsChanged);
@@ -69,7 +71,11 @@ void SpindleControlWidget::createUi(SettingsModel* settings)
     m_spindleRpmSpinBox = new QSpinBox;
     m_spindleRpmSpinBox->setRange(settings->minimumSpindleRpm(), settings->maximumSpindleRpm());
     m_spindleRpmSpinBox->setValue(settings->defaultSpindleRpm());
-    connect(m_spindleRpmSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), this, &SpindleControlWidget::onSpindleRpmSpinBoxValueChanged);
+    connect(
+        m_spindleRpmSpinBox,
+        QOverload<int>::of(&QSpinBox::valueChanged),
+        this,
+        &SpindleControlWidget::onSpindleRpmSpinBoxValueChanged);
 
     auto rpmLayout = new QHBoxLayout;
     rpmLayout->addWidget(new QLabel("Target RPM: "));

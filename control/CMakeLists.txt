@@ -16,11 +16,15 @@ endif()
 find_package(Qt5 REQUIRED COMPONENTS Widgets SerialPort Charts OpenGL)
 
 include_directories(include)
+include_directories(../firmware/teensy/lib/cnc/include)
+include_directories(optional/include)
 
 file(GLOB_RECURSE
     source_files
     src/*
     include/*
+    ../firmware/teensy/lib/cnc/include/*
+    ../firmware/teensy/lib/cnc/src/*
 )
 
 add_executable(control

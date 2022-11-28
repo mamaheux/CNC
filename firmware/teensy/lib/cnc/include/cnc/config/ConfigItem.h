@@ -13,6 +13,7 @@ class ConfigItem {
 
 public:
   ConfigItem();
+  ConfigItem(const char* key, const char* value);
 
   const char* getKey() const;
   const char* getValueString() const;

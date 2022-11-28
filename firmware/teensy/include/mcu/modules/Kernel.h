@@ -45,7 +45,7 @@ public:
   void sendCommandResponse(const char* commandResponse, CommandSource source,
       uint32_t commandId, bool isComplete = true) override;
 
-  void dispatchTargetPosition(const Vector3<float> machinePosition) override;
+  void dispatchTargetPosition(const Vector3<float>& machinePosition) override;
 
 private:
   void executeSystemCommand(const char* line, CommandSource source, uint32_t commandId);

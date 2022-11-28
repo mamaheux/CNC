@@ -1,51 +1,32 @@
 #include "control/widgets/GCodeViewWidget.h"
 
+#include <QDebug>
+#include <QGuiApplication>
+
 #include <GL/glu.h>
 
-GCodeViewWidget::GCodeViewWidget(QWidget* parent) : QOpenGLWidget(parent)
+#include <cmath>
+
+using namespace std;
+
+constexpr float PI = M_PI;
+constexpr float EPS = 1e-3;
+constexpr float MM_TO_M = 0.001;
+
+constexpr float MOUSE_WHEEL_LINEAR_SPEED = 0.01f;
+constexpr float MOUSE_LINEAR_SPEED = 0.001f;
+constexpr float MOUSE_ANGULAR_SPEED = 0.01f;
+
+GCodeViewWidget::GCodeViewWidget(SettingsModel* settings, GCodeModel* gcodeModel, QWidget* parent)
+    : QOpenGLWidget(parent),
+      m_settings(settings),
+      m_gcodeModel(gcodeModel),
+      m_r(1.f),
+      m_center(0.f, 0.f, 0.f)
 {
+    connect(m_gcodeModel, &GCodeModel::gcodeChanged, this, &GCodeViewWidget::onGCodeChanged);
 }
 
-void GCodeViewWidget::initializeGL()
-{
-    glClearColor(0, 0, 0, 1);
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_LIGHT0);
-    glEnable(GL_LIGHTING);
-    glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-    glEnable(GL_COLOR_MATERIAL);
-}
-
-void GCodeViewWidget::resizeGL(int w, int h)
-{
-    glViewport(0, 0, w,h);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluPerspective(45, static_cast<float>(w) / static_cast<float>(h), 0.01, 100.0);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    gluLookAt(0, 0, 5, 0, 0, 0, 0, 1, 0);
-}
-
-void GCodeViewWidget::paintGL()
-{
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glLineWidth(2.0);
-
-    glBegin(GL_LINES);
-    // Line 1
-    glColor3f(1.0, 0.0, 0.0);
-    glVertex3f(-0.5, -0.5, 0);
-    glVertex3f(0.5, -0.5, 0);
-
-    // Line 2
-    glColor3f(0.0, 1.0, 0.0);
-    glVertex3f(0.5, -0.5, 0);
-    glVertex3f(0.0, 0.5, 0);
-    glEnd();
-
-    // TODO print the bottom of the CNC
-}
 
 bool GCodeViewWidget::event(QEvent* event)
 {
@@ -69,20 +50,123 @@ void GCodeViewWidget::touchEvent(QTouchEvent* event)
 
 void GCodeViewWidget::mousePressEvent(QMouseEvent* event)
 {
-    // TODO
-}
-
-void GCodeViewWidget::mouseReleaseEvent(QMouseEvent* event)
-{
-    // TODO
+    m_lastMousePosition = event->pos();
 }
 
 void GCodeViewWidget::mouseMoveEvent(QMouseEvent* event)
 {
-    // TODO
+    if (event->buttons().testFlag(Qt::MiddleButton) &&
+        QGuiApplication::keyboardModifiers().testFlag(Qt::ControlModifier))
+    {
+        float dx = -static_cast<float>(event->pos().x() - m_lastMousePosition.x()) * MOUSE_LINEAR_SPEED;
+        float dy = static_cast<float>(event->pos().y() - m_lastMousePosition.y()) * MOUSE_LINEAR_SPEED;
+        m_center += rotationMatrix() * QVector3D(dx, dy, 0.f);
+    }
+    else if (event->buttons().testFlag(Qt::MiddleButton))
+    {
+        m_phi += static_cast<float>(event->pos().x() - m_lastMousePosition.x()) * MOUSE_ANGULAR_SPEED;
+        m_theta += static_cast<float>(event->pos().y() - m_lastMousePosition.y()) * MOUSE_ANGULAR_SPEED;
+        m_theta = max(-PI / 2.f + EPS, min(m_theta, PI / 2.f - EPS));
+    }
+    m_lastMousePosition = event->pos();
+    update();
 }
 
 void GCodeViewWidget::wheelEvent(QWheelEvent* event)
 {
-    // TODO
+    if (event->angleDelta().y() > 0)
+    {
+        m_r /= static_cast<float>(event->angleDelta().y()) * MOUSE_WHEEL_LINEAR_SPEED;
+    }
+    else if (event->angleDelta().y() < 0)
+    {
+        m_r *= static_cast<float>(-event->angleDelta().y()) * MOUSE_WHEEL_LINEAR_SPEED;
+    }
+    update();
+}
+
+void GCodeViewWidget::initializeGL()
+{
+    glClearColor(0, 0, 0, 1);
+    glEnable(GL_DEPTH_TEST);
+}
+
+void GCodeViewWidget::resizeGL(int w, int h)
+{
+    paintGL();
+}
+
+void GCodeViewWidget::paintGL()
+{
+    int w = size().width();
+    int h = size().height();
+
+    glViewport(0, 0, w, h);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPerspective(45, static_cast<float>(w) / static_cast<float>(h), 0.01, 100.0);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    QVector3D eye = rotationMatrix() * QVector3D(0.f, 0.f, m_r) + m_center;
+    gluLookAt(eye.x(), eye.y(), eye.z(), m_center.x(), m_center.y(), m_center.z(), 0, 1, 0);
+
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glLineWidth(2.0);
+
+    drawWorkspace();
+    drawLines();
+}
+
+void GCodeViewWidget::onGCodeChanged()
+{
+    update();
+}
+
+QMatrix4x4 GCodeViewWidget::rotationMatrix() const
+{
+    QMatrix4x4 rotation;
+    rotation.rotate(180 / PI * m_phi, 0.f, 1.f, 0.f);
+    rotation.rotate(180 / PI * m_theta, 1.f, 0.f, 0.f);
+    return rotation;
+}
+
+void GCodeViewWidget::drawWorkspace()
+{
+    float x = m_settings->xCncSizeInMm() * MM_TO_M;
+    float y = m_settings->yCncSizeInMm() * MM_TO_M;
+    float z = m_settings->zCncSizeInMm() * MM_TO_M;
+
+    glBegin(GL_QUADS);
+
+    glColor3f(1.0f, 1.0f, 1.0f);
+    glVertex3f(0.f, 0.f, -z);
+    glVertex3f(x, 0.f, -z);
+    glVertex3f(x, y, -z);
+    glVertex3f(0.f, y, -z);
+
+    glEnd();
+}
+
+void GCodeViewWidget::drawLines()
+{
+    glBegin(GL_LINES);
+
+    int i = 0;
+    for (; i < m_gcodeModel->lines().size() && i < m_gcodeModel->completedCommandCount(); i++)
+    {
+        auto& line = m_gcodeModel->lines()[i];
+        glColor3f(0.0, 1.0, 0.0); // Green
+        glVertex3f(line.start.x() * MM_TO_M, line.start.y() * MM_TO_M, line.start.z() * MM_TO_M);
+        glVertex3f(line.end.x() * MM_TO_M, line.end.y() * MM_TO_M, line.end.z() * MM_TO_M);
+    }
+
+    for (; i < m_gcodeModel->lines().size(); i++)
+    {
+        auto& line = m_gcodeModel->lines()[i];
+        glColor3f(1.0, 0.0, 0.0); // Red
+        glVertex3f(line.start.x() * MM_TO_M, line.start.y() * MM_TO_M, line.start.z() * MM_TO_M);
+        glVertex3f(line.end.x() * MM_TO_M, line.end.y() * MM_TO_M, line.end.z() * MM_TO_M);
+    }
+
+    glEnd();
 }

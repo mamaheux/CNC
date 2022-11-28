@@ -36,9 +36,15 @@ void SettingsDialog::onRefreshPortsButtonPressed()
 
 void SettingsDialog::updateFeedRateRanges(int _)
 {
-    m_minimumFeedRateInMmPerMinSpinBox->setRange(MINIMUM_FEED_RATE_IN_MM_PER_MIN, m_maximumFeedRateInMmPerMinSpinBox->value());
-    m_maximumFeedRateInMmPerMinSpinBox->setRange(m_minimumFeedRateInMmPerMinSpinBox->value(), MAXIMUM_FEED_RATE_IN_MM_PER_MIN);
-    m_defaultFeedRateInMmPerMinSpinBox->setRange(m_minimumFeedRateInMmPerMinSpinBox->value(), m_maximumFeedRateInMmPerMinSpinBox->value());
+    m_minimumFeedRateInMmPerMinSpinBox->setRange(
+        MINIMUM_FEED_RATE_IN_MM_PER_MIN,
+        m_maximumFeedRateInMmPerMinSpinBox->value());
+    m_maximumFeedRateInMmPerMinSpinBox->setRange(
+        m_minimumFeedRateInMmPerMinSpinBox->value(),
+        MAXIMUM_FEED_RATE_IN_MM_PER_MIN);
+    m_defaultFeedRateInMmPerMinSpinBox->setRange(
+        m_minimumFeedRateInMmPerMinSpinBox->value(),
+        m_maximumFeedRateInMmPerMinSpinBox->value());
 }
 
 void SettingsDialog::updateSpindleRpmRanges(int _)
@@ -107,13 +113,21 @@ void SettingsDialog::createUi()
     m_minimumFeedRateInMmPerMinSpinBox->setSuffix(" mm/min");
     m_minimumFeedRateInMmPerMinSpinBox->setRange(MINIMUM_FEED_RATE_IN_MM_PER_MIN, MAXIMUM_FEED_RATE_IN_MM_PER_MIN);
     m_minimumFeedRateInMmPerMinSpinBox->setValue(m_settings->minimumFeedRateInMmPerMin());
-    connect(m_minimumFeedRateInMmPerMinSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), this, &SettingsDialog::updateFeedRateRanges);
+    connect(
+        m_minimumFeedRateInMmPerMinSpinBox,
+        QOverload<int>::of(&QSpinBox::valueChanged),
+        this,
+        &SettingsDialog::updateFeedRateRanges);
 
     m_maximumFeedRateInMmPerMinSpinBox = new QSpinBox;
     m_maximumFeedRateInMmPerMinSpinBox->setSuffix(" mm/min");
     m_maximumFeedRateInMmPerMinSpinBox->setRange(MINIMUM_FEED_RATE_IN_MM_PER_MIN, MAXIMUM_FEED_RATE_IN_MM_PER_MIN);
     m_maximumFeedRateInMmPerMinSpinBox->setValue(m_settings->maximumFeedRateInMmPerMin());
-    connect(m_maximumFeedRateInMmPerMinSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), this, &SettingsDialog::updateFeedRateRanges);
+    connect(
+        m_maximumFeedRateInMmPerMinSpinBox,
+        QOverload<int>::of(&QSpinBox::valueChanged),
+        this,
+        &SettingsDialog::updateFeedRateRanges);
 
     m_defaultFeedRateInMmPerMinSpinBox = new QSpinBox;
     m_defaultFeedRateInMmPerMinSpinBox->setSuffix(" mm/min");
@@ -132,12 +146,20 @@ void SettingsDialog::createUi()
     m_minimumSpindleRpmSpinBox = new QSpinBox;
     m_minimumSpindleRpmSpinBox->setRange(MINIMUM_SPINDLE_RPM, MAXIMUM_SPINDLE_RPM);
     m_minimumSpindleRpmSpinBox->setValue(m_settings->minimumSpindleRpm());
-    connect(m_minimumSpindleRpmSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), this, &SettingsDialog::updateSpindleRpmRanges);
+    connect(
+        m_minimumSpindleRpmSpinBox,
+        QOverload<int>::of(&QSpinBox::valueChanged),
+        this,
+        &SettingsDialog::updateSpindleRpmRanges);
 
     m_maximumSpindleRpmSpinBox = new QSpinBox;
     m_maximumSpindleRpmSpinBox->setRange(MINIMUM_SPINDLE_RPM, MAXIMUM_SPINDLE_RPM);
     m_maximumSpindleRpmSpinBox->setValue(m_settings->maximumSpindleRpm());
-    connect(m_maximumSpindleRpmSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), this, &SettingsDialog::updateSpindleRpmRanges);
+    connect(
+        m_maximumSpindleRpmSpinBox,
+        QOverload<int>::of(&QSpinBox::valueChanged),
+        this,
+        &SettingsDialog::updateSpindleRpmRanges);
 
     m_defaultSpindleRpmSpinBox = new QSpinBox;
     m_defaultSpindleRpmSpinBox->setRange(MINIMUM_SPINDLE_RPM, MAXIMUM_SPINDLE_RPM);
