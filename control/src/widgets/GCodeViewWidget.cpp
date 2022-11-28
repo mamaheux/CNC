@@ -114,7 +114,7 @@ void GCodeViewWidget::paintGL()
     gluLookAt(eye.x(), eye.y(), eye.z(), m_center.x(), m_center.y(), m_center.z(), 0, 1, 0);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glLineWidth(2.0);
+    glLineWidth(2.f);
 
     drawWorkspace();
     drawAxis();
@@ -142,7 +142,7 @@ void GCodeViewWidget::drawWorkspace()
 
     glBegin(GL_QUADS);
 
-    glColor3f(1.f, 1.f, 1.f);
+    glColor3f(0.95f, 0.95f, 0.95f);
     glVertex3f(0.f, 0.f, -z);
     glVertex3f(x, 0.f, -z);
     glVertex3f(x, y, -z);
@@ -186,7 +186,7 @@ void GCodeViewWidget::drawLines()
     for (; i < m_gcodeModel->lines().size() && i < m_gcodeModel->completedCommandCount(); i++)
     {
         auto& line = m_gcodeModel->lines()[i];
-        glColor3f(0.0f, 1.f, 1.f); // Cyan
+        glColor3f(0.0f, 1.f, 1.f);  // Cyan
         glVertex3f(line.start.x() * MM_TO_M, line.start.y() * MM_TO_M, line.start.z() * MM_TO_M);
         glVertex3f(line.end.x() * MM_TO_M, line.end.y() * MM_TO_M, line.end.z() * MM_TO_M);
     }
@@ -196,11 +196,11 @@ void GCodeViewWidget::drawLines()
         auto& line = m_gcodeModel->lines()[i];
         if (line.fast)
         {
-            glColor3f(1.0f, 1.0f, 0.0f); // Yellow
+            glColor3f(1.0f, 1.0f, 0.0f);  // Yellow
         }
         else
         {
-            glColor3f(1.0f, 0.0f, 1.0f); // Pink
+            glColor3f(1.0f, 0.0f, 1.0f);  // Pink
         }
         glVertex3f(line.start.x() * MM_TO_M, line.start.y() * MM_TO_M, line.start.z() * MM_TO_M);
         glVertex3f(line.end.x() * MM_TO_M, line.end.y() * MM_TO_M, line.end.z() * MM_TO_M);

@@ -34,7 +34,13 @@ void ConsoleWidget::onSendButtonPressed()
 {
     m_settings->addLastCommand(m_commandLineEdit->text());
     m_commandCompleter->setModel(new QStringListModel(m_settings->lastCommands()));
-    // TODO
+
+    m_logTextEdit->appendPlainText(m_commandLineEdit->text());
+
+    m_cnc->sendCommand(m_commandLineEdit->text(), [this](const QString& command, const QString& response)
+    {
+        m_logTextEdit->appendPlainText(">>> " + response);
+    });
 }
 
 void ConsoleWidget::createUi()

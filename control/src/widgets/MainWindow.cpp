@@ -11,6 +11,12 @@ MainWindow::MainWindow(SettingsModel* settings, GCodeModel* gcodeModel, Cnc* cnc
       m_cnc(cnc)
 {
     createUi();
+    connect(m_cnc, & Cnc::cncError, this, &MainWindow::onCncError);
+}
+
+void MainWindow::onCncError(const QString& error)
+{
+    QMessageBox::critical(this, "Cnc error", error);
 }
 
 void MainWindow::createUi()

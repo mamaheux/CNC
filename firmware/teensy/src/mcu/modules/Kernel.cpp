@@ -3,10 +3,10 @@
 #include "mcu/criticalError.h"
 #include "mcu/ConfigFile.h"
 
-constexpr const char* PARSING_ERROR_COMMAND_RESPONSE = "error parsing";
-constexpr const char* PREVIOUS_COMMAND_NOT_COMPLETED_ERROR_COMMAND_RESPONSE = "error previous_command_not_completed";
-constexpr const char* EXECUTING_ERROR_COMMAND_RESPONSE = "error executing";
-constexpr const char* NOT_HANDLED_COMMAND_RESPONSE = "error not_handled";
+constexpr const char* PARSING_ERROR_COMMAND_RESPONSE = "error The command was not parsed.";
+constexpr const char* PREVIOUS_COMMAND_NOT_COMPLETED_ERROR_COMMAND_RESPONSE = "error The previous command is not completed.";
+constexpr const char* EXECUTING_ERROR_COMMAND_RESPONSE_PREFIX = "error ";
+constexpr const char* NOT_HANDLED_COMMAND_RESPONSE = "error The command is not handled.";
 
 Kernel::Kernel() : m_moduleCount(0) {
   for (size_t i = 0; i < MAX_MODULE_COUNT; i++) {
@@ -227,7 +227,7 @@ void Kernel::handleAgregatedCommandResult(CommandResult result, CommandSource so
     sendCommandResponse(OK_COMMAND_RESPONSE, source, commandId);
     break;
   case CommandResultType::ERROR:
-    sendCommandResponse(EXECUTING_ERROR_COMMAND_RESPONSE, source, commandId, false);
+    sendCommandResponse(EXECUTING_ERROR_COMMAND_RESPONSE_PREFIX, source, commandId, false);
     sendCommandResponse(result.errorMessage(), source, commandId);
     break;
   case CommandResultType::NOT_HANDLED:

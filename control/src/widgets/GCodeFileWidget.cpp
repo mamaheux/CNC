@@ -20,10 +20,14 @@ GCodeFileWidget::GCodeFileWidget(GCodeModel* gcodeModel, Cnc* cnc, QWidget* pare
     onCncDisconnected();
 }
 
-void GCodeFileWidget::onCncConnected() {}
+void GCodeFileWidget::onCncConnected()
+{
+    m_startButton->setEnabled(m_gcodeModel->commandCount() > 0);
+}
 
 void GCodeFileWidget::onCncDisconnected()
 {
+    m_loadFileButton->setEnabled(true);
     m_startButton->setEnabled(false);
     m_pauseButton->setEnabled(false);
     m_abortButton->setEnabled(false);
@@ -31,6 +35,7 @@ void GCodeFileWidget::onCncDisconnected()
 
 void GCodeFileWidget::onGCodeChanged()
 {
+    m_startButton->setEnabled(m_gcodeModel->commandCount() > 0 && m_cnc->isConnected());
     m_progressBar->setRange(0, m_gcodeModel->commandCount());
     m_progressBar->setValue(m_gcodeModel->completedCommandCount());
 }
@@ -57,16 +62,26 @@ void GCodeFileWidget::onLoadFileButtonPressed()
 
 void GCodeFileWidget::onStartButtonPressed()
 {
+    m_loadFileButton->setEnabled(false);
+    m_startButton->setEnabled(false);
+    m_pauseButton->setEnabled(true);
+    m_abortButton->setEnabled(true);
     // TODO
 }
 
 void GCodeFileWidget::onPauseButtonPressed()
 {
+    m_startButton->setEnabled(true);
+    m_pauseButton->setEnabled(false);
     // TODO
 }
 
 void GCodeFileWidget::onAbortButtonPressed()
 {
+    m_loadFileButton->setEnabled(true);
+    m_startButton->setEnabled(true);
+    m_pauseButton->setEnabled(false);
+    m_abortButton->setEnabled(false);
     // TODO
 }
 

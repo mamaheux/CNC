@@ -38,11 +38,8 @@ public:
     void registerToEvent(ModuleEventType eventType, Module* module) override;
 
     void executeCommand(const char* line, CommandSource source, tl::optional<uint32_t>& commandId) override;
-    void sendCommandResponse(
-        const char* commandResponse,
-        CommandSource source,
-        uint32_t commandId,
-        bool isComplete) override;
+    void sendCommandResponse(const char* commandResponse, CommandSource source, uint32_t commandId, bool isComplete)
+        override;
 
     void dispatchTargetPosition(const Vector3<float>& machinePosition) override;
 
@@ -79,7 +76,8 @@ void GuiKernel::registerToEvent(ModuleEventType eventType, Module* module)
 
 void GuiKernel::executeCommand(const char* line, CommandSource source, tl::optional<uint32_t>& commandId)
 {
-    if (dispatchRawCommand(line, source, *commandId) == RawCommandResult::HANDLED) {
+    if (dispatchRawCommand(line, source, *commandId) == RawCommandResult::HANDLED)
+    {
         return;
     }
 
@@ -107,20 +105,24 @@ void GuiKernel::executeCommand(const char* line, CommandSource source, tl::optio
     }
 }
 
-void GuiKernel::sendCommandResponse(const char* response, CommandSource source,
-                                 uint32_t commandId, bool isCompleted) {
-    for (auto module : m_modulesByEventType[ModuleEventType::COMMAND_RESPONSE]) {
+void GuiKernel::sendCommandResponse(const char* response, CommandSource source, uint32_t commandId, bool isCompleted)
+{
+    for (auto module : m_modulesByEventType[ModuleEventType::COMMAND_RESPONSE])
+    {
         module->onCommandResponse(response, source, commandId, isCompleted);
     }
 }
 
-void GuiKernel::dispatchTargetPosition(const Vector3<float>& machinePosition) {
-    for (auto module : m_modulesByEventType[ModuleEventType::TARGET_POSITION]) {
+void GuiKernel::dispatchTargetPosition(const Vector3<float>& machinePosition)
+{
+    for (auto module : m_modulesByEventType[ModuleEventType::TARGET_POSITION])
+    {
         module->onTargetPositionChanged(machinePosition);
     }
 }
 
-void GuiKernel::executeSystemCommand(const char* line, CommandSource source, uint32_t commandId) {
+void GuiKernel::executeSystemCommand(const char* line, CommandSource source, uint32_t commandId)
+{
     SystemCommand command;
     ParsingResult result = m_systemCommandParser.parse(line, command);
 
@@ -134,7 +136,8 @@ void GuiKernel::executeSystemCommand(const char* line, CommandSource source, uin
     }
 }
 
-void GuiKernel::executeGCodeCommand(const char* line, CommandSource source, uint32_t commandId) {
+void GuiKernel::executeGCodeCommand(const char* line, CommandSource source, uint32_t commandId)
+{
     ParsingResult result = m_gcodeParser.parse(line, m_gcode);
 
     if (result == ParsingResult::OK)
@@ -147,7 +150,8 @@ void GuiKernel::executeGCodeCommand(const char* line, CommandSource source, uint
     }
 }
 
-void GuiKernel::executeMCodeCommand(const char* line, CommandSource source, uint32_t commandId) {
+void GuiKernel::executeMCodeCommand(const char* line, CommandSource source, uint32_t commandId)
+{
     ParsingResult result = m_mcodeParser.parse(line, m_mcode);
 
     if (result == ParsingResult::OK)
@@ -160,45 +164,55 @@ void GuiKernel::executeMCodeCommand(const char* line, CommandSource source, uint
     }
 }
 
-RawCommandResult GuiKernel::dispatchRawCommand(const char* line, CommandSource source, uint32_t commandId) {
+RawCommandResult GuiKernel::dispatchRawCommand(const char* line, CommandSource source, uint32_t commandId)
+{
     constexpr size_t EVENT_INDEX = static_cast<size_t>(ModuleEventType::RAW_COMMAND);
-    for (auto module : m_modulesByEventType[ModuleEventType::RAW_COMMAND]) {
+    for (auto module : m_modulesByEventType[ModuleEventType::RAW_COMMAND])
+    {
         RawCommandResult result = module->onRawCommandReceived(line, source, commandId);
-        if (result == RawCommandResult::HANDLED) {
+        if (result == RawCommandResult::HANDLED)
+        {
             return RawCommandResult::HANDLED;
         }
     }
     return RawCommandResult::NOT_HANDLED;
 }
 
-void GuiKernel::dispatchSystemCommand(const SystemCommand& command, CommandSource source, uint32_t commandId) {
+void GuiKernel::dispatchSystemCommand(const SystemCommand& command, CommandSource source, uint32_t commandId)
+{
     CommandResult agregatedResult = CommandResult::notHandled();
-    for (auto module : m_modulesByEventType[ModuleEventType::SYSTEM_COMMAND]) {
+    for (auto module : m_modulesByEventType[ModuleEventType::SYSTEM_COMMAND])
+    {
         CommandResult result = module->onSystemCommandReceived(command, source, commandId);
         agregatedResult = agregatedResult.agregate(result);
     }
     handleAgregatedCommandResult(agregatedResult, source, commandId);
 }
 
-void GuiKernel::dispatchGCodeCommand(const GCode& gcode, CommandSource source, uint32_t commandId) {
+void GuiKernel::dispatchGCodeCommand(const GCode& gcode, CommandSource source, uint32_t commandId)
+{
     CommandResult agregatedResult = CommandResult::notHandled();
-    for (auto module : m_modulesByEventType[ModuleEventType::GCODE_COMMAND]) {
+    for (auto module : m_modulesByEventType[ModuleEventType::GCODE_COMMAND])
+    {
         CommandResult result = module->onGCodeCommandReceived(gcode, source, commandId);
         agregatedResult = agregatedResult.agregate(result);
     }
     handleAgregatedCommandResult(agregatedResult, source, commandId);
 }
 
-void GuiKernel::dispatchMCodeCommand(const MCode& mcode, CommandSource source, uint32_t commandId) {
+void GuiKernel::dispatchMCodeCommand(const MCode& mcode, CommandSource source, uint32_t commandId)
+{
     CommandResult agregatedResult = CommandResult::notHandled();
-    for (auto module : m_modulesByEventType[ModuleEventType::MCODE_COMMAND]) {
+    for (auto module : m_modulesByEventType[ModuleEventType::MCODE_COMMAND])
+    {
         CommandResult result = module->onMCodeCommandReceived(mcode, source, commandId);
         agregatedResult = agregatedResult.agregate(result);
     }
     handleAgregatedCommandResult(agregatedResult, source, commandId);
 }
 
-void GuiKernel::handleAgregatedCommandResult(CommandResult result, CommandSource source, uint32_t commandId) {
+void GuiKernel::handleAgregatedCommandResult(CommandResult result, CommandSource source, uint32_t commandId)
+{
     if (result.type() == CommandResultType::ERROR)
     {
         m_hasError = true;
@@ -206,7 +220,8 @@ void GuiKernel::handleAgregatedCommandResult(CommandResult result, CommandSource
 }
 
 
-class LineCreator : public Module {
+class LineCreator : public Module
+{
     Vector3<float> m_startPoint;
     int m_fileLine;
     QList<GCodeLine>& m_lines;
@@ -228,7 +243,14 @@ public:
     CommandResult onGCodeCommandReceived(const GCode& gcode, CommandSource source, uint32_t commandId) override;
 };
 
-LineCreator::LineCreator(CoordinateTransformer* coordinateTransformer, ArcConverter* arcConverter, QList<GCodeLine>& lines) : m_fileLine(0), m_coordinateTransformer(coordinateTransformer), m_arcConverter(arcConverter), m_lines(lines)
+LineCreator::LineCreator(
+    CoordinateTransformer* coordinateTransformer,
+    ArcConverter* arcConverter,
+    QList<GCodeLine>& lines)
+    : m_fileLine(0),
+      m_coordinateTransformer(coordinateTransformer),
+      m_arcConverter(arcConverter),
+      m_lines(lines)
 {
 }
 
@@ -247,9 +269,9 @@ CommandResult LineCreator::onGCodeCommandReceived(const GCode& gcode, CommandSou
 
     if (gcode.code() == 0 || gcode.code() == 1)
     {
-        float x = *gcode.x().or_else([this]() {return m_startPoint.x;});
-        float y = *gcode.y().or_else([this]() {return m_startPoint.y;});
-        float z = *gcode.z().or_else([this]() {return m_startPoint.z;});
+        float x = *gcode.x().or_else([this]() { return m_startPoint.x; });
+        float y = *gcode.y().or_else([this]() { return m_startPoint.y; });
+        float z = *gcode.z().or_else([this]() { return m_startPoint.z; });
         auto endPoint = m_coordinateTransformer->gcodeCoordinateToMachineCoordinate(Vector3<float>(x, y, z));
         m_lines.push_back(GCodeLine{
             QVector3D(m_startPoint.x, m_startPoint.y, m_startPoint.z),
@@ -261,14 +283,13 @@ CommandResult LineCreator::onGCodeCommandReceived(const GCode& gcode, CommandSou
     }
     else if (gcode.code() == 2 || gcode.code() == 3)
     {
-        // TODO test
         m_arcConverter->setArc(gcode);
         GCode lineGCode;
         while (m_arcConverter->getNextSegment(lineGCode))
         {
-            float x = *lineGCode.x().or_else([this]() {return m_startPoint.x;});
-            float y = *lineGCode.y().or_else([this]() {return m_startPoint.y;});
-            float z = *lineGCode.z().or_else([this]() {return m_startPoint.z;});
+            float x = *lineGCode.x().or_else([this]() { return m_startPoint.x; });
+            float y = *lineGCode.y().or_else([this]() { return m_startPoint.y; });
+            float z = *lineGCode.z().or_else([this]() { return m_startPoint.z; });
             auto endPoint = m_coordinateTransformer->gcodeCoordinateToMachineCoordinate(Vector3<float>(x, y, z));
 
             m_lines.push_back(GCodeLine{

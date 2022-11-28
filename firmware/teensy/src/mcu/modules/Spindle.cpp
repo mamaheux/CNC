@@ -183,10 +183,8 @@ CommandResult Spindle::enable(const MCode& mcode) {
 void Spindle::sendCurrentRpm(CommandSource source, uint32_t commandId) {
   StringPrint stringPrint(m_response, MAX_SPINDLE_RESPONSE_SIZE);
   stringPrint.print(OK_COMMAND_RESPONSE);
-  stringPrint.print(' ');
+  stringPrint.print(" S");
   stringPrint.print(m_currentRpm);
-  stringPrint.print('/');
-  stringPrint.print(m_targetRpm);
   stringPrint.finish();
 
   m_kernel->sendCommandResponse(m_response, source, commandId);
@@ -208,7 +206,7 @@ void Spindle::sendPidGains(CommandSource source, uint32_t commandId) {
   StringPrint stringPrint(m_response, MAX_SPINDLE_RESPONSE_SIZE);
   stringPrint.print(OK_COMMAND_RESPONSE);
   stringPrint.print(' ');
-  stringPrint.print("P");
+  stringPrint.print('P');
   stringPrint.print(*m_p);
   stringPrint.print(" I");
   stringPrint.print(*m_i);

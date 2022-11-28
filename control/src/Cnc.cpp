@@ -1,8 +1,33 @@
 #include "control/Cnc.h"
 
 #include <QDebug>
+#include <QVector3D>
 
 constexpr int STATUS_TIMER_INTERVAL_MS = 250;
+
+static float parseFloat(const QString& str, const QString& prefix)
+{
+    auto prefixIndex = str.indexOf("S", Qt::CaseInsensitive);
+    if (prefixIndex == -1)
+    {
+        return 0.f;
+    }
+
+    auto spaceIndex = str.indexOf(" ", prefixIndex, Qt::CaseInsensitive);
+    if (spaceIndex == -1)
+    {
+        return str.midRef(prefixIndex).toFloat();
+    }
+    else
+    {
+        return str.midRef(prefixIndex, spaceIndex - prefixIndex).toFloat();
+    }
+}
+
+static QVector3D parsePosition(const QString& str)
+{
+    return QVector3D(parseFloat(str, "X"), parseFloat(str, "Y"), parseFloat(str, "Z"));
+}
 
 Cnc::Cnc() : m_serialPort(nullptr)
 {
@@ -29,6 +54,8 @@ void Cnc::connect(const QString& portName, qint32 baudRate)
         delete m_serialPort;
     }
 
+    m_commandQueue.clear();
+
     m_serialPort = new QSerialPort(portName);
     m_serialPort->setDataBits(QSerialPort::Data8);
     m_serialPort->setStopBits(QSerialPort::OneStop);
@@ -37,10 +64,13 @@ void Cnc::connect(const QString& portName, qint32 baudRate)
 
     if (!m_serialPort->open(QIODevice::ReadWrite))
     {
-        // return; TODO remove comment
+        onSerialPortErrorOccurred(m_serialPort->error());
+        return;
     }
 
     QObject::connect(m_serialPort, &QSerialPort::errorOccurred, this, &Cnc::onSerialPortErrorOccurred);
+    QObject::connect(m_serialPort, &QSerialPort::readyRead, this, &Cnc::onSerialPortReadyRead);
+
     sendCommand("G21");  // Set units to MM
     disableSteppers();
     disableSpindle();
@@ -58,6 +88,7 @@ void Cnc::disconnect()
     m_serialPort->close();
     delete m_serialPort;
     m_serialPort = nullptr;
+    m_commandQueue.clear();
 
     emit cncDisconnected();
 }
@@ -192,32 +223,116 @@ void Cnc::sendCommand(const QString& command)
         return;
     }
 
-    qDebug() << command;
-    // TODO
+    sendCommand(command, [](const QString&, const QString&) {});
+}
+
+void Cnc::sendCommand(const QString& command,
+                 std::function<void(const QString& command, const QString& commandResponse)> responseCallback)
+{
+    if (m_serialPort == nullptr)
+    {
+        return;
+    }
+
+    m_commandQueue.enqueue(QueuedCommand{command + "\n", std::move(responseCallback)});
+
+    if (m_commandQueue.size() == 1)
+    {
+        sendHeadCommand();
+    }
 }
 
 void Cnc::onSerialPortErrorOccurred(QSerialPort::SerialPortError error)
 {
     disconnect();
+    switch (error)
+    {
+        case QSerialPort::DeviceNotFoundError:
+            emit cncError("Serial Port Error: The device was not found.");
+            break;
+        case QSerialPort::PermissionError:
+            emit cncError("Serial Port Error: A permission error occurred.");
+            break;
+        case QSerialPort::OpenError:
+            emit cncError("Serial Port Error: The device is already opened.");
+            break;
+        case QSerialPort::ParityError:
+            emit cncError("Serial Port Error: A parity error occurred.");
+            break;
+        case QSerialPort::FramingError:
+            emit cncError("Serial Port Error: A framing error occurred.");
+            break;
+        case QSerialPort::BreakConditionError:
+            emit cncError("Serial Port Error: A break condition occurred.");
+            break;
+        case QSerialPort::WriteError:
+            emit cncError("Serial Port Error: A write error occurred.");
+            break;
+        case QSerialPort::ReadError:
+            emit cncError("Serial Port Error: A read error occurred.");
+            break;
+        case QSerialPort::ResourceError:
+            emit cncError("Serial Port Error: A resource error occurred.");
+            break;
+        case QSerialPort::UnsupportedOperationError:
+            emit cncError("Serial Port Error: An unsupported operation occurred.");
+            break;
+        case QSerialPort::NoError:
+        case QSerialPort::UnknownError:
+            emit cncError("Serial Port Error: An unknown error occurred.");
+            break;
+        case QSerialPort::TimeoutError:
+            emit cncError("Serial Port Error: A timeout error occurred.");
+            break;
+        case QSerialPort::NotOpenError:
+            emit cncError("Serial Port Error: The device is not opened.");
+            break;
+    }
+}
+
+void Cnc::onSerialPortReadyRead()
+{
+    if (!m_serialPort->canReadLine())
+    {
+        return;
+    }
+
+    QString response = m_serialPort->readLine();
+    if (response.startsWith("ok", Qt::CaseInsensitive))
+    {
+        m_commandQueue.head().responseCallback(m_commandQueue.head().command, response);
+
+        m_commandQueue.dequeue();
+        if (!m_commandQueue.empty())
+        {
+            sendHeadCommand();
+        }
+    }
+    else
+    {
+        m_commandQueue.clear();
+        emit cncError(response.remove(0, 6));
+    }
 }
 
 void Cnc::onStatusTimerTimeout()
 {
     if (m_serialPort != nullptr)
     {
-        // TODO send M114.1 and get result
-        // TODO send M114.3 and get result
-        // TODO send M957 and get result
-
-        emit currentWorkPositionChanged(
-            static_cast<float>(rand()) / RAND_MAX * 10,
-            static_cast<float>(rand()) / RAND_MAX * 10,
-            static_cast<float>(rand()) / RAND_MAX * 10);
-        emit currentMachinePositionChanged(
-            static_cast<float>(rand()) / RAND_MAX * 10,
-            static_cast<float>(rand()) / RAND_MAX * 10,
-            static_cast<float>(rand()) / RAND_MAX * 10);
-        emit currentRpmChanged(static_cast<float>(rand()) / RAND_MAX * 1000);
+        sendCommand("M114.1", [this](const QString& command, const QString& response)
+        {
+            auto position = parsePosition(response);
+            emit currentWorkPositionChanged(position.x(), position.y(), position.z());
+        });
+        sendCommand("M114.3", [this](const QString& command, const QString& response)
+        {
+            auto position = parsePosition(response);
+            emit currentMachinePositionChanged(position.x(), position.y(), position.z());
+        });
+        sendCommand("M114.3", [this](const QString& command, const QString& response)
+        {
+            emit currentRpmChanged(parseFloat(response, "S"));
+        });
     }
     else
     {
@@ -225,4 +340,14 @@ void Cnc::onStatusTimerTimeout()
         emit currentMachinePositionChanged(0.f, 0.f, 0.f);
         emit currentRpmChanged(0.f);
     }
+}
+
+void Cnc::sendHeadCommand()
+{
+    if (m_commandQueue.empty())
+    {
+        return;
+    }
+
+    m_serialPort->write(m_commandQueue.head().command.toUtf8());
 }

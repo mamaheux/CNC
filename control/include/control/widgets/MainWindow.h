@@ -28,6 +28,9 @@ class MainWindow : public QWidget
 public:
     explicit MainWindow(SettingsModel* settings, GCodeModel* gcodeModel, Cnc* cnc, QWidget* parent = nullptr);
 
+private slots:
+    void onCncError(const QString& error);
+
 private:
     void createUi();
 
