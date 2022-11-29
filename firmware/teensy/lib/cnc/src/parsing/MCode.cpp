@@ -55,7 +55,7 @@ ParsingResult MCodeParser::parse(const char* line, MCode& mcode) {
     memcpy(m_lineBuffer, line, lineSize);
     m_lineBuffer[lineSize] = '\0';
   }
-  rtrim(m_lineBuffer);
+  trim(m_lineBuffer);
   lineSize = strlen(m_lineBuffer);
 
   if (lineSize == 0) {

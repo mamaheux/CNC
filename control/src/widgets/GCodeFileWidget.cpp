@@ -1,9 +1,9 @@
 #include "control/widgets/GCodeFileWidget.h"
+#include "control/dialogs/InvalidGCodeDialog.h"
 
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QFileDialog>
-#include <QMessageBox>
 
 GCodeFileWidget::GCodeFileWidget(GCodeModel* gcodeModel, Cnc* cnc, QWidget* parent)
     : QWidget(parent),
@@ -15,7 +15,7 @@ GCodeFileWidget::GCodeFileWidget(GCodeModel* gcodeModel, Cnc* cnc, QWidget* pare
     connect(m_cnc, &Cnc::cncConnected, this, &GCodeFileWidget::onCncConnected);
     connect(m_cnc, &Cnc::cncDisconnected, this, &GCodeFileWidget::onCncDisconnected);
     connect(m_gcodeModel, &GCodeModel::gcodeChanged, this, &GCodeFileWidget::onGCodeChanged);
-    connect(m_gcodeModel, &GCodeModel::invalidLine, this, &GCodeFileWidget::onGCodeInvalidLine);
+    connect(m_gcodeModel, &GCodeModel::invalidGCode, this, &GCodeFileWidget::onInvalidGCode);
 
     onCncDisconnected();
 }
@@ -40,9 +40,10 @@ void GCodeFileWidget::onGCodeChanged()
     m_progressBar->setValue(m_gcodeModel->completedCommandCount());
 }
 
-void GCodeFileWidget::onGCodeInvalidLine(const QString& line)
+void GCodeFileWidget::onInvalidGCode(const QStringList& invalidCommands)
 {
-    QMessageBox::critical(this, "Invalid GCode Line", "The following GCode line is invalid. " + line);
+    InvalidGCodeDialog dialog(invalidCommands, this);
+    dialog.exec();
 }
 
 void GCodeFileWidget::onLoadFileButtonPressed()

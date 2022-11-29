@@ -24,7 +24,7 @@ private slots:
     void onCncDisconnected();
 
     void onGCodeChanged();
-    void onGCodeInvalidLine(const QString& line);
+    void onInvalidGCode(const QStringList& invalidCommands);
 
     void onLoadFileButtonPressed();
     void onStartButtonPressed();

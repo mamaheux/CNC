@@ -23,7 +23,11 @@ void test_parseSystemCommand_homing() {
   SystemCommandParser parser;
 
   TEST_ASSERT_EQUAL(ParsingResult::OK, parser.parse("$H", command));
-  TEST_ASSERT_EQUAL(ParsingResult::OK, parser.parse("$H; comment", command));
-  TEST_ASSERT_EQUAL(ParsingResult::OK, parser.parse("$H ; comment", command));
+  TEST_ASSERT_EQUAL(SystemCommand::HOMING, command);
+
+  TEST_ASSERT_EQUAL(ParsingResult::OK, parser.parse(" $H; comment", command));
+  TEST_ASSERT_EQUAL(SystemCommand::HOMING, command);
+
+  TEST_ASSERT_EQUAL(ParsingResult::OK, parser.parse("   $H ; comment", command));
   TEST_ASSERT_EQUAL(SystemCommand::HOMING, command);
 }

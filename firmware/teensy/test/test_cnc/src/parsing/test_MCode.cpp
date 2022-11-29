@@ -50,7 +50,7 @@ void test_parseGCode_M3() {
   MCode code2;
   MCodeParser parser;
 
-  TEST_ASSERT_EQUAL(ParsingResult::OK, parser.parse("M3 S5000", code1));
+  TEST_ASSERT_EQUAL(ParsingResult::OK, parser.parse(" M3 S5000", code1));
   TEST_ASSERT_EQUAL(3, code1.code());
   TEST_ASSERT(tl::nullopt == code1.subcode());
   TEST_ASSERT(tl::nullopt == code1.x());

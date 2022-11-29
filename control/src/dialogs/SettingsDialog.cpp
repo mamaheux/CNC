@@ -77,6 +77,8 @@ void SettingsDialog::onOkButtonPressed()
 
 void SettingsDialog::createUi()
 {
+    setWindowTitle("Settings");
+
     m_portComboBox = new QComboBox;
     for (auto& info : QSerialPortInfo::availablePorts())
     {

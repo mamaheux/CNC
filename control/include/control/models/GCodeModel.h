@@ -36,11 +36,12 @@ public:
 
 signals:
     void gcodeChanged();
-    void invalidLine(const QString& line);
+    void invalidGCode(const QStringList& invalidLines);
 
 private:
     void readCommands(const QString& path);
-    bool calculateLines(QString& lastLine);
+    bool validateCommands(QStringList& invalidCommands);
+    bool calculateLines(QStringList& invalidCommands);
 };
 
 inline bool GCodeModel::isFinished() const

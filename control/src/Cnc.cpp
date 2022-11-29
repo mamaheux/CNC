@@ -297,21 +297,31 @@ void Cnc::onSerialPortReadyRead()
         return;
     }
 
-    QString response = m_serialPort->readLine();
-    if (response.startsWith("ok", Qt::CaseInsensitive))
+    QString response;
+    QString line;
+    while (true)
     {
-        m_commandQueue.head().responseCallback(m_commandQueue.head().command, response);
+        line = m_serialPort->readLine().trimmed();
+        response += line;
+        response += '\n';
 
-        m_commandQueue.dequeue();
-        if (!m_commandQueue.empty())
+        if (line.startsWith("ok", Qt::CaseInsensitive))
         {
-            sendHeadCommand();
+            m_commandQueue.head().responseCallback(m_commandQueue.head().command, response);
+
+            m_commandQueue.dequeue();
+            if (!m_commandQueue.empty())
+            {
+                sendHeadCommand();
+            }
+            break;
         }
-    }
-    else
-    {
-        m_commandQueue.clear();
-        emit cncError(response.remove(0, 6));
+        else if (line.startsWith("error", Qt::CaseInsensitive))
+        {
+            m_commandQueue.clear();
+            emit cncError(response.remove(0, 6));
+            break;
+        }
     }
 }
 

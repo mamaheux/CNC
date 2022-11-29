@@ -47,6 +47,7 @@ void ConsoleWidget::createUi()
 {
     m_logTextEdit = new QPlainTextEdit;
     m_logTextEdit->setReadOnly(true);
+    m_logTextEdit->setLineWrapMode(QPlainTextEdit::NoWrap);
     m_logTextEdit->setMinimumHeight(300);
     m_logTextEdit->setMaximumBlockCount(MAXIMUM_LOG_LINES);
 
