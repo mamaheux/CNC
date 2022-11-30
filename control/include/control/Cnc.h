@@ -59,8 +59,9 @@ public:
     void disableSpindle();
 
     void sendCommand(const QString& command);
-    void sendCommand(const QString& command,
-                     std::function<void(const QString& command, const QString& commandResponse)> responseCallback);
+    void sendCommand(
+        const QString& command,
+        std::function<void(const QString& command, const QString& commandResponse)> responseCallback);
 
 signals:
     void cncConnected();

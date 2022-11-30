@@ -226,8 +226,9 @@ void Cnc::sendCommand(const QString& command)
     sendCommand(command, [](const QString&, const QString&) {});
 }
 
-void Cnc::sendCommand(const QString& command,
-                 std::function<void(const QString& command, const QString& commandResponse)> responseCallback)
+void Cnc::sendCommand(
+    const QString& command,
+    std::function<void(const QString& command, const QString& commandResponse)> responseCallback)
 {
     if (m_serialPort == nullptr)
     {
@@ -329,20 +330,24 @@ void Cnc::onStatusTimerTimeout()
 {
     if (m_serialPort != nullptr)
     {
-        sendCommand("M114.1", [this](const QString& command, const QString& response)
-        {
-            auto position = parsePosition(response);
-            emit currentWorkPositionChanged(position.x(), position.y(), position.z());
-        });
-        sendCommand("M114.3", [this](const QString& command, const QString& response)
-        {
-            auto position = parsePosition(response);
-            emit currentMachinePositionChanged(position.x(), position.y(), position.z());
-        });
-        sendCommand("M114.3", [this](const QString& command, const QString& response)
-        {
-            emit currentRpmChanged(parseFloat(response, "S"));
-        });
+        sendCommand(
+            "M114.1",
+            [this](const QString& command, const QString& response)
+            {
+                auto position = parsePosition(response);
+                emit currentWorkPositionChanged(position.x(), position.y(), position.z());
+            });
+        sendCommand(
+            "M114.3",
+            [this](const QString& command, const QString& response)
+            {
+                auto position = parsePosition(response);
+                emit currentMachinePositionChanged(position.x(), position.y(), position.z());
+            });
+        sendCommand(
+            "M114.3",
+            [this](const QString& command, const QString& response)
+            { emit currentRpmChanged(parseFloat(response, "S")); });
     }
     else
     {

@@ -25,7 +25,7 @@ class GCodeModel : public QObject
 public:
     GCodeModel();
 
-    void load(const QString& path);
+    void load(const QString& path, const std::function<void(int, int)>& progress);
 
     bool isFinished() const;
     int completedCommandCount() const;
@@ -40,8 +40,14 @@ signals:
 
 private:
     void readCommands(const QString& path);
-    bool validateCommands(QStringList& invalidCommands);
-    bool calculateLines(QStringList& invalidCommands);
+    bool validateCommands(
+        QStringList& invalidCommands,
+        const std::function<void(int, int)>& progress,
+        int& progressCounter);
+    bool calculateLines(
+        QStringList& invalidCommands,
+        const std::function<void(int, int)>& progress,
+        int& progressCounter);
 };
 
 inline bool GCodeModel::isFinished() const

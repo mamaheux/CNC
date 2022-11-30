@@ -4,6 +4,8 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QFileDialog>
+#include <QProgressDialog>
+#include <QApplication>
 
 GCodeFileWidget::GCodeFileWidget(GCodeModel* gcodeModel, Cnc* cnc, QWidget* parent)
     : QWidget(parent),
@@ -57,7 +59,19 @@ void GCodeFileWidget::onLoadFileButtonPressed()
     if (dialog.exec() && !dialog.selectedFiles().empty())
     {
         m_pathLineEdit->setText(dialog.selectedFiles().first());
-        m_gcodeModel->load(dialog.selectedFiles().first());
+        QApplication::processEvents();
+
+        QProgressDialog progressDialog("Opening GCode file...", QString(), 0, 1, this);
+        progressDialog.setWindowModality(Qt::WindowModal);
+        progressDialog.setCancelButton(nullptr);
+
+        m_gcodeModel->load(
+            dialog.selectedFiles().first(),
+            [&](int value, int maximum)
+            {
+                progressDialog.setMaximum(maximum);
+                progressDialog.setValue(value);
+            });
     }
 }
 

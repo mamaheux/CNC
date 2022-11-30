@@ -37,10 +37,9 @@ void ConsoleWidget::onSendButtonPressed()
 
     m_logTextEdit->appendPlainText(m_commandLineEdit->text());
 
-    m_cnc->sendCommand(m_commandLineEdit->text(), [this](const QString& command, const QString& response)
-    {
-        m_logTextEdit->appendPlainText(">>> " + response);
-    });
+    m_cnc->sendCommand(
+        m_commandLineEdit->text(),
+        [this](const QString& command, const QString& response) { m_logTextEdit->appendPlainText(">>> " + response); });
 }
 
 void ConsoleWidget::createUi()

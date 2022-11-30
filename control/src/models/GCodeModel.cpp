@@ -49,7 +49,8 @@ private:
     void executeMCodeCommand(const char* line, CommandSource source, uint32_t commandId);
 
     RawCommandResult dispatchRawCommand(const char* line, CommandSource source, uint32_t commandId);
-    void dispatchSystemCommand(const char* line, const SystemCommand& command, CommandSource source, uint32_t commandId);
+    void
+        dispatchSystemCommand(const char* line, const SystemCommand& command, CommandSource source, uint32_t commandId);
     void dispatchGCodeCommand(const char* line, const GCode& gcode, CommandSource source, uint32_t commandId);
     void dispatchMCodeCommand(const char* line, const MCode& mcode, CommandSource source, uint32_t commandId);
 
@@ -178,7 +179,11 @@ RawCommandResult GuiKernel::dispatchRawCommand(const char* line, CommandSource s
     return RawCommandResult::NOT_HANDLED;
 }
 
-void GuiKernel::dispatchSystemCommand(const char* line, const SystemCommand& command, CommandSource source, uint32_t commandId)
+void GuiKernel::dispatchSystemCommand(
+    const char* line,
+    const SystemCommand& command,
+    CommandSource source,
+    uint32_t commandId)
 {
     for (auto module : m_modulesByEventType[ModuleEventType::SYSTEM_COMMAND])
     {
@@ -220,63 +225,63 @@ void GuiKernel::addInvalidCommand(const char* line, uint32_t commandId, const ch
 }
 
 
-#define CHECK_MISSING_PARAMETER(code, parameter, parameterName) \
-    do                                                        \
-    {                                                         \
-        if (!(code).parameter().has_value())                   \
-        {                                                     \
-            return CommandResult::error("Missing " parameterName " parameter"); \
-        }                                                     \
-    } while(false)
+#define CHECK_MISSING_PARAMETER(code, parameter, parameterName)                                                        \
+    do                                                                                                                 \
+    {                                                                                                                  \
+        if (!(code).parameter().has_value())                                                                           \
+        {                                                                                                              \
+            return CommandResult::error("Missing " parameterName " parameter");                                        \
+        }                                                                                                              \
+    } while (false)
 
-#define CHECK_EXTRA_SUBCODE(code) \
-    do                                                        \
-    {                                                         \
-        if ((code).subcode().has_value())                   \
-        {                                                     \
-            return CommandResult::error("Extra subcode"); \
-        }                                                     \
-    } while(false)
+#define CHECK_EXTRA_SUBCODE(code)                                                                                      \
+    do                                                                                                                 \
+    {                                                                                                                  \
+        if ((code).subcode().has_value())                                                                              \
+        {                                                                                                              \
+            return CommandResult::error("Extra subcode");                                                              \
+        }                                                                                                              \
+    } while (false)
 
-#define CHECK_EXTRA_PARAMETER(code, parameter, parameterName) \
-    do                                                        \
-    {                                                         \
-        if ((code).parameter().has_value())                   \
-        {                                                     \
-            return CommandResult::error("Extra " parameterName " parameter"); \
-        }                                                     \
-    } while(false)
+#define CHECK_EXTRA_PARAMETER(code, parameter, parameterName)                                                          \
+    do                                                                                                                 \
+    {                                                                                                                  \
+        if ((code).parameter().has_value())                                                                            \
+        {                                                                                                              \
+            return CommandResult::error("Extra " parameterName " parameter");                                          \
+        }                                                                                                              \
+    } while (false)
 
-#define CHECK_EXTRA_PARAMETER_NULLPTR(code, parameter, parameterName) \
-    do                                                        \
-    {                                                         \
-        if ((code).parameter() != nullptr)                   \
-        {                                                     \
-            return CommandResult::error("Extra " parameterName " parameter"); \
-        }                                                     \
-    } while(false)
+#define CHECK_EXTRA_PARAMETER_NULLPTR(code, parameter, parameterName)                                                  \
+    do                                                                                                                 \
+    {                                                                                                                  \
+        if ((code).parameter() != nullptr)                                                                             \
+        {                                                                                                              \
+            return CommandResult::error("Extra " parameterName " parameter");                                          \
+        }                                                                                                              \
+    } while (false)
 
-#define CHECK_GCODE_NO_PARAMETER(gcode) \
-    CHECK_EXTRA_PARAMETER(gcode, x, "X"); \
-    CHECK_EXTRA_PARAMETER(gcode, y, "Y"); \
-    CHECK_EXTRA_PARAMETER(gcode, z, "Z"); \
-    CHECK_EXTRA_PARAMETER(gcode, f, "F"); \
-    CHECK_EXTRA_PARAMETER(gcode, i, "I"); \
-    CHECK_EXTRA_PARAMETER(gcode, j, "J"); \
-    CHECK_EXTRA_PARAMETER(gcode, k, "K"); \
-    CHECK_EXTRA_PARAMETER(gcode, s, "S"); \
-    CHECK_EXTRA_PARAMETER(gcode, p, "P"); \
-    CHECK_EXTRA_PARAMETER(gcode, r, "R"); \
+#define CHECK_GCODE_NO_PARAMETER(gcode)                                                                                \
+    CHECK_EXTRA_PARAMETER(gcode, x, "X");                                                                              \
+    CHECK_EXTRA_PARAMETER(gcode, y, "Y");                                                                              \
+    CHECK_EXTRA_PARAMETER(gcode, z, "Z");                                                                              \
+    CHECK_EXTRA_PARAMETER(gcode, f, "F");                                                                              \
+    CHECK_EXTRA_PARAMETER(gcode, i, "I");                                                                              \
+    CHECK_EXTRA_PARAMETER(gcode, j, "J");                                                                              \
+    CHECK_EXTRA_PARAMETER(gcode, k, "K");                                                                              \
+    CHECK_EXTRA_PARAMETER(gcode, s, "S");                                                                              \
+    CHECK_EXTRA_PARAMETER(gcode, p, "P");                                                                              \
+    CHECK_EXTRA_PARAMETER(gcode, r, "R");                                                                              \
     CHECK_EXTRA_PARAMETER(gcode, l, "L");
 
-#define CHECK_MCODE_NO_PARAMETER(mcode) \
-    CHECK_EXTRA_PARAMETER(mcode, x, "X"); \
-    CHECK_EXTRA_PARAMETER(mcode, y, "Y"); \
-    CHECK_EXTRA_PARAMETER(mcode, z, "Z"); \
-    CHECK_EXTRA_PARAMETER(mcode, s, "S"); \
-    CHECK_EXTRA_PARAMETER_NULLPTR(mcode, path, "path"); \
-    CHECK_EXTRA_PARAMETER(mcode, p, "P"); \
-    CHECK_EXTRA_PARAMETER(mcode, i, "I"); \
+#define CHECK_MCODE_NO_PARAMETER(mcode)                                                                                \
+    CHECK_EXTRA_PARAMETER(mcode, x, "X");                                                                              \
+    CHECK_EXTRA_PARAMETER(mcode, y, "Y");                                                                              \
+    CHECK_EXTRA_PARAMETER(mcode, z, "Z");                                                                              \
+    CHECK_EXTRA_PARAMETER(mcode, s, "S");                                                                              \
+    CHECK_EXTRA_PARAMETER_NULLPTR(mcode, path, "path");                                                                \
+    CHECK_EXTRA_PARAMETER(mcode, p, "P");                                                                              \
+    CHECK_EXTRA_PARAMETER(mcode, i, "I");                                                                              \
     CHECK_EXTRA_PARAMETER(mcode, d, "D")
 
 class CommandValidator : public Module
@@ -292,7 +297,8 @@ public:
     void checkConfigErrors(std::function<void(const char*, const char*, const char*)> onMissingConfigItem) override;
     void begin() override;
 
-    CommandResult onSystemCommandReceived(const SystemCommand& command, CommandSource source, uint32_t commandId) override;
+    CommandResult
+        onSystemCommandReceived(const SystemCommand& command, CommandSource source, uint32_t commandId) override;
     CommandResult onGCodeCommandReceived(const GCode& gcode, CommandSource source, uint32_t commandId) override;
     CommandResult onMCodeCommandReceived(const MCode& mcode, CommandSource source, uint32_t commandId) override;
 
@@ -313,7 +319,9 @@ private:
 
 void CommandValidator::configure(const ConfigItem& item) {}
 
-void CommandValidator::checkConfigErrors(std::function<void(const char*, const char*, const char*)> onMissingConfigItem) {}
+void CommandValidator::checkConfigErrors(std::function<void(const char*, const char*, const char*)> onMissingConfigItem)
+{
+}
 
 void CommandValidator::begin()
 {
@@ -322,7 +330,8 @@ void CommandValidator::begin()
     m_kernel->registerToEvent(ModuleEventType::MCODE_COMMAND, this);
 }
 
-CommandResult CommandValidator::onSystemCommandReceived(const SystemCommand& command, CommandSource source, uint32_t commandId)
+CommandResult
+    CommandValidator::onSystemCommandReceived(const SystemCommand& command, CommandSource source, uint32_t commandId)
 {
     if (command != SystemCommand::HOMING)
     {
@@ -575,15 +584,19 @@ CommandResult LineCreator::onGCodeCommandReceived(const GCode& gcode, CommandSou
 
 GCodeModel::GCodeModel() : m_completedCommandCount(0) {}
 
-void GCodeModel::load(const QString& path)
+void GCodeModel::load(const QString& path, const std::function<void(int, int)>& progress)
 {
     m_commands.clear();
     m_lines.clear();
     m_completedCommandCount = 0;
 
     readCommands(path);
+    int progressCounter = 0;
+    progress(progressCounter, 2 * m_commands.size());
+
     QStringList invalidCommands;
-    if (!validateCommands(invalidCommands) || !calculateLines(invalidCommands))
+    if (!validateCommands(invalidCommands, progress, progressCounter) ||
+        !calculateLines(invalidCommands, progress, progressCounter))
     {
         m_commands.clear();
         m_lines.clear();
@@ -606,7 +619,10 @@ void GCodeModel::readCommands(const QString& path)
     }
 }
 
-bool GCodeModel::validateCommands(QStringList& invalidCommands)
+bool GCodeModel::validateCommands(
+    QStringList& invalidCommands,
+    const std::function<void(int, int)>& progress,
+    int& progressCounter)
 {
     GuiKernel kernel(invalidCommands);
     CommandValidator commandValidator;
@@ -619,12 +635,18 @@ bool GCodeModel::validateCommands(QStringList& invalidCommands)
     for (auto& command : m_commands)
     {
         kernel.executeCommand(command.toStdString().c_str(), CommandSource::FILE_SOURCE, commandId);
+
+        progressCounter++;
+        progress(progressCounter, 2 * m_commands.size());
     }
 
     return invalidCommands.empty();
 }
 
-bool GCodeModel::calculateLines(QStringList& invalidCommands)
+bool GCodeModel::calculateLines(
+    QStringList& invalidCommands,
+    const std::function<void(int, int)>& progress,
+    int& progressCounter)
 {
     GuiKernel kernel(invalidCommands);
     CoordinateTransformer coordinateTransformer;
@@ -644,6 +666,9 @@ bool GCodeModel::calculateLines(QStringList& invalidCommands)
     for (auto& command : m_commands)
     {
         kernel.executeCommand(command.toStdString().c_str(), CommandSource::FILE_SOURCE, commandId);
+
+        progressCounter++;
+        progress(progressCounter, 2 * m_commands.size());
     }
 
     return invalidCommands.empty();
