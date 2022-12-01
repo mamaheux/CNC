@@ -1,7 +1,7 @@
 #ifndef CONTROL_CNC_H
 #define CONTROL_CNC_H
 
-#include "control/Cnc.h"
+#include "control/models/GCodeModel.h"
 
 #include <QObject>
 #include <QString>
@@ -28,8 +28,11 @@ class Cnc : public QObject
     QSerialPort* m_serialPort;
     QTimer* m_statusTimer;
 
+    GCodeModel* m_gcodeModel;
+    bool m_isGCodeFileStarted;
+
 public:
-    Cnc();
+    Cnc(GCodeModel* gcodeModel);
     ~Cnc() override;
 
     void connect(const QString& portName, qint32 baudRate);
@@ -63,6 +66,9 @@ public:
         const QString& command,
         std::function<void(const QString& command, const QString& commandResponse)> responseCallback);
 
+    void startGCodeFile();
+    void stopGCodeFile();
+
 signals:
     void cncConnected();
     void cncDisconnected();
@@ -76,6 +82,8 @@ private slots:
     void onSerialPortErrorOccurred(QSerialPort::SerialPortError error);
     void onSerialPortReadyRead();
     void onStatusTimerTimeout();
+
+    void sendNextGCodeFileCommandIfStarted();
 
 private:
     void sendHeadCommand();

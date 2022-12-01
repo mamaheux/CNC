@@ -22,9 +22,12 @@ public:
 private slots:
     void onCncConnected();
     void onCncDisconnected();
+    void onCncError(const QString& error);
 
     void onGCodeChanged();
     void onInvalidGCode(const QStringList& invalidCommands);
+
+    void onGCodeProgress();
 
     void onLoadFileButtonPressed();
     void onStartButtonPressed();

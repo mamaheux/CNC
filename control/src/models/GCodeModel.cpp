@@ -559,7 +559,12 @@ CommandResult LineCreator::onGCodeCommandReceived(const GCode& gcode, CommandSou
     }
     else if (gcode.code() == 2 || gcode.code() == 3)
     {
-        m_arcConverter->setArc(gcode);
+        CommandResult result = m_arcConverter->setArc(gcode);
+        if (result.type() == CommandResultType::ERROR)
+        {
+            return result;
+        }
+
         GCode lineGCode;
         while (m_arcConverter->getNextSegment(lineGCode))
         {
@@ -651,7 +656,7 @@ bool GCodeModel::calculateLines(
     GuiKernel kernel(invalidCommands);
     CoordinateTransformer coordinateTransformer;
     ArcConverter arcConverter(&coordinateTransformer);
-    arcConverter.configure(ConfigItem("arc_converter.max_error_in_mm", "0.1"));
+    arcConverter.configure(ConfigItem("arc_converter.max_error_in_mm", "0.01"));
     LineCreator lineCreator(&coordinateTransformer, &arcConverter, m_lines);
 
     kernel.addModule(&coordinateTransformer);

@@ -41,6 +41,7 @@ protected:
 
 private slots:
     void onGCodeChanged();
+    void onGCodeProgress();
 
 private:
     QMatrix4x4 rotationMatrix() const;

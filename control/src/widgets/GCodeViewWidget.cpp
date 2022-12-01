@@ -28,6 +28,7 @@ GCodeViewWidget::GCodeViewWidget(SettingsModel* settings, GCodeModel* gcodeModel
       m_center(0.f, 0.f, 0.f)
 {
     connect(m_gcodeModel, &GCodeModel::gcodeChanged, this, &GCodeViewWidget::onGCodeChanged);
+    connect(m_gcodeModel, &GCodeModel::progress, this, &GCodeViewWidget::onGCodeProgress);
 }
 
 
@@ -126,6 +127,11 @@ void GCodeViewWidget::onGCodeChanged()
     update();
 }
 
+void GCodeViewWidget::onGCodeProgress()
+{
+    update();
+}
+
 QMatrix4x4 GCodeViewWidget::rotationMatrix() const
 {
     QMatrix4x4 rotation;
@@ -183,7 +189,9 @@ void GCodeViewWidget::drawLines()
     glBegin(GL_LINES);
 
     int i = 0;
-    for (; i < m_gcodeModel->lines().size() && i < m_gcodeModel->completedCommandCount(); i++)
+    for (;
+         i < m_gcodeModel->lines().size() && m_gcodeModel->lines()[i].fileLine < m_gcodeModel->completedCommandCount();
+         i++)
     {
         auto& line = m_gcodeModel->lines()[i];
         glColor3f(0.0f, 1.f, 1.f);  // Cyan

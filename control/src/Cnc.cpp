@@ -7,7 +7,7 @@ constexpr int STATUS_TIMER_INTERVAL_MS = 250;
 
 static float parseFloat(const QString& str, const QString& prefix)
 {
-    auto prefixIndex = str.indexOf("S", Qt::CaseInsensitive);
+    auto prefixIndex = str.indexOf(prefix, Qt::CaseInsensitive);
     if (prefixIndex == -1)
     {
         return 0.f;
@@ -29,7 +29,7 @@ static QVector3D parsePosition(const QString& str)
     return QVector3D(parseFloat(str, "X"), parseFloat(str, "Y"), parseFloat(str, "Z"));
 }
 
-Cnc::Cnc() : m_serialPort(nullptr)
+Cnc::Cnc(GCodeModel* gcodeModel) : m_serialPort(nullptr), m_gcodeModel(gcodeModel), m_isGCodeFileStarted(false)
 {
     m_statusTimer = new QTimer;
     m_statusTimer->setInterval(STATUS_TIMER_INTERVAL_MS);
@@ -54,6 +54,7 @@ void Cnc::connect(const QString& portName, qint32 baudRate)
         delete m_serialPort;
     }
 
+    m_isGCodeFileStarted = false;
     m_commandQueue.clear();
 
     m_serialPort = new QSerialPort(portName);
@@ -88,6 +89,7 @@ void Cnc::disconnect()
     m_serialPort->close();
     delete m_serialPort;
     m_serialPort = nullptr;
+    m_isGCodeFileStarted = false;
     m_commandQueue.clear();
 
     emit cncDisconnected();
@@ -243,6 +245,17 @@ void Cnc::sendCommand(
     }
 }
 
+void Cnc::startGCodeFile()
+{
+    m_isGCodeFileStarted = true;
+    sendNextGCodeFileCommandIfStarted();
+}
+
+void Cnc::stopGCodeFile()
+{
+    m_isGCodeFileStarted = false;
+}
+
 void Cnc::onSerialPortErrorOccurred(QSerialPort::SerialPortError error)
 {
     disconnect();
@@ -345,7 +358,7 @@ void Cnc::onStatusTimerTimeout()
                 emit currentMachinePositionChanged(position.x(), position.y(), position.z());
             });
         sendCommand(
-            "M114.3",
+            "M957",
             [this](const QString& command, const QString& response)
             { emit currentRpmChanged(parseFloat(response, "S")); });
     }
@@ -355,6 +368,22 @@ void Cnc::onStatusTimerTimeout()
         emit currentMachinePositionChanged(0.f, 0.f, 0.f);
         emit currentRpmChanged(0.f);
     }
+}
+
+void Cnc::sendNextGCodeFileCommandIfStarted()
+{
+    if (m_gcodeModel->isFinished() || !m_isGCodeFileStarted)
+    {
+        return;
+    }
+
+    sendCommand(
+        m_gcodeModel->nextCommand(),
+        [this](const QString& command, const QString& response)
+        {
+            float sleepTimeMs = parseFloat(response, "P");
+            QTimer::singleShot(static_cast<int>(sleepTimeMs), this, &Cnc::sendNextGCodeFileCommandIfStarted);
+        });
 }
 
 void Cnc::sendHeadCommand()

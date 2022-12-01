@@ -16,8 +16,10 @@ GCodeFileWidget::GCodeFileWidget(GCodeModel* gcodeModel, Cnc* cnc, QWidget* pare
 
     connect(m_cnc, &Cnc::cncConnected, this, &GCodeFileWidget::onCncConnected);
     connect(m_cnc, &Cnc::cncDisconnected, this, &GCodeFileWidget::onCncDisconnected);
+    connect(m_cnc, &Cnc::cncError, this, &GCodeFileWidget::onCncError);
     connect(m_gcodeModel, &GCodeModel::gcodeChanged, this, &GCodeFileWidget::onGCodeChanged);
     connect(m_gcodeModel, &GCodeModel::invalidGCode, this, &GCodeFileWidget::onInvalidGCode);
+    connect(m_gcodeModel, &GCodeModel::progress, this, &GCodeFileWidget::onGCodeProgress);
 
     onCncDisconnected();
 }
@@ -35,17 +37,42 @@ void GCodeFileWidget::onCncDisconnected()
     m_abortButton->setEnabled(false);
 }
 
+void GCodeFileWidget::onCncError(const QString& error)
+{
+    m_loadFileButton->setEnabled(true);
+    m_startButton->setEnabled(true);
+    m_pauseButton->setEnabled(false);
+    m_abortButton->setEnabled(false);
+}
+
 void GCodeFileWidget::onGCodeChanged()
 {
     m_startButton->setEnabled(m_gcodeModel->commandCount() > 0 && m_cnc->isConnected());
     m_progressBar->setRange(0, m_gcodeModel->commandCount());
-    m_progressBar->setValue(m_gcodeModel->completedCommandCount());
+    m_progressBar->setValue(0);
 }
 
 void GCodeFileWidget::onInvalidGCode(const QStringList& invalidCommands)
 {
     InvalidGCodeDialog dialog(invalidCommands, this);
     dialog.exec();
+}
+
+void GCodeFileWidget::onGCodeProgress()
+{
+    if (m_gcodeModel->isFinished())
+    {
+        m_gcodeModel->reset();
+        m_progressBar->setValue(0);
+
+        m_startButton->setEnabled(true);
+        m_pauseButton->setEnabled(false);
+        m_abortButton->setEnabled(false);
+    }
+    else
+    {
+        m_progressBar->setValue(m_gcodeModel->completedCommandCount());
+    }
 }
 
 void GCodeFileWidget::onLoadFileButtonPressed()
@@ -81,14 +108,16 @@ void GCodeFileWidget::onStartButtonPressed()
     m_startButton->setEnabled(false);
     m_pauseButton->setEnabled(true);
     m_abortButton->setEnabled(true);
-    // TODO
+
+    m_cnc->startGCodeFile();
 }
 
 void GCodeFileWidget::onPauseButtonPressed()
 {
     m_startButton->setEnabled(true);
     m_pauseButton->setEnabled(false);
-    // TODO
+
+    m_cnc->stopGCodeFile();
 }
 
 void GCodeFileWidget::onAbortButtonPressed()
@@ -97,7 +126,9 @@ void GCodeFileWidget::onAbortButtonPressed()
     m_startButton->setEnabled(true);
     m_pauseButton->setEnabled(false);
     m_abortButton->setEnabled(false);
-    // TODO
+    m_gcodeModel->reset();
+
+    m_cnc->stopGCodeFile();
 }
 
 void GCodeFileWidget::createUi()

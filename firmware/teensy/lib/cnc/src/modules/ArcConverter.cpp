@@ -13,7 +13,7 @@ constexpr const char* RADIUS_ERROR_COMMAND_ERROR_MESSAGE = "The radiuses are not
 constexpr const char* SEGMENT_ERROR_COMMAND_ERROR_MESSAGE = "Segments calculation failed.";
 
 constexpr float MINIMUM_RADIUS = 0.1;
-constexpr float RADIUS_TOLERANCE = 1e-3;
+constexpr float RADIUS_TOLERANCE = 1e-2;
 constexpr float MINIMUM_ARC_ANGLE = 1e-5;
 
 constexpr float PI = 3.1415926535897932384626433832795f;

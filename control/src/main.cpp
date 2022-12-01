@@ -15,7 +15,7 @@ int main(int argc, char* argv[])
 
     auto settings = SettingsModel::loadOrDefault();
     auto gcodeModel = new GCodeModel;
-    auto cnc = new Cnc;
+    auto cnc = new Cnc(gcodeModel);
 
     MainWindow mainWindow(settings, gcodeModel, cnc);
     mainWindow.setStyleSheet("QWidget {font-size: 15pt;} "

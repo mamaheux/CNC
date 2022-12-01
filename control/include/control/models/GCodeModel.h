@@ -32,11 +32,15 @@ public:
     int commandCount() const;
     QString nextCommand();
 
+    void reset();
+
     const QList<GCodeLine>& lines() const;
 
 signals:
     void gcodeChanged();
     void invalidGCode(const QStringList& invalidLines);
+
+    void progress();
 
 private:
     void readCommands(const QString& path);
@@ -67,17 +71,21 @@ inline int GCodeModel::commandCount() const
 
 inline QString GCodeModel::nextCommand()
 {
-    if (isFinished())
+    QString command;
+    if (!isFinished())
     {
-        return "";
-    }
-    else
-    {
-        QString command = m_commands[m_completedCommandCount];
+        command = m_commands[m_completedCommandCount];
         m_completedCommandCount++;
-        emit gcodeChanged();
-        return command;
     }
+
+    emit progress();
+    return command;
+}
+
+inline void GCodeModel::reset()
+{
+    m_completedCommandCount = 0;
+    emit progress();
 }
 
 inline const QList<GCodeLine>& GCodeModel::lines() const
