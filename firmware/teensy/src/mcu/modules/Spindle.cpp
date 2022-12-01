@@ -185,6 +185,8 @@ void Spindle::sendCurrentRpm(CommandSource source, uint32_t commandId) {
   stringPrint.print(OK_COMMAND_RESPONSE);
   stringPrint.print(" S");
   stringPrint.print(m_currentRpm);
+  stringPrint.print(" T");
+  stringPrint.print(m_targetRpm);
   stringPrint.finish();
 
   m_kernel->sendCommandResponse(m_response, source, commandId);

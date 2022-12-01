@@ -360,13 +360,13 @@ void Cnc::onStatusTimerTimeout()
         sendCommand(
             "M957",
             [this](const QString& command, const QString& response)
-            { emit currentRpmChanged(parseFloat(response, "S")); });
+            { emit currentRpmChanged(parseFloat(response, "S"), parseFloat(response, "T")); });
     }
     else
     {
         emit currentWorkPositionChanged(0.f, 0.f, 0.f);
         emit currentMachinePositionChanged(0.f, 0.f, 0.f);
-        emit currentRpmChanged(0.f);
+        emit currentRpmChanged(0.f, 0.f);
     }
 }
 

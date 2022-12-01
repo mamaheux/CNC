@@ -6,9 +6,32 @@
 constexpr uint LCD_DISPLAY_NUM_DIGITS = 8;
 constexpr int MAXIMUM_LAST_RPM_VALUES_SIZE = 40;
 
+const QColor CURRENT_RPM_SERIES_COLOR(0, 0, 255);
+const QColor TARGET_RPM_SERIES_COLOR(255, 0, 0);
+
 static void setRpmLcdNumber(QLCDNumber* lcdNumber, double value)
 {
     lcdNumber->display(QString("%1").arg(value, LCD_DISPLAY_NUM_DIGITS, 'f', 1, QChar('0')));
+}
+
+static void appendRpmValue(QList<qreal>& lastRpmValues, qreal rpm)
+{
+    lastRpmValues.append(rpm);
+    if (lastRpmValues.size() > MAXIMUM_LAST_RPM_VALUES_SIZE)
+    {
+        lastRpmValues.removeFirst();
+    }
+}
+
+static QLineSeries* rpmValuesToLineSeries(const QList<qreal>& rpmValues, const QColor& color)
+{
+    auto rpmSeries = new QLineSeries;
+    rpmSeries->setColor(color);
+    for (int i = 0; i < rpmValues.size(); i++)
+    {
+        rpmSeries->append(i, rpmValues[i]);
+    }
+    return rpmSeries;
 }
 
 SpindleStatusWidget::SpindleStatusWidget(Cnc* cnc, QWidget* parent) : QWidget(parent), m_cnc(cnc)
@@ -30,27 +53,21 @@ void SpindleStatusWidget::onCncConnected()
 void SpindleStatusWidget::onCncDisconnected()
 {
     setEnabled(false);
-    m_lastRpmValues.clear();
-    onCurrentRpmChanged(0.f);
+    m_lastCurrentRpmValues.clear();
+    m_lastTargetRpmValues.clear();
+    onCurrentRpmChanged(0.f, 0.f);
 }
 
-void SpindleStatusWidget::onCurrentRpmChanged(float rpm)
+void SpindleStatusWidget::onCurrentRpmChanged(float currentRpm, float targetRpm)
 {
-    setRpmLcdNumber(m_rpmLcdNumber, rpm);
-    m_lastRpmValues.append(rpm);
-    if (m_lastRpmValues.size() > MAXIMUM_LAST_RPM_VALUES_SIZE)
-    {
-        m_lastRpmValues.removeFirst();
-    }
+    setRpmLcdNumber(m_rpmLcdNumber, currentRpm);
 
-    auto series = new QLineSeries;
-    for (int i = 0; i < m_lastRpmValues.size(); i++)
-    {
-        series->append(i, m_lastRpmValues[i]);
-    }
+    appendRpmValue(m_lastCurrentRpmValues, currentRpm);
+    appendRpmValue(m_lastTargetRpmValues, targetRpm);
 
     m_rpmChart->removeAllSeries();
-    m_rpmChart->addSeries(series);
+    m_rpmChart->addSeries(rpmValuesToLineSeries(m_lastCurrentRpmValues, CURRENT_RPM_SERIES_COLOR));
+    m_rpmChart->addSeries(rpmValuesToLineSeries(m_lastTargetRpmValues, TARGET_RPM_SERIES_COLOR));
     m_rpmChart->legend()->hide();
     m_rpmChart->createDefaultAxes();
 

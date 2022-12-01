@@ -12,7 +12,8 @@ class SpindleStatusWidget : public QWidget
     Q_OBJECT
 
     Cnc* m_cnc;
-    QList<qreal> m_lastRpmValues;
+    QList<qreal> m_lastCurrentRpmValues;
+    QList<qreal> m_lastTargetRpmValues;
 
 public:
     explicit SpindleStatusWidget(Cnc* cnc, QWidget* parent = nullptr);
@@ -20,7 +21,7 @@ public:
 private slots:
     void onCncConnected();
     void onCncDisconnected();
-    void onCurrentRpmChanged(float rpm);
+    void onCurrentRpmChanged(float currentRpm, float targetRpm);
 
 private:
     void createUi();

@@ -76,7 +76,7 @@ signals:
 
     void currentWorkPositionChanged(float x, float y, float z);
     void currentMachinePositionChanged(float x, float y, float z);
-    void currentRpmChanged(float rpm);
+    void currentRpmChanged(float currentRpm, float targetRpm);
 
 private slots:
     void onSerialPortErrorOccurred(QSerialPort::SerialPortError error);
