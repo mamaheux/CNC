@@ -34,8 +34,8 @@ class CommandResult
     CommandResultType m_type;
     const char* m_errorMessage;
 
-    CommandResult(CommandResultType type);
-    CommandResult(const char* errorMessage);
+    explicit CommandResult(CommandResultType type);
+    explicit CommandResult(const char* errorMessage);
 
 public:
     static CommandResult ok();

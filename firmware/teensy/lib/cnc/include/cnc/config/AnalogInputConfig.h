@@ -10,7 +10,7 @@ class AnalogInputConfig
     uint8_t m_pin;
 
 public:
-    AnalogInputConfig(uint8_t pin);
+    explicit AnalogInputConfig(uint8_t pin);
 
     static tl::optional<AnalogInputConfig> parse(const char* pinString);
 

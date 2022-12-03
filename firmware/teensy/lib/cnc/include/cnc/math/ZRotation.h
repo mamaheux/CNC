@@ -27,7 +27,7 @@ class ZRotation
     T m_m11;
 
 public:
-    ZRotation(T angleRad);
+    explicit ZRotation(T angleRad);
 
     void setAngleRad(T angleRad);
 
