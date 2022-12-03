@@ -6,6 +6,7 @@
 #include <tl/optional.hpp>
 
 #include <cstdlib>
+#include <cstdint>
 
 constexpr size_t MCODE_LINE_BUFFER_SIZE = 256;
 

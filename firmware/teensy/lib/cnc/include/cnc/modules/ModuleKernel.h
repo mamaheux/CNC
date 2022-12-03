@@ -5,6 +5,7 @@
 #include <cnc/modules/Module.h>
 
 #include <cstdlib>
+#include <cstdint>
 
 class ModuleKernel
 {

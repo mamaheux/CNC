@@ -76,6 +76,7 @@ void Endstops::configure(const ConfigItem& item)
 
 void Endstops::checkConfigErrors(std::function<void(const char*, const char*, const char*)> onMissingConfigItem)
 {
+    // TODO (min or max) and range
     CHECK_CONFIG_ERROR(onMissingConfigItem, m_xMinConfig.has_value(), X_MIN_PIN_KEY);
     CHECK_CONFIG_ERROR(onMissingConfigItem, m_yMinConfig.has_value(), Y_MIN_PIN_KEY);
     CHECK_CONFIG_ERROR(onMissingConfigItem, m_zMinConfig.has_value(), Z_MIN_PIN_KEY);

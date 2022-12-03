@@ -4,6 +4,7 @@
 #include <tl/optional.hpp>
 
 #include <cstdlib>
+#include <cstddef>
 
 template<class T, size_t MAX_SIZE>
 class BoundedQueue
