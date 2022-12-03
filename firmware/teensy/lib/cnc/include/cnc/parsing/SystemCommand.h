@@ -3,18 +3,20 @@
 
 #include <cnc/parsing/ParsingResult.h>
 
-enum class SystemCommand {
-	HOMING
+enum class SystemCommand
+{
+    HOMING
 };
 
-class SystemCommandParser {
+class SystemCommandParser
+{
 public:
-	SystemCommandParser();
+    SystemCommandParser();
 
-	ParsingResult parse(const char* line, SystemCommand& gcode);
+    ParsingResult parse(const char* line, SystemCommand& gcode);
 
 private:
-	bool isComment(const char* line);
+    bool isComment(const char* line);
 };
 
 #endif

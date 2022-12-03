@@ -10,23 +10,25 @@
 constexpr unsigned int ADC_RESOLUTION = 12;
 constexpr uint16_t ADC_MAX_VALUE = 4095;
 
-class AnalogInput {
-  PinLock m_lock;
-  uint8_t m_pin;
+class AnalogInput
+{
+    PinLock m_lock;
+    uint8_t m_pin;
 
 public:
-  AnalogInput();
+    AnalogInput();
 
-  DECLARE_NOT_COPYABLE(AnalogInput);
-  DECLARE_NOT_MOVABLE(AnalogInput);
+    DECLARE_NOT_COPYABLE(AnalogInput);
+    DECLARE_NOT_MOVABLE(AnalogInput);
 
-  void begin(const AnalogInputConfig& config);
+    void begin(const AnalogInputConfig& config);
 
-  uint16_t read() const;
+    uint16_t read() const;
 };
 
-inline uint16_t AnalogInput::read() const {
-  return analogRead(m_pin);
+inline uint16_t AnalogInput::read() const
+{
+    return analogRead(m_pin);
 }
 
 #endif

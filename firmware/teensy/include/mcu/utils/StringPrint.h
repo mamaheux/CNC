@@ -3,18 +3,19 @@
 
 #include <Arduino.h>
 
-class StringPrint : public Print {
-  char* m_buffer;
-  size_t m_size;
-  size_t m_index;
+class StringPrint : public Print
+{
+    char* m_buffer;
+    size_t m_size;
+    size_t m_index;
 
 public:
-  StringPrint(char* buffer, size_t size);
+    StringPrint(char* buffer, size_t size);
 
-  size_t write(uint8_t b) override;
-  int availableForWrite() override;
+    size_t write(uint8_t b) override;
+    int availableForWrite() override;
 
-  void finish();
+    void finish();
 };
 
 #endif

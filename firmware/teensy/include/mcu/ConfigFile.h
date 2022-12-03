@@ -7,19 +7,21 @@
 
 #include <cstdlib>
 
-class ConfigFile {
-  File m_file;
+class ConfigFile
+{
+    File m_file;
 
 public:
-  ConfigFile(const char* path);
-  ~ConfigFile();
+    ConfigFile(const char* path);
+    ~ConfigFile();
 
-  bool readNext(ConfigItem& item);
-  bool isEndOfFile();
+    bool readNext(ConfigItem& item);
+    bool isEndOfFile();
 };
 
-inline bool ConfigFile::isEndOfFile() {
-  return m_file.available() == 0;
+inline bool ConfigFile::isEndOfFile()
+{
+    return m_file.available() == 0;
 }
 
 #endif

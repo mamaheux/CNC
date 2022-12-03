@@ -4,7 +4,8 @@
 #include <type_traits>
 
 template<class T>
-struct AlwaysFalse : public std::false_type {
+struct AlwaysFalse : public std::false_type
+{
 };
 
 #endif

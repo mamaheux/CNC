@@ -6,32 +6,34 @@
 
 // Those lock are not thread safe.
 
-class PinLock {
+class PinLock
+{
 protected:
-  uint8_t m_pin;
-  bool m_hasLock;
+    uint8_t m_pin;
+    bool m_hasLock;
 
 public:
-  PinLock();
-  ~PinLock();
+    PinLock();
+    ~PinLock();
 
-  DECLARE_NOT_COPYABLE(PinLock);
-  DECLARE_NOT_MOVABLE(PinLock);
+    DECLARE_NOT_COPYABLE(PinLock);
+    DECLARE_NOT_MOVABLE(PinLock);
 
-  bool tryLock(uint8_t pin);
+    bool tryLock(uint8_t pin);
 };
 
-class PwmLock : private PinLock {
-  float m_frequency;
+class PwmLock : private PinLock
+{
+    float m_frequency;
 
 public:
-  PwmLock();
-  ~PwmLock();
+    PwmLock();
+    ~PwmLock();
 
-  DECLARE_NOT_COPYABLE(PwmLock);
-  DECLARE_NOT_MOVABLE(PwmLock);
+    DECLARE_NOT_COPYABLE(PwmLock);
+    DECLARE_NOT_MOVABLE(PwmLock);
 
-  bool tryLock(uint8_t pin, float frequency);
+    bool tryLock(uint8_t pin, float frequency);
 };
 
 #endif

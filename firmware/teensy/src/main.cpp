@@ -29,31 +29,34 @@ Spindle spindle;
 
 Kernel kernel;
 
-void setupKernel() {
-  DEBUG_SERIAL.println("Setup the kernel");
+void setupKernel()
+{
+    DEBUG_SERIAL.println("Setup the kernel");
 
-  kernel.addModule(&fileSystem);
-  kernel.addModule(&commandSerial);
-  kernel.addModule(&commandFile);
+    kernel.addModule(&fileSystem);
+    kernel.addModule(&commandSerial);
+    kernel.addModule(&commandFile);
 
-  kernel.addModule(&coordinateTransformer);
-  kernel.addModule(&arcConverter);
-  kernel.addModule(&planner);
+    kernel.addModule(&coordinateTransformer);
+    kernel.addModule(&arcConverter);
+    kernel.addModule(&planner);
 
-  kernel.addModule(&endstops);
-  kernel.addModule(&stepperController);
-  kernel.addModule(&spindle);
-  kernel.begin();
+    kernel.addModule(&endstops);
+    kernel.addModule(&stepperController);
+    kernel.addModule(&spindle);
+    kernel.begin();
 }
 
-void setup() {
-  DEBUG_SERIAL.begin(DEBUG_SERIAL_BAUD_RATE);
-  setupCriticalErrorCheck();
-  SD.begin(BUILTIN_SDCARD);
+void setup()
+{
+    DEBUG_SERIAL.begin(DEBUG_SERIAL_BAUD_RATE);
+    setupCriticalErrorCheck();
+    SD.begin(BUILTIN_SDCARD);
 
-  setupKernel();
+    setupKernel();
 }
 
-void loop() {
-  kernel.update();
+void loop()
+{
+    kernel.update();
 }
