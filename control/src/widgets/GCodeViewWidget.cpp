@@ -107,16 +107,14 @@ void GCodeViewWidget::mousePressEvent(QMouseEvent* event)
 void GCodeViewWidget::mouseMoveEvent(QMouseEvent* event)
 {
     event->accept();
-    if (event->buttons().testFlag(Qt::MiddleButton) &&
-            QGuiApplication::keyboardModifiers().testFlag(Qt::ControlModifier) ||
-        event->buttons().testFlag(Qt::RightButton))
+    if (event->buttons().testFlag(Qt::RightButton))
     {
         // Pan
         float dx = -static_cast<float>(event->pos().x() - m_lastMousePosition.x()) * MOUSE_LINEAR_SPEED;
         float dy = static_cast<float>(event->pos().y() - m_lastMousePosition.y()) * MOUSE_LINEAR_SPEED;
         m_center += rotationMatrix() * QVector3D(dx, dy, 0.f);
     }
-    else if (event->buttons().testFlag(Qt::MiddleButton))
+    else if (event->buttons().testFlag(Qt::LeftButton) || event->buttons().testFlag(Qt::MiddleButton))
     {
         // Roll
         m_phi += static_cast<float>(event->pos().x() - m_lastMousePosition.x()) * MOUSE_ANGULAR_SPEED;

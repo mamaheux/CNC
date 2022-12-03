@@ -26,6 +26,8 @@ private slots:
     void onDisconnectButtonPressed();
     void onHomeButtonPressed();
 
+    static void onShutdownButtonPressed();
+
 private:
     void createUi();
 
@@ -36,6 +38,7 @@ private:
     QPushButton* m_homeButton;
 
     QPushButton* m_quitButton;
+    QPushButton* m_shutdownButton;
 };
 
 #endif

@@ -3,6 +3,7 @@
 
 #include <QHBoxLayout>
 #include <QCoreApplication>
+#include <QProcess>
 
 CncWidget::CncWidget(SettingsModel* settings, Cnc* cnc, QWidget* parent)
     : QFrame(parent),
@@ -54,6 +55,19 @@ void CncWidget::onHomeButtonPressed()
     m_cnc->home();
 }
 
+void CncWidget::onShutdownButtonPressed()
+{
+#ifdef Q_OS_UNIX
+    QProcess::startDetached("bash -c \"sleep 5; sudo shutdown -P now\"");
+#elif defined(Q_OS_WIN)
+    QProcess::startDetached("shutdown /s /t 5");
+#else
+#error "The OS is not supported"
+#endif
+
+    QCoreApplication::instance()->quit();
+}
+
 void CncWidget::createUi()
 {
     setFrameShape(QFrame::StyledPanel);
@@ -78,6 +92,9 @@ void CncWidget::createUi()
         &QCoreApplication::quit,
         Qt::QueuedConnection);
 
+    m_shutdownButton = new QPushButton("Shutdown");
+    connect(m_shutdownButton, &QPushButton::pressed, this, &CncWidget::onShutdownButtonPressed);
+
     auto globalLayout = new QHBoxLayout;
     globalLayout->addWidget(m_settingsButton, 0);
     globalLayout->addWidget(m_connectButton, 0);
@@ -85,6 +102,7 @@ void CncWidget::createUi()
     globalLayout->addWidget(m_homeButton, 0);
     globalLayout->addStretch(1);
     globalLayout->addWidget(m_quitButton, 0);
+    globalLayout->addWidget(m_shutdownButton, 0);
 
     setLayout(globalLayout);
 }
