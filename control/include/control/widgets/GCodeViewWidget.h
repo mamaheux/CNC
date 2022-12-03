@@ -30,7 +30,7 @@ public:
 
 protected:
     bool event(QEvent* event) override;
-    void touchEvent(QTouchEvent* event);
+    void touchUpdateEvent(QTouchEvent* event);
     void mousePressEvent(QMouseEvent* event) override;
     void mouseMoveEvent(QMouseEvent* event) override;
     void wheelEvent(QWheelEvent* event) override;

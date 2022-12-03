@@ -4,13 +4,13 @@
 #include "control/Cnc.h"
 #include "control/models/SettingsModel.h"
 
-#include <QGroupBox>
+#include <QWidget>
 #include <QPlainTextEdit>
 #include <QCompleter>
 #include <QLineEdit>
 #include <QPushButton>
 
-class ConsoleWidget : public QGroupBox
+class ConsoleWidget : public QWidget
 {
     Q_OBJECT
 

@@ -7,7 +7,7 @@
 #include <QGroupBox>
 #include <QPushButton>
 
-class CncWidget : public QGroupBox
+class CncWidget : public QFrame
 {
     Q_OBJECT
 
@@ -34,6 +34,8 @@ private:
     QPushButton* m_connectButton;
     QPushButton* m_disconnectButton;
     QPushButton* m_homeButton;
+
+    QPushButton* m_quitButton;
 };
 
 #endif

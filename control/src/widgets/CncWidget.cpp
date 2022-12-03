@@ -2,9 +2,10 @@
 #include "control/dialogs/SettingsDialog.h"
 
 #include <QHBoxLayout>
+#include <QCoreApplication>
 
 CncWidget::CncWidget(SettingsModel* settings, Cnc* cnc, QWidget* parent)
-    : QGroupBox("Cnc", parent),
+    : QFrame(parent),
       m_settings(settings),
       m_cnc(cnc)
 {
@@ -55,6 +56,8 @@ void CncWidget::onHomeButtonPressed()
 
 void CncWidget::createUi()
 {
+    setFrameShape(QFrame::StyledPanel);
+
     m_settingsButton = new QPushButton("Settings");
     connect(m_settingsButton, &QPushButton::pressed, this, &CncWidget::onSettingsButtonPressed);
 
@@ -67,12 +70,21 @@ void CncWidget::createUi()
     m_homeButton = new QPushButton("Home");
     connect(m_homeButton, &QPushButton::pressed, this, &CncWidget::onHomeButtonPressed);
 
+    m_quitButton = new QPushButton("Quit");
+    connect(
+        m_quitButton,
+        &QPushButton::pressed,
+        QCoreApplication::instance(),
+        &QCoreApplication::quit,
+        Qt::QueuedConnection);
+
     auto globalLayout = new QHBoxLayout;
     globalLayout->addWidget(m_settingsButton, 0);
     globalLayout->addWidget(m_connectButton, 0);
     globalLayout->addWidget(m_disconnectButton, 0);
     globalLayout->addWidget(m_homeButton, 0);
     globalLayout->addStretch(1);
+    globalLayout->addWidget(m_quitButton, 0);
 
     setLayout(globalLayout);
 }

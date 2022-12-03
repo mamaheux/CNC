@@ -32,7 +32,7 @@ class Cnc : public QObject
     bool m_isGCodeFileStarted;
 
 public:
-    Cnc(GCodeModel* gcodeModel);
+    explicit Cnc(GCodeModel* gcodeModel);
     ~Cnc() override;
 
     void connect(const QString& portName, qint32 baudRate);
@@ -63,6 +63,10 @@ public:
 
     void sendCommand(const QString& command);
     void sendCommand(
+        const QString& command,
+        std::function<void(const QString& command, const QString& commandResponse)> responseCallback);
+
+    void sendCommandIfNotQueued(
         const QString& command,
         std::function<void(const QString& command, const QString& commandResponse)> responseCallback);
 

@@ -48,7 +48,7 @@ void CoordinateWidget::onCurrentMachinePositionChanged(float x, float y, float z
     setPositionLcdNumber(m_zMachinePositionLcdNumber, z);
 }
 
-void CoordinateWidget::onCoordinateSystemComboBoxIndexChanged(int index)
+void CoordinateWidget::onCoordinateSystemComboBoxIndexChanged(int _)
 {
     m_cnc->setCoordinateSystem(m_coordinateSystemComboBox->currentData().toInt());
 }
@@ -75,7 +75,6 @@ void CoordinateWidget::onZeroZButtonPressed()
 
 void CoordinateWidget::createUi()
 {
-    constexpr int MINIMUM_ROW_HEIGHT = 45;
     constexpr int MINIMUM_POSITION_COLUMN_WIDTH = 150;
 
     m_coordinateSystemComboBox = new QComboBox;
@@ -108,22 +107,19 @@ void CoordinateWidget::createUi()
     m_zWorkPositionLcdNumber = new QLCDNumber(LCD_DISPLAY_NUM_DIGITS);
     setPositionLcdNumber(m_zWorkPositionLcdNumber, 0.0);
 
-    m_zeroAllButton = new QPushButton("Zero\nXYZ");
+    m_zeroAllButton = new QPushButton("Zero XYZ");
     connect(m_zeroAllButton, &QPushButton::pressed, this, &CoordinateWidget::onZeroAllButtonPressed);
 
-    m_zeroXButton = new QPushButton("Zero\nX");
+    m_zeroXButton = new QPushButton("Zero X");
     connect(m_zeroXButton, &QPushButton::pressed, this, &CoordinateWidget::onZeroXButtonPressed);
 
-    m_zeroYButton = new QPushButton("Zero\nY");
+    m_zeroYButton = new QPushButton("Zero Y");
     connect(m_zeroYButton, &QPushButton::pressed, this, &CoordinateWidget::onZeroYButtonPressed);
 
-    m_zeroZButton = new QPushButton("Zero\nZ");
+    m_zeroZButton = new QPushButton("Zero Z");
     connect(m_zeroZButton, &QPushButton::pressed, this, &CoordinateWidget::onZeroZButtonPressed);
 
     auto globalLayout = new QGridLayout;
-    globalLayout->setRowMinimumHeight(2, MINIMUM_ROW_HEIGHT);
-    globalLayout->setRowMinimumHeight(3, MINIMUM_ROW_HEIGHT);
-    globalLayout->setRowMinimumHeight(4, MINIMUM_ROW_HEIGHT);
 
     globalLayout->setColumnStretch(0, 0);
     globalLayout->setColumnStretch(1, 1);

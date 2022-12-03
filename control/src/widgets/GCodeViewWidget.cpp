@@ -2,6 +2,7 @@
 
 #include <QDebug>
 #include <QGuiApplication>
+#include <QVector2D>
 
 #include <GL/glu.h>
 
@@ -16,6 +17,10 @@ constexpr float MM_TO_M = 0.001;
 constexpr float MOUSE_WHEEL_LINEAR_SPEED = 0.01f;
 constexpr float MOUSE_LINEAR_SPEED = 0.001f;
 constexpr float MOUSE_ANGULAR_SPEED = 0.01f;
+
+constexpr float TOUCH_ZOOM_SPEED = 0.01f;
+constexpr float TOUCH_LINEAR_SPEED = 0.001f;
+constexpr float TOUCH_ANGULAR_SPEED = 0.01f;
 
 GCodeViewWidget::GCodeViewWidget(SettingsModel* settings, GCodeModel* gcodeModel, QWidget* parent)
     : QOpenGLWidget(parent),
@@ -36,20 +41,62 @@ bool GCodeViewWidget::event(QEvent* event)
 {
     switch (event->type())
     {
+        case QEvent::TouchUpdate:
+            touchUpdateEvent(reinterpret_cast<QTouchEvent*>(event));
+            return true;
         case QEvent::TouchBegin:
         case QEvent::TouchEnd:
-        case QEvent::TouchUpdate:
         case QEvent::TouchCancel:
-            touchEvent(reinterpret_cast<QTouchEvent*>(event));
+            event->accept();
             return true;
         default:
             return QOpenGLWidget::event(event);
     }
 }
 
-void GCodeViewWidget::touchEvent(QTouchEvent* event)
+void GCodeViewWidget::touchUpdateEvent(QTouchEvent* event)
 {
-    // TODO
+    event->accept();
+
+    if (event->touchPoints().size() == 1)
+    {
+        // Roll
+        auto& touchPoint = event->touchPoints()[0];
+        float dx = static_cast<float>(touchPoint.pos().x() - touchPoint.lastPos().x());
+        float dy = static_cast<float>(touchPoint.pos().y() - touchPoint.lastPos().y());
+        m_phi += dx * TOUCH_ANGULAR_SPEED;
+        m_theta += dy * TOUCH_ANGULAR_SPEED;
+        m_theta = max(-PI / 2.f + EPS, min(m_theta, PI / 2.f - EPS));
+    }
+    else if (event->touchPoints().size() == 2)
+    {
+        auto& touchPoint0 = event->touchPoints()[0];
+        auto& touchPoint1 = event->touchPoints()[1];
+        // Zoom
+        float scaleFactor = static_cast<float>(
+            QLineF(touchPoint0.pos(), touchPoint1.pos()).length() -
+            QLineF(touchPoint0.lastPos(), touchPoint1.lastPos()).length());
+        if (scaleFactor > 0)
+        {
+            m_r /= scaleFactor * TOUCH_ZOOM_SPEED;
+        }
+        else if (scaleFactor < 0)
+        {
+            m_r *= scaleFactor * TOUCH_ZOOM_SPEED;
+        }
+
+        // Pan
+        float centerPosX = static_cast<float>(touchPoint0.pos().x() + touchPoint1.pos().x()) / 2.f;
+        float centerPosY = static_cast<float>(touchPoint0.pos().y() + touchPoint1.pos().y()) / 2.f;
+        float centerLastPosX = static_cast<float>(touchPoint0.pos().x() + touchPoint1.lastPos().x()) / 2.f;
+        float centerLastPosY = static_cast<float>(touchPoint0.pos().y() + touchPoint1.lastPos().y()) / 2.f;
+
+        float dx = (centerPosX - centerLastPosX) * TOUCH_LINEAR_SPEED;
+        float dy = (centerPosY - centerLastPosY) * TOUCH_LINEAR_SPEED;
+        m_center += rotationMatrix() * QVector3D(dx, dy, 0.f);
+    }
+
+    update();
 }
 
 void GCodeViewWidget::mousePressEvent(QMouseEvent* event)
@@ -59,15 +106,19 @@ void GCodeViewWidget::mousePressEvent(QMouseEvent* event)
 
 void GCodeViewWidget::mouseMoveEvent(QMouseEvent* event)
 {
+    event->accept();
     if (event->buttons().testFlag(Qt::MiddleButton) &&
-        QGuiApplication::keyboardModifiers().testFlag(Qt::ControlModifier))
+            QGuiApplication::keyboardModifiers().testFlag(Qt::ControlModifier) ||
+        event->buttons().testFlag(Qt::RightButton))
     {
+        // Pan
         float dx = -static_cast<float>(event->pos().x() - m_lastMousePosition.x()) * MOUSE_LINEAR_SPEED;
         float dy = static_cast<float>(event->pos().y() - m_lastMousePosition.y()) * MOUSE_LINEAR_SPEED;
         m_center += rotationMatrix() * QVector3D(dx, dy, 0.f);
     }
     else if (event->buttons().testFlag(Qt::MiddleButton))
     {
+        // Roll
         m_phi += static_cast<float>(event->pos().x() - m_lastMousePosition.x()) * MOUSE_ANGULAR_SPEED;
         m_theta += static_cast<float>(event->pos().y() - m_lastMousePosition.y()) * MOUSE_ANGULAR_SPEED;
         m_theta = max(-PI / 2.f + EPS, min(m_theta, PI / 2.f - EPS));
@@ -78,6 +129,7 @@ void GCodeViewWidget::mouseMoveEvent(QMouseEvent* event)
 
 void GCodeViewWidget::wheelEvent(QWheelEvent* event)
 {
+    event->accept();
     if (event->angleDelta().y() > 0)
     {
         m_r /= static_cast<float>(event->angleDelta().y()) * MOUSE_WHEEL_LINEAR_SPEED;
@@ -93,6 +145,10 @@ void GCodeViewWidget::initializeGL()
 {
     glClearColor(0, 0, 0, 1);
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_POINT_SMOOTH);
+    glEnable(GL_LINE_SMOOTH);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 void GCodeViewWidget::resizeGL(int w, int h)

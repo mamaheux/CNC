@@ -28,7 +28,7 @@ class GuiKernel : public ModuleKernel
     QStringList& m_invalidCommands;
 
 public:
-    GuiKernel(QStringList& invalidCommands);
+    explicit GuiKernel(QStringList& invalidCommands);
     ~GuiKernel() override = default;
 
     DECLARE_NOT_COPYABLE(GuiKernel);
@@ -272,7 +272,7 @@ void GuiKernel::addInvalidCommand(const char* line, uint32_t commandId, const ch
     CHECK_EXTRA_PARAMETER(gcode, s, "S");                                                                              \
     CHECK_EXTRA_PARAMETER(gcode, p, "P");                                                                              \
     CHECK_EXTRA_PARAMETER(gcode, r, "R");                                                                              \
-    CHECK_EXTRA_PARAMETER(gcode, l, "L");
+    CHECK_EXTRA_PARAMETER(gcode, l, "L")
 
 #define CHECK_MCODE_NO_PARAMETER(mcode)                                                                                \
     CHECK_EXTRA_PARAMETER(mcode, x, "X");                                                                              \
@@ -348,10 +348,8 @@ CommandResult CommandValidator::onGCodeCommandReceived(const GCode& gcode, Comma
         case 0:
         case 1:
             return validateG0G1(gcode);
-            return validateG0G1(gcode);
         case 2:
         case 3:
-            return validateG2G3(gcode);
             return validateG2G3(gcode);
         case 4:
             return validateG4(gcode);
@@ -492,7 +490,6 @@ CommandResult CommandValidator::validateM220(const MCode& mcode)
 class LineCreator : public Module
 {
     Vector3<float> m_startPoint;
-    int m_fileLine;
     QList<GCodeLine>& m_lines;
 
     CoordinateTransformer* m_coordinateTransformer;
@@ -505,8 +502,6 @@ public:
     DECLARE_NOT_COPYABLE(LineCreator);
     DECLARE_NOT_MOVABLE(LineCreator);
 
-    const QList<GCodeLine>& lines() const;
-
     void configure(const ConfigItem& item) override;
     void checkConfigErrors(std::function<void(const char*, const char*, const char*)> onMissingConfigItem) override;
     void begin() override;
@@ -518,16 +513,10 @@ LineCreator::LineCreator(
     CoordinateTransformer* coordinateTransformer,
     ArcConverter* arcConverter,
     QList<GCodeLine>& lines)
-    : m_fileLine(0),
-      m_coordinateTransformer(coordinateTransformer),
+    : m_coordinateTransformer(coordinateTransformer),
       m_arcConverter(arcConverter),
       m_lines(lines)
 {
-}
-
-const QList<GCodeLine>& LineCreator::lines() const
-{
-    return m_lines;
 }
 
 void LineCreator::configure(const ConfigItem& item) {}

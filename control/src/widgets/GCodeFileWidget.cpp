@@ -7,6 +7,8 @@
 #include <QProgressDialog>
 #include <QApplication>
 
+constexpr const char* GCODE_PROGRESS_BAR_FORMAT = "%v/%m (%p%)";
+
 GCodeFileWidget::GCodeFileWidget(GCodeModel* gcodeModel, Cnc* cnc, QWidget* parent)
     : QWidget(parent),
       m_gcodeModel(gcodeModel),
@@ -26,34 +28,57 @@ GCodeFileWidget::GCodeFileWidget(GCodeModel* gcodeModel, Cnc* cnc, QWidget* pare
 
 void GCodeFileWidget::onCncConnected()
 {
-    m_startButton->setEnabled(m_gcodeModel->commandCount() > 0);
+    if (m_gcodeModel->commandCount() > 0)
+    {
+        setState(State::GCODE_FILE_OPENED);
+    }
+    else
+    {
+        setState(State::NO_GCODE_FILE_OPENED);
+    }
 }
 
 void GCodeFileWidget::onCncDisconnected()
 {
-    m_loadFileButton->setEnabled(true);
-    m_startButton->setEnabled(false);
-    m_pauseButton->setEnabled(false);
-    m_abortButton->setEnabled(false);
+    if (m_gcodeModel->commandCount() > 0)
+    {
+        setState(State::GCODE_FILE_OPENED);
+    }
+    else
+    {
+        setState(State::NO_GCODE_FILE_OPENED);
+    }
 }
 
 void GCodeFileWidget::onCncError(const QString& error)
 {
-    m_loadFileButton->setEnabled(true);
-    m_startButton->setEnabled(true);
-    m_pauseButton->setEnabled(false);
-    m_abortButton->setEnabled(false);
+    if (m_gcodeModel->commandCount() > 0)
+    {
+        setState(State::GCODE_FILE_OPENED);
+    }
+    else
+    {
+        setState(State::NO_GCODE_FILE_OPENED);
+    }
 }
 
 void GCodeFileWidget::onGCodeChanged()
 {
-    m_startButton->setEnabled(m_gcodeModel->commandCount() > 0 && m_cnc->isConnected());
-    m_progressBar->setRange(0, m_gcodeModel->commandCount());
+    if (m_gcodeModel->commandCount() > 0)
+    {
+        setState(State::GCODE_FILE_OPENED);
+    }
+    else
+    {
+        setState(State::NO_GCODE_FILE_OPENED);
+    }
     m_progressBar->setValue(0);
 }
 
 void GCodeFileWidget::onInvalidGCode(const QStringList& invalidCommands)
 {
+    m_pathLineEdit->setText("");
+
     InvalidGCodeDialog dialog(invalidCommands, this);
     dialog.exec();
 }
@@ -64,10 +89,7 @@ void GCodeFileWidget::onGCodeProgress()
     {
         m_gcodeModel->reset();
         m_progressBar->setValue(0);
-
-        m_startButton->setEnabled(true);
-        m_pauseButton->setEnabled(false);
-        m_abortButton->setEnabled(false);
+        setState(State::GCODE_FILE_OPENED);
     }
     else
     {
@@ -104,31 +126,61 @@ void GCodeFileWidget::onLoadFileButtonPressed()
 
 void GCodeFileWidget::onStartButtonPressed()
 {
-    m_loadFileButton->setEnabled(false);
-    m_startButton->setEnabled(false);
-    m_pauseButton->setEnabled(true);
-    m_abortButton->setEnabled(true);
-
     m_cnc->startGCodeFile();
+    setState(State::GCODE_FILE_STARTED);
 }
 
 void GCodeFileWidget::onPauseButtonPressed()
 {
-    m_startButton->setEnabled(true);
-    m_pauseButton->setEnabled(false);
-
     m_cnc->stopGCodeFile();
+    setState(State::GCODE_FILE_PAUSED);
 }
 
 void GCodeFileWidget::onAbortButtonPressed()
 {
-    m_loadFileButton->setEnabled(true);
-    m_startButton->setEnabled(true);
-    m_pauseButton->setEnabled(false);
-    m_abortButton->setEnabled(false);
-    m_gcodeModel->reset();
-
     m_cnc->stopGCodeFile();
+    setState(State::GCODE_FILE_OPENED);
+    m_gcodeModel->reset();
+}
+
+void GCodeFileWidget::setState(State state)
+{
+    m_state = state;
+    switch (m_state)
+    {
+        case State::NO_GCODE_FILE_OPENED:
+            m_loadFileButton->setEnabled(true);
+            m_startButton->setEnabled(false);
+            m_pauseButton->setEnabled(false);
+            m_abortButton->setEnabled(false);
+            m_progressBar->setRange(0, 1);
+            m_progressBar->setFormat("");
+            break;
+        case State::GCODE_FILE_OPENED:
+            m_loadFileButton->setEnabled(true);
+            m_startButton->setEnabled(m_cnc->isConnected());
+            m_pauseButton->setEnabled(false);
+            m_abortButton->setEnabled(false);
+            m_progressBar->setRange(0, m_gcodeModel->commandCount());
+            m_progressBar->setFormat(GCODE_PROGRESS_BAR_FORMAT);
+            break;
+        case State::GCODE_FILE_STARTED:
+            m_loadFileButton->setEnabled(false);
+            m_startButton->setEnabled(false);
+            m_pauseButton->setEnabled(true);
+            m_abortButton->setEnabled(true);
+            m_progressBar->setRange(0, m_gcodeModel->commandCount());
+            m_progressBar->setFormat(GCODE_PROGRESS_BAR_FORMAT);
+            break;
+        case State::GCODE_FILE_PAUSED:
+            m_loadFileButton->setEnabled(false);
+            m_startButton->setEnabled(true);
+            m_pauseButton->setEnabled(false);
+            m_abortButton->setEnabled(true);
+            m_progressBar->setRange(0, m_gcodeModel->commandCount());
+            m_progressBar->setFormat(GCODE_PROGRESS_BAR_FORMAT);
+            break;
+    }
 }
 
 void GCodeFileWidget::createUi()
@@ -149,8 +201,8 @@ void GCodeFileWidget::createUi()
     connect(m_abortButton, &QPushButton::pressed, this, &GCodeFileWidget::onAbortButtonPressed);
 
     m_progressBar = new QProgressBar;
-    m_progressBar->setRange(0, 0);
-    m_progressBar->setFormat("%v/%m (%p%)");
+    m_progressBar->setRange(0, 1);
+    m_progressBar->setFormat("");
     m_progressBar->setValue(0);
 
     auto globalLayout = new QHBoxLayout;

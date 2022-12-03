@@ -15,6 +15,13 @@ class MotionControlWidget : public QWidget
 {
     Q_OBJECT
 
+    enum class State
+    {
+        STEPPERS_ENABLED,
+        STEPPERS_DISABLED
+    };
+
+    State m_state;
     Cnc* m_cnc;
 
 public:
@@ -43,6 +50,8 @@ private slots:
     void onSettingsChanged(const SettingsModel& settings);
 
 private:
+    void setState(State state);
+
     void createUi(SettingsModel* settings);
 
     // UI members

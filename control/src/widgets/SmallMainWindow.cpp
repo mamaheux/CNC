@@ -1,28 +1,27 @@
-#include "control/widgets/MainWindow.h"
+#include "control/widgets/SmallMainWindow.h"
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QTextEdit>
 
-MainWindow::MainWindow(SettingsModel* settings, GCodeModel* gcodeModel, Cnc* cnc, QWidget* parent)
+SmallMainWindow::SmallMainWindow(SettingsModel* settings, GCodeModel* gcodeModel, Cnc* cnc, QWidget* parent)
     : QWidget(parent),
       m_settings(settings),
       m_gcodeModel(gcodeModel),
       m_cnc(cnc)
 {
     createUi();
-    connect(m_cnc, &Cnc::cncError, this, &MainWindow::onCncError);
+    connect(m_cnc, &Cnc::cncError, this, &SmallMainWindow::onCncError);
 }
 
-void MainWindow::onCncError(const QString& error)
+void SmallMainWindow::onCncError(const QString& error)
 {
     QMessageBox::critical(this, "Cnc error", error);
 }
 
-void MainWindow::createUi()
+void SmallMainWindow::createUi()
 {
     // TODO add an icon from the CAD
-
     m_cncWidget = new CncWidget(m_settings, m_cnc);
 
     m_coordinateWidget = new CoordinateWidget(m_cnc);
@@ -36,6 +35,7 @@ void MainWindow::createUi()
 
     auto motionGroupBox = new QGroupBox("Motion");
     motionGroupBox->setLayout(motionLayout);
+    motionGroupBox->setContentsMargins(1, 1, 1, 1);
 
     auto spindleLayout = new QVBoxLayout;
     spindleLayout->addWidget(m_spindleStatusWidget, 1);
@@ -43,42 +43,46 @@ void MainWindow::createUi()
 
     auto spindleGroupBox = new QGroupBox("Spindle");
     spindleGroupBox->setLayout(spindleLayout);
+    spindleGroupBox->setContentsMargins(1, 1, 1, 1);
 
-    auto leftLayout = new QVBoxLayout;
-    leftLayout->addWidget(motionGroupBox);
-    leftLayout->addWidget(spindleGroupBox);
+    auto controlLayout = new QVBoxLayout;
+    controlLayout->addWidget(motionGroupBox);
+    controlLayout->addWidget(spindleGroupBox);
+
+    auto controlWidget = new QWidget;
+    controlWidget->setLayout(controlLayout);
+    controlLayout->setContentsMargins(1, 1, 1, 1);
 
 
     m_gcodeFileWidget = new GCodeFileWidget(m_gcodeModel, m_cnc);
+    m_gcodeFileWidget->setPathVisible(false);
+
     m_gcodeViewWidget = new GCodeViewWidget(m_settings, m_gcodeModel);
 
     auto gcodeLayout = new QVBoxLayout;
     gcodeLayout->addWidget(m_gcodeFileWidget, 0);
     gcodeLayout->addWidget(m_gcodeViewWidget, 1);
 
-    auto gcodeGroupBox = new QGroupBox("GCode");
-    gcodeGroupBox->setLayout(gcodeLayout);
+    auto gcodeWidget = new QWidget;
+    gcodeWidget->setLayout(gcodeLayout);
+    gcodeWidget->setContentsMargins(1, 1, 1, 1);
 
     m_consoleWidget = new ConsoleWidget(m_settings, m_cnc);
-
     auto consoleLayout = new QVBoxLayout;
     consoleLayout->addWidget(m_consoleWidget, 1);
+    consoleLayout->addStretch(1);
+    auto consoleWidget = new QWidget;
+    consoleWidget->setLayout(consoleLayout);
+    consoleWidget->setContentsMargins(1, 1, 1, 1);
 
-    auto consoleGroupBox = new QGroupBox("Console");
-    consoleGroupBox->setLayout(consoleLayout);
-
-    auto rightLayout = new QVBoxLayout;
-    rightLayout->addWidget(gcodeGroupBox, 3);
-    rightLayout->addWidget(consoleGroupBox, 1);
-
-
-    auto middleLayout = new QHBoxLayout;
-    middleLayout->addLayout(leftLayout, 0);
-    middleLayout->addLayout(rightLayout, 1);
+    m_tabWidget = new QTabWidget;
+    m_tabWidget->addTab(controlWidget, "Control");
+    m_tabWidget->addTab(gcodeWidget, "GCode");
+    m_tabWidget->addTab(consoleWidget, "Console");
 
     auto globalLayout = new QVBoxLayout;
     globalLayout->addWidget(m_cncWidget);
-    globalLayout->addLayout(middleLayout, 1);
+    globalLayout->addWidget(m_tabWidget, 1);
 
     setLayout(globalLayout);
 }

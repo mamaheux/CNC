@@ -8,9 +8,11 @@
 constexpr int MINIMUM_SPEED_FACTOR = 10;
 constexpr int MAXIMUM_SPEED_FACTOR = 200;
 constexpr int DEFAULT_SPEED_FACTOR = 100;
+constexpr int SPEED_FACTOR_STEP = 5;
 
 MotionControlWidget::MotionControlWidget(SettingsModel* settings, Cnc* cnc, QWidget* parent)
     : QWidget(parent),
+      m_state(State::STEPPERS_DISABLED),
       m_cnc(cnc)
 {
     createUi(settings);
@@ -26,8 +28,8 @@ MotionControlWidget::MotionControlWidget(SettingsModel* settings, Cnc* cnc, QWid
 void MotionControlWidget::onCncConnected()
 {
     setEnabled(true);
-    m_enableSteppersButton->setEnabled(true);
-    m_disableSteppersButton->setEnabled(false);
+    m_cnc->disableSteppers();
+    setState(State::STEPPERS_DISABLED);
 }
 
 void MotionControlWidget::onCncDisconnected()
@@ -38,71 +40,61 @@ void MotionControlWidget::onCncDisconnected()
 void MotionControlWidget::onEnableSteppersButtonPressed()
 {
     m_cnc->enableSteppers();
-    m_enableSteppersButton->setEnabled(false);
-    m_disableSteppersButton->setEnabled(true);
-}
-
-void MotionControlWidget::onGotoMachineX0Y0ButtonPressed()
-{
-    m_cnc->gotoMachineX0Y0(m_feedRateSpinBox->value());
-    m_enableSteppersButton->setEnabled(false);
-    m_disableSteppersButton->setEnabled(true);
-}
-
-void MotionControlWidget::onGotoWorkX0Y0ButtonPressed()
-{
-    m_cnc->gotoWorkX0Y0(m_feedRateSpinBox->value());
-    m_enableSteppersButton->setEnabled(false);
-    m_disableSteppersButton->setEnabled(true);
+    setState(State::STEPPERS_ENABLED);
 }
 
 void MotionControlWidget::onDisableSteppersButtonPressed()
 {
     m_cnc->disableSteppers();
-    m_enableSteppersButton->setEnabled(true);
-    m_disableSteppersButton->setEnabled(false);
+    setState(State::STEPPERS_DISABLED);
+}
+
+void MotionControlWidget::onGotoMachineX0Y0ButtonPressed()
+{
+    m_cnc->gotoMachineX0Y0(m_feedRateSpinBox->value());
+    setState(State::STEPPERS_ENABLED);
+}
+
+void MotionControlWidget::onGotoWorkX0Y0ButtonPressed()
+{
+    m_cnc->gotoWorkX0Y0(m_feedRateSpinBox->value());
+    setState(State::STEPPERS_ENABLED);
 }
 
 void MotionControlWidget::onXBackwardButtonPressed()
 {
-    m_enableSteppersButton->setEnabled(false);
-    m_disableSteppersButton->setEnabled(true);
     m_cnc->jogX(-static_cast<float>(m_distanceButtonGroup->checkedId()) / 10.f, m_feedRateSpinBox->value());
+    setState(State::STEPPERS_ENABLED);
 }
 
 void MotionControlWidget::onXForwardButtonPressed()
 {
-    m_enableSteppersButton->setEnabled(false);
-    m_disableSteppersButton->setEnabled(true);
     m_cnc->jogX(static_cast<float>(m_distanceButtonGroup->checkedId()) / 10.f, m_feedRateSpinBox->value());
+    setState(State::STEPPERS_ENABLED);
 }
 
 void MotionControlWidget::onYBackwardButtonPressed()
 {
-    m_enableSteppersButton->setEnabled(false);
-    m_disableSteppersButton->setEnabled(true);
     m_cnc->jogY(-static_cast<float>(m_distanceButtonGroup->checkedId()) / 10.f, m_feedRateSpinBox->value());
+    setState(State::STEPPERS_ENABLED);
 }
 
 void MotionControlWidget::onYForwardButtonPressed()
 {
-    m_enableSteppersButton->setEnabled(false);
-    m_disableSteppersButton->setEnabled(true);
     m_cnc->jogY(static_cast<float>(m_distanceButtonGroup->checkedId()) / 10.f, m_feedRateSpinBox->value());
+    setState(State::STEPPERS_ENABLED);
 }
 
 void MotionControlWidget::onZBackwardButtonPressed()
 {
-    m_enableSteppersButton->setEnabled(false);
-    m_disableSteppersButton->setEnabled(true);
     m_cnc->jogZ(-static_cast<float>(m_distanceButtonGroup->checkedId()) / 10.f, m_feedRateSpinBox->value());
+    setState(State::STEPPERS_ENABLED);
 }
 
 void MotionControlWidget::onZForwardButtonPressed()
 {
-    m_enableSteppersButton->setEnabled(false);
-    m_disableSteppersButton->setEnabled(true);
     m_cnc->jogZ(static_cast<float>(m_distanceButtonGroup->checkedId()) / 10.f, m_feedRateSpinBox->value());
+    setState(State::STEPPERS_ENABLED);
 }
 
 void MotionControlWidget::onSpeedFactorSliderValueChanged(int value)
@@ -119,6 +111,22 @@ void MotionControlWidget::onResetSpeedFactorButtonPressed()
 void MotionControlWidget::onSettingsChanged(const SettingsModel& settings)
 {
     m_feedRateSpinBox->setRange(settings.minimumFeedRateInMmPerMin(), settings.maximumFeedRateInMmPerMin());
+}
+
+void MotionControlWidget::setState(State state)
+{
+    m_state = state;
+    switch (m_state)
+    {
+        case State::STEPPERS_ENABLED:
+            m_enableSteppersButton->setEnabled(false);
+            m_disableSteppersButton->setEnabled(true);
+            break;
+        case State::STEPPERS_DISABLED:
+            m_enableSteppersButton->setEnabled(true);
+            m_disableSteppersButton->setEnabled(false);
+            break;
+    }
 }
 
 void MotionControlWidget::createUi(SettingsModel* settings)
@@ -218,6 +226,8 @@ void MotionControlWidget::createUi(SettingsModel* settings)
     m_speedFactorSlider = new QSlider(Qt::Horizontal);
     m_speedFactorSlider->setRange(MINIMUM_SPEED_FACTOR, MAXIMUM_SPEED_FACTOR);
     m_speedFactorSlider->setValue(DEFAULT_SPEED_FACTOR);
+    m_speedFactorSlider->setSingleStep(SPEED_FACTOR_STEP);
+    m_speedFactorSlider->setPageStep(2 * SPEED_FACTOR_STEP);
     connect(m_speedFactorSlider, &QSlider::valueChanged, this, &MotionControlWidget::onSpeedFactorSliderValueChanged);
 
     m_speedFactorLabel = new QLabel;

@@ -6,8 +6,8 @@
 constexpr uint LCD_DISPLAY_NUM_DIGITS = 8;
 constexpr int MAXIMUM_LAST_RPM_VALUES_SIZE = 40;
 
-const QColor CURRENT_RPM_SERIES_COLOR(0, 0, 255);
-const QColor TARGET_RPM_SERIES_COLOR(255, 0, 0);
+static const QColor CURRENT_RPM_SERIES_COLOR(0, 0, 255);  // NOLINT
+static const QColor TARGET_RPM_SERIES_COLOR(255, 0, 0);  // NOLINT
 
 static void setRpmLcdNumber(QLCDNumber* lcdNumber, double value)
 {
@@ -79,18 +79,18 @@ void SpindleStatusWidget::onCurrentRpmChanged(float currentRpm, float targetRpm)
 
 void SpindleStatusWidget::createUi()
 {
-    constexpr int MINIMUM_ROW_HEIGHT = 45;
-
     m_rpmLcdNumber = new QLCDNumber;
     m_rpmLcdNumber->setDigitCount(LCD_DISPLAY_NUM_DIGITS);
 
 
     m_rpmChart = new QChart;
+    m_rpmChart->setContentsMargins(0, 0, 0, 0);
+    m_rpmChart->setMargins(QMargins(0, 0, 0, 0));
+    m_rpmChart->setBackgroundRoundness(0);
     m_rpmChartView = new QChartView(m_rpmChart);
-    m_rpmChartView->setMinimumHeight(200);
+    m_rpmChartView->setMinimumHeight(100);
 
     auto globalLayout = new QGridLayout;
-    globalLayout->setRowMinimumHeight(0, MINIMUM_ROW_HEIGHT);
     globalLayout->setColumnStretch(0, 0);
     globalLayout->setColumnStretch(1, 1);
 

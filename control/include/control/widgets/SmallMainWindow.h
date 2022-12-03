@@ -1,5 +1,5 @@
-#ifndef CONTROL_WIDGETS_MAIN_WINDOW_H
-#define CONTROL_WIDGETS_MAIN_WINDOW_H
+#ifndef CONTROL_WIDGETS_SMALL_MAIN_WINDOW_H
+#define CONTROL_WIDGETS_SMALL_MAIN_WINDOW_H
 
 #include "control/Cnc.h"
 #include "control/models/SettingsModel.h"
@@ -16,8 +16,9 @@
 #include "control/widgets/ConsoleWidget.h"
 
 #include <QWidget>
+#include <QTabWidget>
 
-class MainWindow : public QWidget
+class SmallMainWindow : public QWidget
 {
     Q_OBJECT
 
@@ -26,7 +27,7 @@ class MainWindow : public QWidget
     Cnc* m_cnc;
 
 public:
-    MainWindow(SettingsModel* settings, GCodeModel* gcodeModel, Cnc* cnc, QWidget* parent = nullptr);
+    SmallMainWindow(SettingsModel* settings, GCodeModel* gcodeModel, Cnc* cnc, QWidget* parent = nullptr);
 
 private slots:
     void onCncError(const QString& error);
@@ -45,6 +46,8 @@ private:
     GCodeFileWidget* m_gcodeFileWidget;
     GCodeViewWidget* m_gcodeViewWidget;
     ConsoleWidget* m_consoleWidget;
+
+    QTabWidget* m_tabWidget;
 };
 
 #endif

@@ -13,11 +13,22 @@ class GCodeFileWidget : public QWidget
 {
     Q_OBJECT
 
+    enum class State
+    {
+        NO_GCODE_FILE_OPENED,
+        GCODE_FILE_OPENED,
+        GCODE_FILE_STARTED,
+        GCODE_FILE_PAUSED
+    };
+
+    State m_state;
     GCodeModel* m_gcodeModel;
     Cnc* m_cnc;
 
 public:
     explicit GCodeFileWidget(GCodeModel* gcodeModel, Cnc* cnc, QWidget* parent = nullptr);
+
+    void setPathVisible(bool visible);
 
 private slots:
     void onCncConnected();
@@ -35,6 +46,8 @@ private slots:
     void onAbortButtonPressed();
 
 private:
+    void setState(State state);
+
     void createUi();
 
     // UI members
@@ -46,5 +59,10 @@ private:
 
     QProgressBar* m_progressBar;
 };
+
+inline void GCodeFileWidget::setPathVisible(bool visible)
+{
+    m_pathLineEdit->setVisible(visible);
+}
 
 #endif

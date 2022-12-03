@@ -3,6 +3,8 @@
 #include <QDebug>
 #include <QVector3D>
 
+#include <algorithm>
+
 constexpr int STATUS_TIMER_INTERVAL_MS = 250;
 
 static float parseFloat(const QString& str, const QString& prefix)
@@ -26,7 +28,7 @@ static float parseFloat(const QString& str, const QString& prefix)
 
 static QVector3D parsePosition(const QString& str)
 {
-    return QVector3D(parseFloat(str, "X"), parseFloat(str, "Y"), parseFloat(str, "Z"));
+    return {parseFloat(str, "X"), parseFloat(str, "Y"), parseFloat(str, "Z")};
 }
 
 Cnc::Cnc(GCodeModel* gcodeModel) : m_serialPort(nullptr), m_gcodeModel(gcodeModel), m_isGCodeFileStarted(false)
@@ -245,6 +247,20 @@ void Cnc::sendCommand(
     }
 }
 
+void Cnc::sendCommandIfNotQueued(
+    const QString& command,
+    std::function<void(const QString& command, const QString& commandResponse)> responseCallback)
+{
+    bool isQueued = std::any_of(
+        m_commandQueue.begin(),
+        m_commandQueue.end(),
+        [command](const QueuedCommand& x) { return x.command.startsWith(command); });
+    if (!isQueued)
+    {
+        sendCommand(command, std::move(responseCallback));
+    }
+}
+
 void Cnc::startGCodeFile()
 {
     m_isGCodeFileStarted = true;
@@ -343,21 +359,21 @@ void Cnc::onStatusTimerTimeout()
 {
     if (m_serialPort != nullptr)
     {
-        sendCommand(
+        sendCommandIfNotQueued(
             "M114.1",
             [this](const QString& command, const QString& response)
             {
                 auto position = parsePosition(response);
                 emit currentWorkPositionChanged(position.x(), position.y(), position.z());
             });
-        sendCommand(
+        sendCommandIfNotQueued(
             "M114.3",
             [this](const QString& command, const QString& response)
             {
                 auto position = parsePosition(response);
                 emit currentMachinePositionChanged(position.x(), position.y(), position.z());
             });
-        sendCommand(
+        sendCommandIfNotQueued(
             "M957",
             [this](const QString& command, const QString& response)
             { emit currentRpmChanged(parseFloat(response, "S"), parseFloat(response, "T")); });
