@@ -9,5 +9,5 @@ sudo apt install qt5-default libqt5charts5* libqt5serialport5* libqt5opengl5* me
 ## Linux Setup
 Add the following line with `sudo visudo`
 ```
-%group_name ALL=(ALL) NOPASSWD: /sbin/poweroff, /sbin/reboot, /sbin/shutdown
+%users ALL=(ALL) NOPASSWD: /sbin/poweroff, /sbin/reboot, /sbin/shutdown
 ```

@@ -58,9 +58,9 @@ void CncWidget::onHomeButtonPressed()
 void CncWidget::onShutdownButtonPressed()
 {
 #ifdef Q_OS_UNIX
-    QProcess::startDetached("bash -c \"sleep 5; sudo shutdown -P now\"");
+    QProcess::startDetached("bash", {"-c", "sleep 5; sudo shutdown -P now"});
 #elif defined(Q_OS_WIN)
-    QProcess::startDetached("shutdown /s /t 5");
+    QProcess::startDetached("shutdown", {"/s", "/t", "5"});
 #else
 #error "The OS is not supported"
 #endif
