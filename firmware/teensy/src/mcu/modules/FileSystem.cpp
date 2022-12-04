@@ -4,11 +4,9 @@
 
 constexpr const char* INVALID_PATH_COMMAND_ERROR_MESSAGE = "The path is invalid.";
 
-FileSystem::FileSystem() {}
-
 void FileSystem::configure(const ConfigItem& item) {}
 
-void FileSystem::checkConfigErrors(std::function<void(const char*, const char*, const char*)> onMissingConfigItem) {}
+void FileSystem::checkConfigErrors(const MissingConfigCallback& onMissingConfigItem) {}
 
 void FileSystem::begin()
 {

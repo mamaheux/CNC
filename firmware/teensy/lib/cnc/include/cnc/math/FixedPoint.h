@@ -54,7 +54,7 @@ public:
     constexpr FixedPoint(float value);
     constexpr FixedPoint(double value);
     FixedPoint(const FixedPoint& other);
-    virtual ~FixedPoint();
+    virtual ~FixedPoint() = default;
 
     FixedPoint& multiplyAccumulate(const FixedPoint& left, const FixedPoint& right);
     FixedPoint& multiplySubtract(const FixedPoint& left, const FixedPoint& right);
@@ -67,9 +67,9 @@ public:
     FixedPoint& operator/=(const FixedPoint& other);
 
     FixedPoint& operator++();
-    FixedPoint operator++(int dummy);
+    const FixedPoint operator++(int dummy);
     FixedPoint& operator--();
-    FixedPoint operator--(int dummy);
+    const FixedPoint operator--(int dummy);
 
     FixedPoint operator-();
 
@@ -175,11 +175,6 @@ inline FixedPoint<IntegerSize, FractionSize>::FixedPoint(const FixedPoint<Intege
 }
 
 template<size_t IntegerSize, size_t FractionSize>
-inline FixedPoint<IntegerSize, FractionSize>::~FixedPoint()
-{
-}
-
-template<size_t IntegerSize, size_t FractionSize>
 inline FixedPoint<IntegerSize, FractionSize>& FixedPoint<IntegerSize, FractionSize>::multiplyAccumulate(
     const FixedPoint<IntegerSize, FractionSize>& left,
     const FixedPoint<IntegerSize, FractionSize>& right)
@@ -245,7 +240,7 @@ inline FixedPoint<IntegerSize, FractionSize>& FixedPoint<IntegerSize, FractionSi
 }
 
 template<size_t IntegerSize, size_t FractionSize>
-inline FixedPoint<IntegerSize, FractionSize> FixedPoint<IntegerSize, FractionSize>::operator++(int dummy)
+inline const FixedPoint<IntegerSize, FractionSize> FixedPoint<IntegerSize, FractionSize>::operator++(int dummy)
 {
     T oldValue = m_value;
     m_value += One;
@@ -260,7 +255,7 @@ inline FixedPoint<IntegerSize, FractionSize>& FixedPoint<IntegerSize, FractionSi
 }
 
 template<size_t IntegerSize, size_t FractionSize>
-inline FixedPoint<IntegerSize, FractionSize> FixedPoint<IntegerSize, FractionSize>::operator--(int dummy)
+inline const FixedPoint<IntegerSize, FractionSize> FixedPoint<IntegerSize, FractionSize>::operator--(int dummy)
 {
     T oldValue = m_value;
     m_value -= One;

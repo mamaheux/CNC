@@ -23,7 +23,7 @@ void CommandSerial::configure(const ConfigItem& item)
     }
 }
 
-void CommandSerial::checkConfigErrors(std::function<void(const char*, const char*, const char*)> onMissingConfigItem)
+void CommandSerial::checkConfigErrors(const MissingConfigCallback& onMissingConfigItem)
 {
     CHECK_CONFIG_ERROR(onMissingConfigItem, m_baudRate.has_value(), BAUD_RATE_KEY);
 }

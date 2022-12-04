@@ -27,6 +27,6 @@ tl::optional<PwmOutputConfig> PwmOutputConfig::parse(const char* pinString, floa
         pinString++;
     }
 
-    uint8_t pin = static_cast<uint8_t>(atoi(pinString));
+    auto pin = static_cast<uint8_t>(atoi(pinString));
     return PwmOutputConfig(pin, inverted, frequency);
 }

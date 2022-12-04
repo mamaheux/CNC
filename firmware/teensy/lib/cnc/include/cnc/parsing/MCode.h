@@ -109,7 +109,7 @@ public:
 private:
     ParsingResult parseNormalMCode(char* start, MCode& mcode);
     ParsingResult parseParameters(char* start, MCode& mcode);
-    ParsingResult parsePath(char* start, MCode& mcode);
+    static ParsingResult parsePath(char* start, MCode& mcode);
 };
 
 #endif

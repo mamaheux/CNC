@@ -21,6 +21,8 @@ constexpr float PI = 3.1415926535897932384626433832795f;
 ArcConverter::ArcConverter(CoordinateTransformer* coordinateTransformer)
     : m_startOtherAxis(0.f),
       m_endOtherAxis(0.f),
+      m_currentOtherAxis(0.f),
+      m_otherAxisStep(0.f),
       m_radius(0.f),
       m_currentAngle(0.f),
       m_angleStep(0.f),
@@ -40,9 +42,9 @@ void ArcConverter::configure(const ConfigItem& item)
     }
 }
 
-void ArcConverter::checkConfigErrors(function<void(const char*, const char*, const char*)> onMissingConfigItem)
+void ArcConverter::checkConfigErrors(const MissingConfigCallback& onMissingConfigItem)
 {
-    CHECK_CONFIG_ERROR(onMissingConfigItem, m_maxError.has_value(), MAX_ERROR_KEY);
+    CHECK_CONFIG_ERROR(onMissingConfigItem, m_maxError.has_value(), MAX_ERROR_KEY)
 };
 
 void ArcConverter::begin()
@@ -278,7 +280,7 @@ bool ArcConverter::calculateSegments(const GCode& gcode)
         {
             return false;
         }
-        arcAngle += 2 * PI * (p - 1.0);
+        arcAngle += 2.f * PI * (p - 1.f);
     }
 
     m_currentAngle = startAngle;
@@ -384,14 +386,14 @@ pair<Vector2<float>, float> ArcConverter::toPlan(const Vector3<float>& position)
     switch (m_currentPlan)
     {
         case ArcConverterPlan::XY:
-            return pair<Vector2<float>, float>(Vector2<float>(position.x, position.y), position.z);
+            return {Vector2<float>(position.x, position.y), position.z};
         case ArcConverterPlan::XZ:
-            return pair<Vector2<float>, float>(Vector2<float>(position.x, position.z), position.y);
+            return {Vector2<float>(position.x, position.z), position.y};
         case ArcConverterPlan::YZ:
-            return pair<Vector2<float>, float>(Vector2<float>(position.y, position.z), position.x);
+            return {Vector2<float>(position.y, position.z), position.x};
     }
 
-    return pair<Vector2<float>, float>(Vector2<float>(), 0.0);
+    return {Vector2<float>(), 0.0};
 }
 
 Vector3<float> ArcConverter::fromPlan(Vector2<float> position, float otherAxis)
@@ -399,14 +401,14 @@ Vector3<float> ArcConverter::fromPlan(Vector2<float> position, float otherAxis)
     switch (m_currentPlan)
     {
         case ArcConverterPlan::XY:
-            return Vector3<float>(position.x, position.y, otherAxis);
+            return {position.x, position.y, otherAxis};
         case ArcConverterPlan::XZ:
-            return Vector3<float>(position.x, otherAxis, position.y);
+            return {position.x, otherAxis, position.y};
         case ArcConverterPlan::YZ:
-            return Vector3<float>(otherAxis, position.x, position.y);
+            return {otherAxis, position.x, position.y};
     }
 
-    return Vector3<float>();
+    return {};
 }
 
 float atan2Pos(float a, float b)
@@ -432,7 +434,7 @@ Vector2<double> getCenterPointFromRadius(double x1, double y1, double x2, double
 
     if (abs(qHalf - abs(radius)) < RADIUS_TOLERANCE)
     {
-        return Vector2<double>(x3, y3);
+        return {x3, y3};
     }
 
     double r = radius;

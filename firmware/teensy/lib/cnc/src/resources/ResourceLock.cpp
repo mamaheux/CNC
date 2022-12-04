@@ -44,7 +44,7 @@ bool PinLock::tryLock(uint8_t pin)
     }
 }
 
-PwmLock::PwmLock() : PinLock(), m_frequency(nan("")) {}
+PwmLock::PwmLock() : PinLock(), m_frequency(nanf("")) {}
 
 PwmLock::~PwmLock()
 {
@@ -71,11 +71,7 @@ bool PwmLock::tryLock(uint8_t pin, float frequency)
     }
 
     float otherFrequency = pwmGroupFrequency[pwmGroup];
-    if (!isnan(otherFrequency) && otherFrequency != m_frequency)
-    {
-        return false;
-    }
-    else if (!PinLock::tryLock(pin))
+    if ((!isnan(otherFrequency) && otherFrequency != m_frequency) || !PinLock::tryLock(pin))
     {
         return false;
     }

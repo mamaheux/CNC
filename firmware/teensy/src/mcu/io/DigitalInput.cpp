@@ -14,16 +14,16 @@ DigitalInput::DigitalInput() : m_pin(0), m_inverted(false)
 
 void DigitalInput::begin(const DigitalInputConfig& config)
 {
-    CRITICAL_ERROR_CHECK_3(config.pin() < PIN_COUNT, "Invalid pin (", config.pin(), ")");
+    CRITICAL_ERROR_CHECK_3(config.pin() < PIN_COUNT, "Invalid pin (", config.pin(), ")")
 
     m_pin = config.pin();
     m_inverted = config.inverted();
-    CRITICAL_ERROR_CHECK_3(m_lock.tryLock(m_pin), "Pin ", m_pin, " already use.");
+    CRITICAL_ERROR_CHECK_3(m_lock.tryLock(m_pin), "Pin ", m_pin, " already use.")
 
     pinMode(m_pin, static_cast<uint8_t>(config.mode()));
 }
 
-void DigitalInput::attachInterrupt(void (*function)(void), DigitalInputInterruptMode mode)
+void DigitalInput::attachInterrupt(void (*function)(), DigitalInputInterruptMode mode)
 {
     ::attachInterrupt(m_pin, function, static_cast<int>(mode));
 }

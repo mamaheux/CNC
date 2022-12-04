@@ -1,0 +1,794 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="teensy"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-native"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j16 -f &quot;/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-native/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j16 -f &quot;/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-native/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j16 -f &quot;/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-native/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j16 -f &quot;/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-native/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-native"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j16 -f &quot;/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-native/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j16 -f &quot;/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-native/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j16 -f &quot;/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-native/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j16 -f &quot;/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-native/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Production">
+				<Option working_dir="/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-native"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j16 -f &quot;/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-native/Makefile&quot;  VERBOSE=1 Production"/>
+					<CompileFile command="/usr/bin/make -j16 -f &quot;/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-native/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j16 -f &quot;/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-native/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j16 -f &quot;/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-native/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-native"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j16 -f &quot;/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-native/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j16 -f &quot;/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-native/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j16 -f &quot;/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-native/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j16 -f &quot;/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-native/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Debug">
+				<Option working_dir="/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-native"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j16 -f &quot;/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-native/Makefile&quot;  VERBOSE=1 Debug"/>
+					<CompileFile command="/usr/bin/make -j16 -f &quot;/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-native/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j16 -f &quot;/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-native/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j16 -f &quot;/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-native/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Z_DUMMY_TARGET">
+				<Option output="/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-native/Z_DUMMY_TARGET" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-native"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DPLATFORMIO=60105"/>
+					<Add directory="/home/marc-antoine/Bureau/CNC/firmware/teensy/include"/>
+					<Add directory="/home/marc-antoine/Bureau/CNC/firmware/teensy/src"/>
+					<Add directory="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/include"/>
+					<Add directory="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/src"/>
+					<Add directory="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/optional/include"/>
+					<Add directory="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/optional"/>
+					<Add directory="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/src"/>
+					<Add directory="/usr/include/c++/9"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/include/c++/9/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j16 -f &quot;/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-native/Makefile&quot;  VERBOSE=1 Z_DUMMY_TARGET"/>
+					<CompileFile command="/usr/bin/make -j16 -f &quot;/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-native/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j16 -f &quot;/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-native/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j16 -f &quot;/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-native/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Z_DUMMY_TARGET/fast">
+				<Option output="/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-native/Z_DUMMY_TARGET" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-native"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DPLATFORMIO=60105"/>
+					<Add directory="/home/marc-antoine/Bureau/CNC/firmware/teensy/include"/>
+					<Add directory="/home/marc-antoine/Bureau/CNC/firmware/teensy/src"/>
+					<Add directory="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/include"/>
+					<Add directory="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/src"/>
+					<Add directory="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/optional/include"/>
+					<Add directory="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/optional"/>
+					<Add directory="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/src"/>
+					<Add directory="/usr/include/c++/9"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/include/c++/9/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j16 -f &quot;/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-native/Makefile&quot;  VERBOSE=1 Z_DUMMY_TARGET/fast"/>
+					<CompileFile command="/usr/bin/make -j16 -f &quot;/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-native/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j16 -f &quot;/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-native/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j16 -f &quot;/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-native/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/.editorconfig">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/.gitattributes">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/.github/workflows/main.yml">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/.gitignore">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/.piopm">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/CMakeLists.txt">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/LICENSE.txt">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/README.md">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/auto/colour_prompt.rb">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/auto/colour_reporter.rb">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/auto/generate_config.yml">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/auto/generate_module.rb">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/auto/generate_test_runner.rb">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/auto/parse_output.rb">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/auto/run_test.erb">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/auto/stylize_as_junit.rb">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/auto/test_file_filter.rb">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/auto/type_sanitizer.rb">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/auto/unity_test_summary.py">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/auto/unity_test_summary.rb">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/auto/unity_to_junit.py">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/examples/example_1/readme.txt">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/examples/example_1/src/ProductionCode.c">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/examples/example_1/src/ProductionCode.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/examples/example_1/src/ProductionCode2.c">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/examples/example_1/src/ProductionCode2.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/examples/example_1/test/TestProductionCode.c">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/examples/example_1/test/TestProductionCode2.c">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/examples/example_1/test/test_runners/TestProductionCode2_Runner.c">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/examples/example_1/test/test_runners/TestProductionCode_Runner.c">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/examples/example_2/readme.txt">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/examples/example_2/src/ProductionCode.c">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/examples/example_2/src/ProductionCode.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/examples/example_2/src/ProductionCode2.c">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/examples/example_2/src/ProductionCode2.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/examples/example_2/test/TestProductionCode.c">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/examples/example_2/test/TestProductionCode2.c">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/examples/example_2/test/test_runners/TestProductionCode2_Runner.c">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/examples/example_2/test/test_runners/TestProductionCode_Runner.c">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/examples/example_2/test/test_runners/all_tests.c">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/examples/example_3/helper/UnityHelper.c">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/examples/example_3/helper/UnityHelper.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/examples/example_3/rakefile.rb">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/examples/example_3/rakefile_helper.rb">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/examples/example_3/readme.txt">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/examples/example_3/src/ProductionCode.c">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/examples/example_3/src/ProductionCode.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/examples/example_3/src/ProductionCode2.c">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/examples/example_3/src/ProductionCode2.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/examples/example_3/target_gcc_32.yml">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/examples/example_3/test/TestProductionCode.c">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/examples/example_3/test/TestProductionCode2.c">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/examples/example_4/meson.build">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/examples/example_4/readme.txt">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/examples/example_4/src/ProductionCode.c">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/examples/example_4/src/ProductionCode.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/examples/example_4/src/ProductionCode2.c">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/examples/example_4/src/ProductionCode2.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/examples/example_4/src/meson.build">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/examples/example_4/subprojects/unity.wrap">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/examples/example_4/test/TestProductionCode.c">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/examples/example_4/test/TestProductionCode2.c">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/examples/example_4/test/meson.build">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/examples/example_4/test/test_runners/TestProductionCode2_Runner.c">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/examples/example_4/test/test_runners/TestProductionCode_Runner.c">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/examples/example_4/test/test_runners/meson.build">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/examples/unity_config.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/library.json">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/meson.build">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/platformio-build.py">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/src/meson.build">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/src/unity.c">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/src/unity.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/src/unity_internals.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/Unity/unityConfig.cmake">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/integrity.dat">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/optional/.appveyor.yml">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/optional/.clang-format">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/optional/.git/.piopm">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/optional/.git/hooks/applypatch-msg.sample">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/optional/.git/hooks/commit-msg.sample">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/optional/.git/hooks/fsmonitor-watchman.sample">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/optional/.git/hooks/post-update.sample">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/optional/.git/hooks/pre-applypatch.sample">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/optional/.git/hooks/pre-commit.sample">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/optional/.git/hooks/pre-merge-commit.sample">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/optional/.git/hooks/pre-push.sample">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/optional/.git/hooks/pre-rebase.sample">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/optional/.git/hooks/pre-receive.sample">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/optional/.git/hooks/prepare-commit-msg.sample">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/optional/.git/hooks/update.sample">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/optional/.gitignore">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/optional/.gitmodules">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/optional/.travis.yml">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/optional/CMakeLists.txt">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/optional/README.md">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/optional/cmake/tl-optional-config.cmake.in">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/optional/include/tl/optional.hpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/optional/library.json">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/optional/tests/assignment.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/optional/tests/bases.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/optional/tests/constexpr.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/optional/tests/constructors.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/optional/tests/emplace.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/optional/tests/extensions.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/optional/tests/hash.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/optional/tests/in_place.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/optional/tests/issues.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/optional/tests/make_optional.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/optional/tests/noexcept.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/optional/tests/nullopt.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/optional/tests/observers.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/optional/tests/relops.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/native/optional/tests/swap.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/include/cnc/LinearBlock.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/include/cnc/collections/BoundedQueue.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/include/cnc/config/AnalogInputConfig.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/include/cnc/config/ConfigItem.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/include/cnc/config/DigitalInputConfig.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/include/cnc/config/DigitalOutputConfig.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/include/cnc/config/PwmOutputConfig.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/include/cnc/math/FixedPoint.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/include/cnc/math/Range.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/include/cnc/math/Vector2.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/include/cnc/math/Vector3.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/include/cnc/math/ZRotation.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/include/cnc/modules/ArcConverter.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/include/cnc/modules/CoordinateTransformer.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/include/cnc/modules/Module.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/include/cnc/modules/ModuleKernel.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/include/cnc/modules/Planner.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/include/cnc/parsing/GCode.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/include/cnc/parsing/MCode.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/include/cnc/parsing/ParsingResult.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/include/cnc/parsing/SystemCommand.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/include/cnc/parsing/properties.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/include/cnc/parsing/trim.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/include/cnc/resources/ResourceLock.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/include/cnc/resources/resources.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/include/cnc/utils/ClassMacro.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/include/cnc/utils/TypeTraits.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/include/cnc/utils/macro.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/src/LinearBlock.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/src/config/AnalogInputConfig.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/src/config/ConfigItem.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/src/config/DigitalInputConfig.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/src/config/DigitalOutputConfig.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/src/config/PwmOutputConfig.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/src/modules/ArcConverter.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/src/modules/CoordinateTransformer.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/src/modules/Module.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/src/modules/ModuleKernel.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/src/modules/Planner.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/src/parsing/GCode.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/src/parsing/MCode.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/src/parsing/SystemCommand.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/src/parsing/properties.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/src/parsing/trim.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/src/resources/ResourceLock.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/src/main.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/src/mcu/ConfigFile.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/src/mcu/criticalError.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/src/mcu/io/AnalogInput.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/src/mcu/io/DigitalInput.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/src/mcu/io/DigitalOutput.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/src/mcu/io/PwmOutput.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/src/mcu/io/Stepper.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/src/mcu/modules/CommandFile.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/src/mcu/modules/CommandSerial.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/src/mcu/modules/Endstops.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/src/mcu/modules/FileSystem.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/src/mcu/modules/IntervalModule.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/src/mcu/modules/Kernel.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/src/mcu/modules/Spindle.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/src/mcu/modules/StepperController.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/src/mcu/utils/StringPrint.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/bench/include/modules/bench_ArcConverter.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/bench/include/parsing/bench_GCode.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/bench/include/parsing/bench_MCode.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/bench/src/main.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/bench/src/modules/bench_ArcConverter.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/bench/src/parsing/bench_GCode.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/bench/src/parsing/bench_MCode.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/include/collections/test_BoundedQueue.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/include/config/test_AnalogInputConfig.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/include/config/test_DigitalInputConfig.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/include/config/test_DigitalOutputConfig.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/include/config/test_PwmOutputConfig.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/include/math/test_FixedPoint.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/include/math/test_Range.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/include/math/test_Vector2.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/include/math/test_Vector3.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/include/math/test_ZRotation.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/include/modules/test_ArcConverter.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/include/modules/test_CoordinateTransformer.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/include/modules/test_Module.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/include/parsing/test_GCode.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/include/parsing/test_MCode.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/include/parsing/test_SystemCommand.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/include/parsing/test_properties.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/include/parsing/test_trim.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/include/resources/test_ResourceLock.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/src/collections/test_BoundedQueue.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/src/config/test_AnalogInputConfig.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/src/config/test_DigitalInputConfig.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/src/config/test_DigitalOutputConfig.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/src/config/test_PwmOutputConfig.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/src/main.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/src/math/test_FixedPoint.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/src/math/test_Range.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/src/math/test_Vector2.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/src/math/test_Vector3.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/src/math/test_ZRotation.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/src/modules/test_ArcConverter.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/src/modules/test_CoordinateTransformer.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/src/modules/test_Module.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/src/parsing/test_GCode.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/src/parsing/test_MCode.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/src/parsing/test_SystemCommand.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/src/parsing/test_properties.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/src/parsing/test_trim.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/src/resources/test_ResourceLock.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/CMakeListsPrivate.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

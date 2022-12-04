@@ -5,9 +5,9 @@
 
 ConfigFile::ConfigFile(const char* path)
 {
-    CRITICAL_ERROR_CHECK_3(SD.exists(path), "The configuration file does not exist (", path, ")");
+    CRITICAL_ERROR_CHECK_3(SD.exists(path), "The configuration file does not exist (", path, ")")
     m_file = SD.open(path, FILE_READ);
-    CRITICAL_ERROR_CHECK(m_file, "Opening the configuration file failed");
+    CRITICAL_ERROR_CHECK(m_file, "Opening the configuration file failed")
 }
 
 ConfigFile::~ConfigFile()

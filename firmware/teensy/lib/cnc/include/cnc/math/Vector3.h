@@ -14,7 +14,7 @@ public:
     T z;
 
     Vector3();
-    Vector3(const Vector2<T>& other);
+    explicit Vector3(const Vector2<T>& other);
     Vector3(T x, T y, T z);
 
     T dot(const Vector3<T>& other) const;

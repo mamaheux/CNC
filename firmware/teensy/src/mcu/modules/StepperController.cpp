@@ -25,6 +25,7 @@ StepperController::StepperController(CoordinateTransformer* coordinateTransforme
       m_planner(planner),
       m_manualStepEnabled(false)
 {
+    memset(m_response, '\0', MAX_STEPPER_CONTROLLER_RESPONSE_SIZE);
 }
 
 void StepperController::configure(const ConfigItem& item)
@@ -68,19 +69,19 @@ void StepperController::configure(const ConfigItem& item)
 }
 
 void StepperController::checkConfigErrors(
-    std::function<void(const char*, const char*, const char*)> onMissingConfigItem)
+    const MissingConfigCallback& onMissingConfigItem)
 {
-    CHECK_CONFIG_ERROR(onMissingConfigItem, m_xEnableConfig.has_value(), X_ENABLE_PIN_KEY);
-    CHECK_CONFIG_ERROR(onMissingConfigItem, m_xDirectionConfig.has_value(), X_DIRECTION_PIN_KEY);
-    CHECK_CONFIG_ERROR(onMissingConfigItem, m_xStepConfig.has_value(), X_STEP_PIN_KEY);
+    CHECK_CONFIG_ERROR(onMissingConfigItem, m_xEnableConfig.has_value(), X_ENABLE_PIN_KEY)
+    CHECK_CONFIG_ERROR(onMissingConfigItem, m_xDirectionConfig.has_value(), X_DIRECTION_PIN_KEY)
+    CHECK_CONFIG_ERROR(onMissingConfigItem, m_xStepConfig.has_value(), X_STEP_PIN_KEY)
 
-    CHECK_CONFIG_ERROR(onMissingConfigItem, m_yEnableConfig.has_value(), Y_ENABLE_PIN_KEY);
-    CHECK_CONFIG_ERROR(onMissingConfigItem, m_yDirectionConfig.has_value(), Y_DIRECTION_PIN_KEY);
-    CHECK_CONFIG_ERROR(onMissingConfigItem, m_yStepConfig.has_value(), Y_STEP_PIN_KEY);
+    CHECK_CONFIG_ERROR(onMissingConfigItem, m_yEnableConfig.has_value(), Y_ENABLE_PIN_KEY)
+    CHECK_CONFIG_ERROR(onMissingConfigItem, m_yDirectionConfig.has_value(), Y_DIRECTION_PIN_KEY)
+    CHECK_CONFIG_ERROR(onMissingConfigItem, m_yStepConfig.has_value(), Y_STEP_PIN_KEY)
 
-    CHECK_CONFIG_ERROR(onMissingConfigItem, m_zEnableConfig.has_value(), Z_ENABLE_PIN_KEY);
-    CHECK_CONFIG_ERROR(onMissingConfigItem, m_zDirectionConfig.has_value(), Z_DIRECTION_PIN_KEY);
-    CHECK_CONFIG_ERROR(onMissingConfigItem, m_zStepConfig.has_value(), Z_STEP_PIN_KEY);
+    CHECK_CONFIG_ERROR(onMissingConfigItem, m_zEnableConfig.has_value(), Z_ENABLE_PIN_KEY)
+    CHECK_CONFIG_ERROR(onMissingConfigItem, m_zDirectionConfig.has_value(), Z_DIRECTION_PIN_KEY)
+    CHECK_CONFIG_ERROR(onMissingConfigItem, m_zStepConfig.has_value(), Z_STEP_PIN_KEY)
 }
 
 void StepperController::begin()
@@ -142,10 +143,10 @@ CommandResult StepperController::onMCodeCommandReceived(const MCode& mcode, Comm
 
 Vector3<float> StepperController::getMachinePosition()
 {
-    return Vector3<float>(
+    return {
         static_cast<float>(m_xStepper.position()) / m_planner->xStepCountPerMm(),
         static_cast<float>(m_yStepper.position()) / m_planner->yStepCountPerMm(),
-        static_cast<float>(m_zStepper.position()) / m_planner->zStepCountPerMm());
+        static_cast<float>(m_zStepper.position()) / m_planner->zStepCountPerMm()};
 }
 
 void StepperController::sendRealTimePositionInSelectedCoordinateSystem(CommandSource source, uint32_t commandId)
@@ -160,7 +161,7 @@ void StepperController::sendRealTimePositionInMachineCoordinateSystem(CommandSou
     sendPosition(source, commandId, position);
 }
 
-void StepperController::sendPosition(CommandSource source, uint32_t commandId, const Vector3<float> position)
+void StepperController::sendPosition(CommandSource source, uint32_t commandId, const Vector3<float>& position)
 {
     StringPrint stringPrint(m_response, MAX_STEPPER_CONTROLLER_RESPONSE_SIZE);
     stringPrint.print(OK_COMMAND_RESPONSE);

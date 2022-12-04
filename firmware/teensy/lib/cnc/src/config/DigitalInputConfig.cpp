@@ -37,6 +37,6 @@ tl::optional<DigitalInputConfig> DigitalInputConfig::parse(const char* pinString
         pinString++;
     }
 
-    uint8_t pin = static_cast<uint8_t>(atoi(pinString));
+    auto pin = static_cast<uint8_t>(atoi(pinString));
     return DigitalInputConfig(pin, inverted, mode);
 }

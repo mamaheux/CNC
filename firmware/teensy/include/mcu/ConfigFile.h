@@ -12,7 +12,7 @@ class ConfigFile
     File m_file;
 
 public:
-    ConfigFile(const char* path);
+    explicit ConfigFile(const char* path);
     ~ConfigFile();
 
     bool readNext(ConfigItem& item);

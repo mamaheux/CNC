@@ -32,14 +32,14 @@ class Endstops : public IntervalModule
     DigitalInput m_zMax;
 
 public:
-    Endstops();
+    Endstops() = default;
     ~Endstops() override = default;
 
     DECLARE_NOT_COPYABLE(Endstops);
     DECLARE_NOT_MOVABLE(Endstops);
 
     void configure(const ConfigItem& item) override;
-    void checkConfigErrors(std::function<void(const char*, const char*, const char*)> onMissingConfigItem) override;
+    void checkConfigErrors(const MissingConfigCallback& onMissingConfigItem) override;
     void begin() override;
 
 protected:

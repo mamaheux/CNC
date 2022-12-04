@@ -40,16 +40,16 @@ public:
     DECLARE_NOT_MOVABLE(CoordinateTransformer);
 
     void configure(const ConfigItem& item) override;
-    void checkConfigErrors(std::function<void(const char*, const char*, const char*)> onMissingConfigItem) override;
+    void checkConfigErrors(const MissingConfigCallback& onMissingConfigItem) override;
     void begin() override;
 
     CommandResult onGCodeCommandReceived(const GCode& gcode, CommandSource source, uint32_t commandId) override;
     void onTargetPositionChanged(const Vector3<float>& machinePosition) override;
 
-    Vector3<float> gcodeCoordinateToMachineCoordinate(const Vector3<float> v);
-    Vector3<float> machineCoordinateToGcode(const Vector3<float> v);
-    Vector3<float> machineCoordinateToUserCurrentCoordinate(const Vector3<float> v);
-    Vector3<float> machineCoordinateToUserMachineCoordinate(const Vector3<float> v);
+    Vector3<float> gcodeCoordinateToMachineCoordinate(const Vector3<float>& v);
+    Vector3<float> machineCoordinateToGcode(const Vector3<float>& v);
+    Vector3<float> machineCoordinateToUserCurrentCoordinate(const Vector3<float>& v);
+    Vector3<float> machineCoordinateToUserMachineCoordinate(const Vector3<float>& v);
 
 private:
     CommandResult setCoordinateSystemL2(const GCode& gcode);

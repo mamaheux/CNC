@@ -22,6 +22,6 @@ tl::optional<DigitalOutputConfig> DigitalOutputConfig::parse(const char* pinStri
         pinString++;
     }
 
-    uint8_t pin = static_cast<uint8_t>(atoi(pinString));
+    auto pin = static_cast<uint8_t>(atoi(pinString));
     return DigitalOutputConfig(pin, inverted);
 }

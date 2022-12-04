@@ -15,6 +15,6 @@ tl::optional<AnalogInputConfig> AnalogInputConfig::parse(const char* pinString)
         return tl::nullopt;
     }
 
-    uint8_t pin = static_cast<uint8_t>(atoi(pinString));
+    auto pin = static_cast<uint8_t>(atoi(pinString));
     return AnalogInputConfig(pin);
 }

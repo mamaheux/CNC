@@ -24,8 +24,6 @@ constexpr const char* Z_MAX_PIN_KEY_OR_Z_RANGE_IN_MM_KEY = "endstops.z.max_pin o
 constexpr const char* CONTROL_FAST_PERIOD_US_KEY = "endstops.control.fast_period_us";
 constexpr const char* CONTROL_SLOW_PERIOD_US_KEY = "endstops.control.slow_period_us";
 
-Endstops::Endstops() {}
-
 void Endstops::configure(const ConfigItem& item)
 {
     if (strcmp(item.getKey(), X_MIN_PIN_KEY) == 0)
@@ -74,28 +72,28 @@ void Endstops::configure(const ConfigItem& item)
     }
 }
 
-void Endstops::checkConfigErrors(std::function<void(const char*, const char*, const char*)> onMissingConfigItem)
+void Endstops::checkConfigErrors(const MissingConfigCallback& onMissingConfigItem)
 {
     // TODO (min or max) and range
-    CHECK_CONFIG_ERROR(onMissingConfigItem, m_xMinConfig.has_value(), X_MIN_PIN_KEY);
-    CHECK_CONFIG_ERROR(onMissingConfigItem, m_yMinConfig.has_value(), Y_MIN_PIN_KEY);
-    CHECK_CONFIG_ERROR(onMissingConfigItem, m_zMinConfig.has_value(), Z_MIN_PIN_KEY);
+    CHECK_CONFIG_ERROR(onMissingConfigItem, m_xMinConfig.has_value(), X_MIN_PIN_KEY)
+    CHECK_CONFIG_ERROR(onMissingConfigItem, m_yMinConfig.has_value(), Y_MIN_PIN_KEY)
+    CHECK_CONFIG_ERROR(onMissingConfigItem, m_zMinConfig.has_value(), Z_MIN_PIN_KEY)
 
     CHECK_CONFIG_ERROR(
         onMissingConfigItem,
         m_xMaxConfig.has_value() || m_xRangeInMm.has_value(),
-        X_MAX_PIN_KEY_OR_X_RANGE_IN_MM_KEY);
+        X_MAX_PIN_KEY_OR_X_RANGE_IN_MM_KEY)
     CHECK_CONFIG_ERROR(
         onMissingConfigItem,
         m_yMaxConfig.has_value() || m_yRangeInMm.has_value(),
-        Y_MAX_PIN_KEY_OR_Y_RANGE_IN_MM_KEY);
+        Y_MAX_PIN_KEY_OR_Y_RANGE_IN_MM_KEY)
     CHECK_CONFIG_ERROR(
         onMissingConfigItem,
         m_zMaxConfig.has_value() || m_zRangeInMm.has_value(),
-        Z_MAX_PIN_KEY_OR_Z_RANGE_IN_MM_KEY);
+        Z_MAX_PIN_KEY_OR_Z_RANGE_IN_MM_KEY)
 
-    CHECK_CONFIG_ERROR(onMissingConfigItem, m_controlFastPeriodUs.has_value(), CONTROL_FAST_PERIOD_US_KEY);
-    CHECK_CONFIG_ERROR(onMissingConfigItem, m_controlSlowPeriodUs.has_value(), CONTROL_SLOW_PERIOD_US_KEY);
+    CHECK_CONFIG_ERROR(onMissingConfigItem, m_controlFastPeriodUs.has_value(), CONTROL_FAST_PERIOD_US_KEY)
+    CHECK_CONFIG_ERROR(onMissingConfigItem, m_controlSlowPeriodUs.has_value(), CONTROL_SLOW_PERIOD_US_KEY)
 }
 
 void Endstops::begin()

@@ -146,6 +146,8 @@ constexpr size_t COMMAND_SOURCE_COUNT = static_cast<size_t>(CommandSource::COUNT
 
 class ModuleKernel;
 
+typedef std::function<void(const char* key, const char* function, const char* filename)> MissingConfigCallback;
+
 class Module
 {
 protected:
@@ -159,8 +161,7 @@ public:
     DECLARE_NOT_MOVABLE(Module);
 
     virtual void configure(const ConfigItem& item) = 0;
-    virtual void checkConfigErrors(
-        std::function<void(const char* key, const char* function, const char* filename)> onMissingConfigItem) = 0;
+    virtual void checkConfigErrors(const MissingConfigCallback& onMissingConfigItem) = 0;
     virtual void begin() = 0;
 
     void setKernel(ModuleKernel* kernel);

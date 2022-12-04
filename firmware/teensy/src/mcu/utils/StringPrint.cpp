@@ -15,7 +15,7 @@ size_t StringPrint::write(uint8_t b)
 
 int StringPrint::availableForWrite()
 {
-    return m_size - m_index - 1;
+    return static_cast<int>(m_size - m_index - 1);
 }
 
 void StringPrint::finish()

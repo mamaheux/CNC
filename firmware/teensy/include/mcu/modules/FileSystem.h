@@ -16,14 +16,14 @@ class FileSystem : public Module
     char m_response[MAX_FILE_SYSTEM_RESPONSE_SIZE];
 
 public:
-    FileSystem();
+    FileSystem() = default;
     ~FileSystem() override = default;
 
     DECLARE_NOT_COPYABLE(FileSystem);
     DECLARE_NOT_MOVABLE(FileSystem);
 
     void configure(const ConfigItem& item) override;
-    void checkConfigErrors(std::function<void(const char*, const char*, const char*)> onMissingConfigItem) override;
+    void checkConfigErrors(const MissingConfigCallback& onMissingConfigItem) override;
     void begin() override;
 
     RawCommandResult onRawCommandReceived(const char* line, CommandSource source, uint32_t commandId) override;
@@ -35,7 +35,7 @@ private:
 
     CommandResult startNewFile(const char* path);
     void writeOrStopNewFile(const char* line, CommandSource source, uint32_t commandId);
-    CommandResult deleteFile(const char* path);
+    static CommandResult deleteFile(const char* path);
 };
 
 #endif

@@ -16,7 +16,7 @@ public:
     ParsingResult parse(const char* line, SystemCommand& gcode);
 
 private:
-    bool isComment(const char* line);
+    static bool isComment(const char* line);
 };
 
 #endif

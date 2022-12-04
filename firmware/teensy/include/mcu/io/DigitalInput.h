@@ -31,7 +31,7 @@ public:
 
     void begin(const DigitalInputConfig& config);
 
-    void attachInterrupt(void (*function)(void), DigitalInputInterruptMode mode);
+    void attachInterrupt(void (*function)(), DigitalInputInterruptMode mode);
 
     bool read() const;
 };

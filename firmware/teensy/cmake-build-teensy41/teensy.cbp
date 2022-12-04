@@ -1,0 +1,795 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="teensy"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-teensy41"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j16 -f &quot;/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-teensy41/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j16 -f &quot;/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-teensy41/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j16 -f &quot;/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-teensy41/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j16 -f &quot;/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-teensy41/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-teensy41"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j16 -f &quot;/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-teensy41/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j16 -f &quot;/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-teensy41/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j16 -f &quot;/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-teensy41/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j16 -f &quot;/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-teensy41/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Production">
+				<Option working_dir="/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-teensy41"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j16 -f &quot;/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-teensy41/Makefile&quot;  VERBOSE=1 Production"/>
+					<CompileFile command="/usr/bin/make -j16 -f &quot;/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-teensy41/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j16 -f &quot;/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-teensy41/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j16 -f &quot;/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-teensy41/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-teensy41"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j16 -f &quot;/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-teensy41/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j16 -f &quot;/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-teensy41/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j16 -f &quot;/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-teensy41/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j16 -f &quot;/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-teensy41/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Debug">
+				<Option working_dir="/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-teensy41"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j16 -f &quot;/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-teensy41/Makefile&quot;  VERBOSE=1 Debug"/>
+					<CompileFile command="/usr/bin/make -j16 -f &quot;/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-teensy41/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j16 -f &quot;/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-teensy41/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j16 -f &quot;/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-teensy41/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Z_DUMMY_TARGET">
+				<Option output="/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-teensy41/Z_DUMMY_TARGET" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-teensy41"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DPLATFORMIO=60105"/>
+					<Add option="-D__IMXRT1062__"/>
+					<Add option="-DARDUINO_TEENSY41"/>
+					<Add option="-DUSB_SERIAL"/>
+					<Add option="-DARDUINO=10805"/>
+					<Add option="-DTEENSYDUINO=154"/>
+					<Add option="-DCORE_TEENSY"/>
+					<Add option="-DF_CPU=600000000"/>
+					<Add option="-DLAYOUT_US_ENGLISH"/>
+					<Add directory="/home/marc-antoine/Bureau/CNC/firmware/teensy/include"/>
+					<Add directory="/home/marc-antoine/Bureau/CNC/firmware/teensy/src"/>
+					<Add directory="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/include"/>
+					<Add directory="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/src"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/SD/src"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/SdFat/src"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/SPI"/>
+					<Add directory="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/teensy41/optional/include"/>
+					<Add directory="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/teensy41/optional"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/cores/teensy4"/>
+					<Add directory="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/teensy41/SD"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/ADC"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/AccelStepper/src"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/Adafruit_NeoPixel"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/Adafruit_STMPE610"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/Adafruit_VS1053"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/Adafruit_nRF8001"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/Adafruit_nRF8001/utility"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/AltSoftSerial"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/Artnet"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/Audio"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/Audio/utility"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/Bounce"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/Bounce2/src"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/CapacitiveSensor"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/CryptoAccel/src"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/DS1307RTC"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/DmxSimple"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/DogLcd"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/EEPROM"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/EasyTransfer"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/EasyTransferI2C"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/Encoder"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/Encoder/utility"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/Entropy"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/Ethernet/src"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/FNET/src"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/FastCRC"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/FastLED"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/FlexCAN"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/FlexCAN_T4"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/FlexIO_t4/src"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/FlexiTimer2"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/FreqCount"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/FreqMeasure"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/FreqMeasureMulti"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/FrequencyTimer2"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/ILI9341_t3"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/ILI9488_t3/src"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/IRremote"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/Keypad/src"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/LedControl/src"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/LedDisplay"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/LiquidCrystal/src"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/LiquidCrystalFast"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/LittleFS/src"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/LowPower"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/MFRC522/src"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/MIDI/src"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/Metro"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/MsTimer2"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/NXPMotionSense"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/NXPMotionSense/utility"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/NativeEthernet/src"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/OSC"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/OctoWS2811"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/OneWire"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/PS2Keyboard"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/PS2Keyboard/utility"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/PWMServo"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/Ping"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/PulsePosition"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/QuadEncoder"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/RA8875"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/RadioHead"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/ResponsiveAnalogRead/src"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/SPIFlash"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/ST7735_t3"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/SerialFlash"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/Servo"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/ShiftPWM"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/Snooze/src"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/SoftPWM"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/SoftwareSerial"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/TFT_ILI9163C"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/Talkie"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/TeensyThreads"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/Time"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/TimeAlarms"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/TimerOne"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/TimerThree"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/TinyGPS"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/Tlc5940"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/TouchScreen"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/USBHost_t36"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/USBHost_t36/utility"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/UTFT"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/VirtualWire"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/WS2812Serial"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/Wire"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/Wire/utility"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/XBee"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/XPT2046_Touchscreen"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/i2c_t3"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/ks0108"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/ssd1351"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/x10"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/toolchain-gccarmnoneeabi@1.50401.190816/arm-none-eabi/include/c++/5.4.1"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/toolchain-gccarmnoneeabi@1.50401.190816/arm-none-eabi/include/c++/5.4.1/arm-none-eabi"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/toolchain-gccarmnoneeabi@1.50401.190816/lib/gcc/arm-none-eabi/5.4.1/include"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/toolchain-gccarmnoneeabi@1.50401.190816/lib/gcc/arm-none-eabi/5.4.1/include-fixed"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/toolchain-gccarmnoneeabi@1.50401.190816/arm-none-eabi/include"/>
+					<Add directory="/usr/include/c++/9"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/include/c++/9/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j16 -f &quot;/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-teensy41/Makefile&quot;  VERBOSE=1 Z_DUMMY_TARGET"/>
+					<CompileFile command="/usr/bin/make -j16 -f &quot;/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-teensy41/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j16 -f &quot;/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-teensy41/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j16 -f &quot;/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-teensy41/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Z_DUMMY_TARGET/fast">
+				<Option output="/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-teensy41/Z_DUMMY_TARGET" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-teensy41"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DPLATFORMIO=60105"/>
+					<Add option="-D__IMXRT1062__"/>
+					<Add option="-DARDUINO_TEENSY41"/>
+					<Add option="-DUSB_SERIAL"/>
+					<Add option="-DARDUINO=10805"/>
+					<Add option="-DTEENSYDUINO=154"/>
+					<Add option="-DCORE_TEENSY"/>
+					<Add option="-DF_CPU=600000000"/>
+					<Add option="-DLAYOUT_US_ENGLISH"/>
+					<Add directory="/home/marc-antoine/Bureau/CNC/firmware/teensy/include"/>
+					<Add directory="/home/marc-antoine/Bureau/CNC/firmware/teensy/src"/>
+					<Add directory="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/include"/>
+					<Add directory="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/src"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/SD/src"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/SdFat/src"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/SPI"/>
+					<Add directory="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/teensy41/optional/include"/>
+					<Add directory="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/teensy41/optional"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/cores/teensy4"/>
+					<Add directory="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/teensy41/SD"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/ADC"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/AccelStepper/src"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/Adafruit_NeoPixel"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/Adafruit_STMPE610"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/Adafruit_VS1053"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/Adafruit_nRF8001"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/Adafruit_nRF8001/utility"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/AltSoftSerial"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/Artnet"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/Audio"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/Audio/utility"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/Bounce"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/Bounce2/src"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/CapacitiveSensor"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/CryptoAccel/src"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/DS1307RTC"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/DmxSimple"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/DogLcd"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/EEPROM"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/EasyTransfer"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/EasyTransferI2C"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/Encoder"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/Encoder/utility"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/Entropy"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/Ethernet/src"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/FNET/src"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/FastCRC"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/FastLED"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/FlexCAN"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/FlexCAN_T4"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/FlexIO_t4/src"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/FlexiTimer2"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/FreqCount"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/FreqMeasure"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/FreqMeasureMulti"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/FrequencyTimer2"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/ILI9341_t3"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/ILI9488_t3/src"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/IRremote"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/Keypad/src"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/LedControl/src"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/LedDisplay"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/LiquidCrystal/src"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/LiquidCrystalFast"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/LittleFS/src"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/LowPower"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/MFRC522/src"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/MIDI/src"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/Metro"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/MsTimer2"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/NXPMotionSense"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/NXPMotionSense/utility"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/NativeEthernet/src"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/OSC"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/OctoWS2811"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/OneWire"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/PS2Keyboard"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/PS2Keyboard/utility"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/PWMServo"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/Ping"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/PulsePosition"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/QuadEncoder"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/RA8875"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/RadioHead"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/ResponsiveAnalogRead/src"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/SPIFlash"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/ST7735_t3"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/SerialFlash"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/Servo"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/ShiftPWM"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/Snooze/src"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/SoftPWM"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/SoftwareSerial"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/TFT_ILI9163C"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/Talkie"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/TeensyThreads"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/Time"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/TimeAlarms"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/TimerOne"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/TimerThree"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/TinyGPS"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/Tlc5940"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/TouchScreen"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/USBHost_t36"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/USBHost_t36/utility"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/UTFT"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/VirtualWire"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/WS2812Serial"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/Wire"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/Wire/utility"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/XBee"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/XPT2046_Touchscreen"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/i2c_t3"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/ks0108"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/ssd1351"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/framework-arduinoteensy/libraries/x10"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/toolchain-gccarmnoneeabi@1.50401.190816/arm-none-eabi/include/c++/5.4.1"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/toolchain-gccarmnoneeabi@1.50401.190816/arm-none-eabi/include/c++/5.4.1/arm-none-eabi"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/toolchain-gccarmnoneeabi@1.50401.190816/lib/gcc/arm-none-eabi/5.4.1/include"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/toolchain-gccarmnoneeabi@1.50401.190816/lib/gcc/arm-none-eabi/5.4.1/include-fixed"/>
+					<Add directory="/home/marc-antoine/.platformio/packages/toolchain-gccarmnoneeabi@1.50401.190816/arm-none-eabi/include"/>
+					<Add directory="/usr/include/c++/9"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/include/c++/9/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j16 -f &quot;/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-teensy41/Makefile&quot;  VERBOSE=1 Z_DUMMY_TARGET/fast"/>
+					<CompileFile command="/usr/bin/make -j16 -f &quot;/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-teensy41/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j16 -f &quot;/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-teensy41/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j16 -f &quot;/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-teensy41/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/teensy41/integrity.dat">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/teensy41/optional/.appveyor.yml">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/teensy41/optional/.clang-format">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/teensy41/optional/.git/.piopm">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/teensy41/optional/.git/hooks/applypatch-msg.sample">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/teensy41/optional/.git/hooks/commit-msg.sample">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/teensy41/optional/.git/hooks/fsmonitor-watchman.sample">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/teensy41/optional/.git/hooks/post-update.sample">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/teensy41/optional/.git/hooks/pre-applypatch.sample">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/teensy41/optional/.git/hooks/pre-commit.sample">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/teensy41/optional/.git/hooks/pre-merge-commit.sample">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/teensy41/optional/.git/hooks/pre-push.sample">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/teensy41/optional/.git/hooks/pre-rebase.sample">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/teensy41/optional/.git/hooks/pre-receive.sample">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/teensy41/optional/.git/hooks/prepare-commit-msg.sample">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/teensy41/optional/.git/hooks/update.sample">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/teensy41/optional/.gitignore">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/teensy41/optional/.gitmodules">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/teensy41/optional/.travis.yml">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/teensy41/optional/CMakeLists.txt">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/teensy41/optional/README.md">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/teensy41/optional/cmake/tl-optional-config.cmake.in">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/teensy41/optional/include/tl/optional.hpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/teensy41/optional/library.json">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/teensy41/optional/tests/assignment.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/teensy41/optional/tests/bases.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/teensy41/optional/tests/constexpr.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/teensy41/optional/tests/constructors.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/teensy41/optional/tests/emplace.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/teensy41/optional/tests/extensions.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/teensy41/optional/tests/hash.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/teensy41/optional/tests/in_place.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/teensy41/optional/tests/issues.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/teensy41/optional/tests/make_optional.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/teensy41/optional/tests/noexcept.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/teensy41/optional/tests/nullopt.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/teensy41/optional/tests/observers.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/teensy41/optional/tests/relops.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/.pio/libdeps/teensy41/optional/tests/swap.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/include/cnc/LinearBlock.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/include/cnc/collections/BoundedQueue.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/include/cnc/config/AnalogInputConfig.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/include/cnc/config/ConfigItem.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/include/cnc/config/DigitalInputConfig.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/include/cnc/config/DigitalOutputConfig.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/include/cnc/config/PwmOutputConfig.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/include/cnc/math/FixedPoint.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/include/cnc/math/Range.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/include/cnc/math/Vector2.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/include/cnc/math/Vector3.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/include/cnc/math/ZRotation.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/include/cnc/modules/ArcConverter.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/include/cnc/modules/CoordinateTransformer.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/include/cnc/modules/Module.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/include/cnc/modules/ModuleKernel.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/include/cnc/modules/Planner.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/include/cnc/parsing/GCode.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/include/cnc/parsing/MCode.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/include/cnc/parsing/ParsingResult.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/include/cnc/parsing/SystemCommand.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/include/cnc/parsing/properties.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/include/cnc/parsing/trim.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/include/cnc/resources/ResourceLock.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/include/cnc/resources/resources.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/include/cnc/utils/ClassMacro.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/include/cnc/utils/TypeTraits.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/include/cnc/utils/macro.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/src/LinearBlock.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/src/config/AnalogInputConfig.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/src/config/ConfigItem.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/src/config/DigitalInputConfig.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/src/config/DigitalOutputConfig.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/src/config/PwmOutputConfig.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/src/modules/ArcConverter.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/src/modules/CoordinateTransformer.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/src/modules/Module.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/src/modules/ModuleKernel.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/src/modules/Planner.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/src/parsing/GCode.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/src/parsing/MCode.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/src/parsing/SystemCommand.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/src/parsing/properties.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/src/parsing/trim.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/lib/cnc/src/resources/ResourceLock.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/src/main.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/src/mcu/ConfigFile.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/src/mcu/criticalError.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/src/mcu/io/AnalogInput.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/src/mcu/io/DigitalInput.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/src/mcu/io/DigitalOutput.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/src/mcu/io/PwmOutput.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/src/mcu/io/Stepper.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/src/mcu/modules/CommandFile.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/src/mcu/modules/CommandSerial.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/src/mcu/modules/Endstops.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/src/mcu/modules/FileSystem.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/src/mcu/modules/IntervalModule.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/src/mcu/modules/Kernel.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/src/mcu/modules/Spindle.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/src/mcu/modules/StepperController.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/src/mcu/utils/StringPrint.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/bench/include/modules/bench_ArcConverter.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/bench/include/parsing/bench_GCode.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/bench/include/parsing/bench_MCode.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/bench/src/main.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/bench/src/modules/bench_ArcConverter.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/bench/src/parsing/bench_GCode.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/bench/src/parsing/bench_MCode.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/include/collections/test_BoundedQueue.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/include/config/test_AnalogInputConfig.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/include/config/test_DigitalInputConfig.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/include/config/test_DigitalOutputConfig.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/include/config/test_PwmOutputConfig.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/include/math/test_FixedPoint.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/include/math/test_Range.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/include/math/test_Vector2.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/include/math/test_Vector3.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/include/math/test_ZRotation.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/include/modules/test_ArcConverter.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/include/modules/test_CoordinateTransformer.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/include/modules/test_Module.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/include/parsing/test_GCode.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/include/parsing/test_MCode.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/include/parsing/test_SystemCommand.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/include/parsing/test_properties.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/include/parsing/test_trim.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/include/resources/test_ResourceLock.h">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/src/collections/test_BoundedQueue.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/src/config/test_AnalogInputConfig.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/src/config/test_DigitalInputConfig.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/src/config/test_DigitalOutputConfig.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/src/config/test_PwmOutputConfig.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/src/main.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/src/math/test_FixedPoint.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/src/math/test_Range.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/src/math/test_Vector2.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/src/math/test_Vector3.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/src/math/test_ZRotation.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/src/modules/test_ArcConverter.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/src/modules/test_CoordinateTransformer.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/src/modules/test_Module.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/src/parsing/test_GCode.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/src/parsing/test_MCode.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/src/parsing/test_SystemCommand.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/src/parsing/test_properties.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/src/parsing/test_trim.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/test/test_cnc/src/resources/test_ResourceLock.cpp">
+			<Option target="Z_DUMMY_TARGET"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="/home/marc-antoine/Bureau/CNC/firmware/teensy/CMakeListsPrivate.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

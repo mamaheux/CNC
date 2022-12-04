@@ -29,7 +29,7 @@ Kernel::Kernel() : m_moduleCount(0)
 
 void Kernel::addModule(Module* module)
 {
-    CRITICAL_ERROR_CHECK(m_moduleCount < MAX_MODULE_COUNT, "Too many modules");
+    CRITICAL_ERROR_CHECK(m_moduleCount < MAX_MODULE_COUNT, "Too many modules")
 
     m_modules[m_moduleCount] = module;
     m_moduleCount++;
@@ -38,8 +38,8 @@ void Kernel::addModule(Module* module)
 
 void Kernel::registerToEvent(ModuleEventType eventType, Module* module)
 {
-    size_t eventIndex = static_cast<size_t>(eventType);
-    CRITICAL_ERROR_CHECK(m_moduleCountByEventType[eventIndex] < MAX_MODULE_COUNT, "Too many modules");
+    auto eventIndex = static_cast<size_t>(eventType);
+    CRITICAL_ERROR_CHECK(m_moduleCountByEventType[eventIndex] < MAX_MODULE_COUNT, "Too many modules")
 
     m_modulesByEventType[eventIndex][m_moduleCountByEventType[eventIndex]] = module;
     m_moduleCountByEventType[eventIndex]++;
@@ -65,7 +65,7 @@ void Kernel::begin()
     {
         m_modules[i]->checkConfigErrors(
             [](const char* key, const char* function, const char* filename)
-            { ON_CRITICAL_ERROR_3("Missing item in config.properties (key = ", key, ")", function, filename); });
+            { ON_CRITICAL_ERROR_3("Missing item in config.properties (key = ", key, ")", function, filename) });
     }
 
     for (size_t i = 0; i < m_moduleCount; i++)
@@ -86,7 +86,7 @@ void Kernel::update()
 
 void Kernel::executeCommand(const char* line, CommandSource source, tl::optional<uint32_t>& commandId)
 {
-    size_t sourceIndex = static_cast<size_t>(source);
+    auto sourceIndex = static_cast<size_t>(source);
     commandId = m_currentCommandIdByCommandSource[sourceIndex];
     m_currentCommandIdByCommandSource[sourceIndex]++;
     if (m_pendingCommandResponseIdByCommandSource[sourceIndex] != tl::nullopt)
@@ -128,13 +128,13 @@ void Kernel::executeCommand(const char* line, CommandSource source, tl::optional
 
 void Kernel::sendCommandResponse(const char* response, CommandSource source, uint32_t commandId, bool isCompleted)
 {
-    size_t sourceIndex = static_cast<size_t>(source);
+    auto sourceIndex = static_cast<size_t>(source);
     if (m_pendingCommandResponseIdByCommandSource[sourceIndex] != commandId)
     {
         return;
     }
 
-    constexpr size_t EVENT_INDEX = static_cast<size_t>(ModuleEventType::COMMAND_RESPONSE);
+    constexpr auto EVENT_INDEX = static_cast<size_t>(ModuleEventType::COMMAND_RESPONSE);
 
     for (size_t i = 0; i < m_moduleCountByEventType[EVENT_INDEX]; i++)
     {
@@ -149,7 +149,7 @@ void Kernel::sendCommandResponse(const char* response, CommandSource source, uin
 
 void Kernel::dispatchTargetPosition(const Vector3<float>& machinePosition)
 {
-    constexpr size_t EVENT_INDEX = static_cast<size_t>(ModuleEventType::TARGET_POSITION);
+    constexpr auto EVENT_INDEX = static_cast<size_t>(ModuleEventType::TARGET_POSITION);
 
     for (size_t i = 0; i < m_moduleCountByEventType[EVENT_INDEX]; i++)
     {
@@ -211,7 +211,7 @@ void Kernel::executeMCodeCommand(const char* line, CommandSource source, uint32_
 
 RawCommandResult Kernel::dispatchRawCommand(const char* line, CommandSource source, uint32_t commandId)
 {
-    constexpr size_t EVENT_INDEX = static_cast<size_t>(ModuleEventType::RAW_COMMAND);
+    constexpr auto EVENT_INDEX = static_cast<size_t>(ModuleEventType::RAW_COMMAND);
     for (size_t i = 0; i < m_moduleCountByEventType[EVENT_INDEX]; i++)
     {
         RawCommandResult result = m_modulesByEventType[EVENT_INDEX][i]->onRawCommandReceived(line, source, commandId);
@@ -225,7 +225,7 @@ RawCommandResult Kernel::dispatchRawCommand(const char* line, CommandSource sour
 
 void Kernel::dispatchSystemCommand(const SystemCommand& command, CommandSource source, uint32_t commandId)
 {
-    constexpr size_t EVENT_INDEX = static_cast<size_t>(ModuleEventType::SYSTEM_COMMAND);
+    constexpr auto EVENT_INDEX = static_cast<size_t>(ModuleEventType::SYSTEM_COMMAND);
 
     CommandResult agregatedResult = CommandResult::notHandled();
     for (size_t i = 0; i < m_moduleCountByEventType[EVENT_INDEX]; i++)
@@ -239,7 +239,7 @@ void Kernel::dispatchSystemCommand(const SystemCommand& command, CommandSource s
 
 void Kernel::dispatchGCodeCommand(const GCode& gcode, CommandSource source, uint32_t commandId)
 {
-    constexpr size_t EVENT_INDEX = static_cast<size_t>(ModuleEventType::GCODE_COMMAND);
+    constexpr auto EVENT_INDEX = static_cast<size_t>(ModuleEventType::GCODE_COMMAND);
 
     CommandResult agregatedResult = CommandResult::notHandled();
     for (size_t i = 0; i < m_moduleCountByEventType[EVENT_INDEX]; i++)
@@ -252,7 +252,7 @@ void Kernel::dispatchGCodeCommand(const GCode& gcode, CommandSource source, uint
 
 void Kernel::dispatchMCodeCommand(const MCode& mcode, CommandSource source, uint32_t commandId)
 {
-    constexpr size_t EVENT_INDEX = static_cast<size_t>(ModuleEventType::MCODE_COMMAND);
+    constexpr auto EVENT_INDEX = static_cast<size_t>(ModuleEventType::MCODE_COMMAND);
 
     CommandResult agregatedResult = CommandResult::notHandled();
     for (size_t i = 0; i < m_moduleCountByEventType[EVENT_INDEX]; i++)

@@ -42,14 +42,14 @@ class ArcConverter : public Module
     Vector3<float> m_previousGcodePosition;
 
 public:
-    ArcConverter(CoordinateTransformer* coordinateTransformer);
+    explicit ArcConverter(CoordinateTransformer* coordinateTransformer);
     ~ArcConverter() override = default;
 
     DECLARE_NOT_COPYABLE(ArcConverter);
     DECLARE_NOT_MOVABLE(ArcConverter);
 
     void configure(const ConfigItem& item) override;
-    void checkConfigErrors(std::function<void(const char*, const char*, const char*)> onMissingConfigItem) override;
+    void checkConfigErrors(const MissingConfigCallback& onMissingConfigItem) override;
     void begin() override;
 
     CommandResult onGCodeCommandReceived(const GCode& gcode, CommandSource source, uint32_t commandId) override;

@@ -37,7 +37,7 @@ public:
     DECLARE_NOT_MOVABLE(Planner);
 
     void configure(const ConfigItem& item) override;
-    void checkConfigErrors(std::function<void(const char*, const char*, const char*)> onMissingConfigItem) override;
+    void checkConfigErrors(const MissingConfigCallback& onMissingConfigItem) override;
     void begin() override;
 
     CommandResult onGCodeCommandReceived(const GCode& gcode, CommandSource source, uint32_t commandId) override;

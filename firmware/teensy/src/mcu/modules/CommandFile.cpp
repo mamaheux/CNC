@@ -17,11 +17,12 @@ constexpr const char* LOG_FILE_PATH = "log.txt";
 CommandFile::CommandFile() : m_completedLineCount(0), m_lineCount(0), m_isStarted(false), m_lineIndex(0)
 {
     memset(m_lineBuffer, '\0', COMMAND_FILE_LINE_BUFFER_SIZE);
+    memset(m_response, '\0', COMMAND_FILE_LINE_BUFFER_SIZE);
 }
 
 void CommandFile::configure(const ConfigItem& item) {}
 
-void CommandFile::checkConfigErrors(std::function<void(const char*, const char*, const char*)> onMissingConfigItem) {}
+void CommandFile::checkConfigErrors(const MissingConfigCallback& onMissingConfigItem) {}
 
 void CommandFile::begin()
 {
@@ -122,7 +123,7 @@ void CommandFile::onCommandResponse(const char* response, CommandSource source, 
         return;
     }
 
-    if (strcmp(response, OK_COMMAND_RESPONSE) != 0)
+    if (strstr(response, OK_COMMAND_RESPONSE) == nullptr)
     {
         m_logFile.print(m_completedLineCount);
         m_logFile.print(": ");

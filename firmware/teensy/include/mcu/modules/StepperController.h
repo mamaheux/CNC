@@ -46,7 +46,7 @@ public:
     DECLARE_NOT_MOVABLE(StepperController);
 
     void configure(const ConfigItem& item) override;
-    void checkConfigErrors(std::function<void(const char*, const char*, const char*)> onMissingConfigItem) override;
+    void checkConfigErrors(const MissingConfigCallback& onMissingConfigItem) override;
     void begin() override;
 
     CommandResult
@@ -65,7 +65,7 @@ private:
     Vector3<float> getMachinePosition();
     void sendRealTimePositionInSelectedCoordinateSystem(CommandSource source, uint32_t commandId);
     void sendRealTimePositionInMachineCoordinateSystem(CommandSource source, uint32_t commandId);
-    void sendPosition(CommandSource source, uint32_t commandId, const Vector3<float> position);
+    void sendPosition(CommandSource source, uint32_t commandId, const Vector3<float>& position);
 };
 
 inline bool StepperController::enableManualStep()

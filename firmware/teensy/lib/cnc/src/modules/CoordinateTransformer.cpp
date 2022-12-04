@@ -17,8 +17,7 @@ CoordinateTransformer::CoordinateTransformer()
 
 void CoordinateTransformer::configure(const ConfigItem& item) {}
 
-void CoordinateTransformer::checkConfigErrors(
-    std::function<void(const char*, const char*, const char*)> onMissingConfigItem)
+void CoordinateTransformer::checkConfigErrors(const MissingConfigCallback& onMissingConfigItem)
 {
 }
 
@@ -112,7 +111,7 @@ void CoordinateTransformer::onTargetPositionChanged(const Vector3<float>& machin
     m_targetMachinePosition = machinePosition;
 }
 
-Vector3<float> CoordinateTransformer::gcodeCoordinateToMachineCoordinate(const Vector3<float> v)
+Vector3<float> CoordinateTransformer::gcodeCoordinateToMachineCoordinate(const Vector3<float>& v)
 {
     CoordinateSystem& coordinateSystem = m_coordinateSystems[m_currentCoordinateSystemIndex];
     Vector3<float> rotatedV = coordinateSystem.rotation.rotate(v * m_scale);
@@ -126,7 +125,7 @@ Vector3<float> CoordinateTransformer::gcodeCoordinateToMachineCoordinate(const V
     }
 }
 
-Vector3<float> CoordinateTransformer::machineCoordinateToGcode(const Vector3<float> v)
+Vector3<float> CoordinateTransformer::machineCoordinateToGcode(const Vector3<float>& v)
 {
     CoordinateSystem& coordinateSystem = m_coordinateSystems[m_currentCoordinateSystemIndex];
     if (m_isIncrementalMode)
@@ -139,13 +138,13 @@ Vector3<float> CoordinateTransformer::machineCoordinateToGcode(const Vector3<flo
     }
 }
 
-Vector3<float> CoordinateTransformer::machineCoordinateToUserCurrentCoordinate(const Vector3<float> v)
+Vector3<float> CoordinateTransformer::machineCoordinateToUserCurrentCoordinate(const Vector3<float>& v)
 {
     CoordinateSystem& coordinateSystem = m_coordinateSystems[m_currentCoordinateSystemIndex];
     return coordinateSystem.rotationInv.rotate(v - m_globalOffset - coordinateSystem.offset) / m_scale;
 }
 
-Vector3<float> CoordinateTransformer::machineCoordinateToUserMachineCoordinate(const Vector3<float> v)
+Vector3<float> CoordinateTransformer::machineCoordinateToUserMachineCoordinate(const Vector3<float>& v)
 {
     return v / m_scale;
 }

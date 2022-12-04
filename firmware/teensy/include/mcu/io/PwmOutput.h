@@ -27,7 +27,7 @@ public:
     void begin(const PwmOutputConfig& config, uint16_t value);
 
     uint16_t read() const;
-    void write(uint16_t state);
+    void write(uint16_t value);
 };
 
 inline uint16_t PwmOutput::read() const
