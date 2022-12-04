@@ -1,5 +1,0 @@
-/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-native/CMakeFiles/rebuild_cache.dir
-/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-native/CMakeFiles/Production.dir
-/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-native/CMakeFiles/edit_cache.dir
-/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-native/CMakeFiles/Debug.dir
-/home/marc-antoine/Bureau/CNC/firmware/teensy/cmake-build-native/CMakeFiles/Z_DUMMY_TARGET.dir
