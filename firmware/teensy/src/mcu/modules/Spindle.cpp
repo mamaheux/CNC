@@ -189,13 +189,13 @@ void Spindle::onUpdate(uint32_t elapsedUs)
     }
 
     float error = m_targetRpm - m_currentRpm;
-    m_cumulativeError += error;
+    m_cumulativeError += error * elapsedS;
     if (m_cumulativeError > *m_maxCumulativeError)
     {
         m_cumulativeError = *m_maxCumulativeError;
     }
 
-    float pwm = *m_p * error + *m_i * m_cumulativeError + *m_d * (error - m_previousError);
+    float pwm = *m_p * error + *m_i * m_cumulativeError + *m_d * (error - m_previousError) / elapsedS;
     pwm = max(0.f, min(pwm, 1.f));
     m_previousError = error;
 
