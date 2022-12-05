@@ -44,6 +44,20 @@ void test_BitMask()
     TEST_ASSERT_EQUAL(0b0000'0000, r8);
 }
 
+void test_zero_shouldBeZero()
+{
+    FixedPointQ3_4 testee(1.0);
+
+    TEST_ASSERT_EQUAL_FIXED_POINT(testee + FixedPointQ3_4::ZERO, 1.0);
+}
+
+void test_one_shouldBeOne()
+{
+    FixedPointQ3_4 testee(1.0);
+
+    TEST_ASSERT_EQUAL_FIXED_POINT(testee + FixedPointQ3_4::ONE, 2.0);
+}
+
 void test_FixedPointQ3_4_multiplyAccumulate()
 {
     FixedPointQ3_4 testee1(1.0);

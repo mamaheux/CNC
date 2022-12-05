@@ -14,17 +14,17 @@ constexpr const char* INVALID_PATH_COMMAND_ERROR_MESSAGE = "The path is invalid.
 
 constexpr const char* LOG_FILE_PATH = "log.txt";
 
-CommandFile::CommandFile() : m_completedLineCount(0), m_lineCount(0), m_isStarted(false), m_lineIndex(0)
+FLASHMEM CommandFile::CommandFile() : m_completedLineCount(0), m_lineCount(0), m_isStarted(false), m_lineIndex(0)
 {
     memset(m_lineBuffer, '\0', COMMAND_FILE_LINE_BUFFER_SIZE);
     memset(m_response, '\0', COMMAND_FILE_LINE_BUFFER_SIZE);
 }
 
-void CommandFile::configure(const ConfigItem& item) {}
+FLASHMEM void CommandFile::configure(const ConfigItem& item) {}
 
-void CommandFile::checkConfigErrors(const MissingConfigCallback& onMissingConfigItem) {}
+FLASHMEM void CommandFile::checkConfigErrors(const MissingConfigCallback& onMissingConfigItem) {}
 
-void CommandFile::begin()
+FLASHMEM void CommandFile::begin()
 {
     m_kernel->registerToEvent(ModuleEventType::MCODE_COMMAND, this);
     m_kernel->registerToEvent(ModuleEventType::COMMAND_RESPONSE, this);
@@ -58,7 +58,7 @@ void CommandFile::update()
         }
         m_lineIndex++;
     }
-    if (m_commandFile.available())
+    if (m_commandFile.available() == 0)
     {
         closeFiles();
     }

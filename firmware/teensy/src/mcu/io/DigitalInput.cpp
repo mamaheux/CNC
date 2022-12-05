@@ -3,7 +3,7 @@
 
 #include <cnc/resources/resources.h>
 
-DigitalInput::DigitalInput() : m_pin(0), m_inverted(false)
+FLASHMEM DigitalInput::DigitalInput() : m_pin(0), m_inverted(false)
 {
     static_assert(static_cast<int>(DigitalInputMode::NORMAL) == INPUT, "DigitalInputMode::NORMAL value check");
     static_assert(static_cast<int>(DigitalInputMode::PULLUP) == INPUT_PULLUP, "DigitalInputMode::PULLUP value check");
@@ -12,7 +12,7 @@ DigitalInput::DigitalInput() : m_pin(0), m_inverted(false)
         "DigitalInputMode::PULLDOWN value check");
 }
 
-void DigitalInput::begin(const DigitalInputConfig& config)
+FLASHMEM void DigitalInput::begin(const DigitalInputConfig& config)
 {
     CRITICAL_ERROR_CHECK_3(config.pin() < PIN_COUNT, "Invalid pin (", config.pin(), ")")
 
@@ -23,7 +23,7 @@ void DigitalInput::begin(const DigitalInputConfig& config)
     pinMode(m_pin, static_cast<uint8_t>(config.mode()));
 }
 
-void DigitalInput::attachInterrupt(void (*function)(), DigitalInputInterruptMode mode)
+FLASHMEM void DigitalInput::attachInterrupt(void (*function)(), DigitalInputInterruptMode mode)
 {
     ::attachInterrupt(m_pin, function, static_cast<int>(mode));
 }

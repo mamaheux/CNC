@@ -20,6 +20,7 @@ public:
     const char* getValueString() const;
     int getValueInt() const;
     float getValueFloat() const;
+    double getValueDouble() const;
 
     friend ConfigFile;
 };
@@ -42,6 +43,11 @@ inline int ConfigItem::getValueInt() const
 inline float ConfigItem::getValueFloat() const
 {
     return static_cast<float>(std::atof(m_value));
+}
+
+inline double ConfigItem::getValueDouble() const
+{
+    return std::atof(m_value);
 }
 
 #endif

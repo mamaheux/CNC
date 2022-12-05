@@ -49,7 +49,7 @@ public:
     void unstep();
 
     int32_t position() const;
-    void resetPosition();
+    void resetPosition(int32_t position);
 };
 
 inline bool Stepper::isEnabled() const
@@ -93,9 +93,9 @@ inline int32_t Stepper::position() const
     return m_position;
 }
 
-inline void Stepper::resetPosition()
+inline void Stepper::resetPosition(int32_t position)
 {
-    m_position = 0;
+    m_position = position;
 }
 
 #endif

@@ -27,7 +27,7 @@ class Planner : public Module
     BoundedQueue<LinearBlock, PLANNER_QUEUE_SIZE> m_blockQueue;
 
     InclusiveRange3<float> m_machineRange;
-    Vector3<int32_t> m_lastRequestedPosition;
+    Vector3<float> m_lastRequestedPosition;
 
 public:
     Planner(CoordinateTransformer* coordinateTransformer, ArcConverter* arcConverter);
@@ -45,7 +45,7 @@ public:
 
     void update() override;
 
-    void reset(const InclusiveRange3<float>& range);
+    void reset(const Vector3<float>& position, const InclusiveRange3<float>& range);
     float xStepCountPerMm() const;
     float yStepCountPerMm() const;
     float zStepCountPerMm() const;

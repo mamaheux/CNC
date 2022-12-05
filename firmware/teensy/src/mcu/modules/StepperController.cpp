@@ -20,15 +20,14 @@ constexpr const char* Z_ENABLE_PIN_KEY = "stepper.z.enable_pin";
 constexpr const char* Z_DIRECTION_PIN_KEY = "stepper.z.direction_pin";
 constexpr const char* Z_STEP_PIN_KEY = "stepper.z.step_pin";
 
-StepperController::StepperController(CoordinateTransformer* coordinateTransformer, Planner* planner)
+FLASHMEM StepperController::StepperController(CoordinateTransformer* coordinateTransformer, Planner* planner)
     : m_coordinateTransformer(coordinateTransformer),
-      m_planner(planner),
-      m_manualStepEnabled(false)
+      m_planner(planner)
 {
     memset(m_response, '\0', MAX_STEPPER_CONTROLLER_RESPONSE_SIZE);
 }
 
-void StepperController::configure(const ConfigItem& item)
+FLASHMEM void StepperController::configure(const ConfigItem& item)
 {
     if (strcmp(item.getKey(), X_ENABLE_PIN_KEY) == 0)
     {
@@ -68,7 +67,7 @@ void StepperController::configure(const ConfigItem& item)
     }
 }
 
-void StepperController::checkConfigErrors(
+FLASHMEM void StepperController::checkConfigErrors(
     const MissingConfigCallback& onMissingConfigItem)
 {
     CHECK_CONFIG_ERROR(onMissingConfigItem, m_xEnableConfig.has_value(), X_ENABLE_PIN_KEY)
@@ -84,44 +83,44 @@ void StepperController::checkConfigErrors(
     CHECK_CONFIG_ERROR(onMissingConfigItem, m_zStepConfig.has_value(), Z_STEP_PIN_KEY)
 }
 
-void StepperController::begin()
+FLASHMEM void StepperController::begin()
 {
     m_xStepper.begin(*m_xEnableConfig, *m_xDirectionConfig, *m_xStepConfig);
     m_yStepper.begin(*m_yEnableConfig, *m_yDirectionConfig, *m_yStepConfig);
     m_zStepper.begin(*m_zEnableConfig, *m_zDirectionConfig, *m_zStepConfig);
 
-    m_kernel->registerToEvent(ModuleEventType::SYSTEM_COMMAND, this);
-    m_kernel->registerToEvent(ModuleEventType::GCODE_COMMAND, this);
     m_kernel->registerToEvent(ModuleEventType::MCODE_COMMAND, this);
-}
-
-CommandResult
-    StepperController::onSystemCommandReceived(const SystemCommand& command, CommandSource source, uint32_t commandId)
-{
-    return CommandResult::notHandled();
-}
-
-CommandResult StepperController::onGCodeCommandReceived(const GCode& gcode, CommandSource source, uint32_t commandId)
-{
-    return CommandResult::notHandled();
 }
 
 CommandResult StepperController::onMCodeCommandReceived(const MCode& mcode, CommandSource source, uint32_t commandId)
 {
     if (mcode.code() == 17 && mcode.subcode() == tl::nullopt)
     {
-        // TODO Check the source
-        m_xStepper.enable();
-        m_yStepper.enable();
-        m_zStepper.enable();
+        if (m_owner == tl::nullopt)
+        {
+            m_xStepper.enable();
+            m_yStepper.enable();
+            m_zStepper.enable();
+        }
+        else
+        {
+            m_pendingMCode = {mcode, source, commandId};
+            return CommandResult::pending();
+        }
     }
     else if (mcode.code() == 18 && mcode.subcode() == tl::nullopt)
     {
-        // TODO Check the source
-        // TODO Postpone if the queue is not empty
-        m_xStepper.disable();
-        m_yStepper.disable();
-        m_zStepper.disable();
+        if (m_owner == tl::nullopt)
+        {
+            m_xStepper.disable();
+            m_yStepper.disable();
+            m_zStepper.disable();
+        }
+        else
+        {
+            m_pendingMCode = {mcode, source, commandId};
+            return CommandResult::pending();
+        }
     }
     else if (mcode.code() == 114 && mcode.subcode() == 1u)
     {
@@ -139,6 +138,20 @@ CommandResult StepperController::onMCodeCommandReceived(const MCode& mcode, Comm
     }
 
     return CommandResult::ok();
+}
+
+void StepperController::update()
+{
+    if (m_owner == tl::nullopt && m_pendingMCode != tl::nullopt)
+    {
+        handlePendingMCode(m_pendingMCode->command, m_pendingMCode->source, m_pendingMCode->commandId);
+        m_pendingMCode = tl::nullopt;
+    }
+}
+
+bool StepperController::hasPendingMotionCommands()
+{
+    return m_pendingMCode.has_value();
 }
 
 Vector3<float> StepperController::getMachinePosition()
@@ -174,4 +187,26 @@ void StepperController::sendPosition(CommandSource source, uint32_t commandId, c
     stringPrint.finish();
 
     m_kernel->sendCommandResponse(m_response, source, commandId);
+}
+
+void StepperController::handlePendingMCode(const MCode& mcode, CommandSource source, uint32_t commandId)
+{
+    if (mcode.code() == 17 && mcode.subcode() == tl::nullopt)
+    {
+        m_xStepper.enable();
+        m_yStepper.enable();
+        m_zStepper.enable();
+        m_kernel->sendCommandResponse(OK_COMMAND_RESPONSE, source, commandId);
+    }
+    else if (mcode.code() == 18 && mcode.subcode() == tl::nullopt)
+    {
+        m_xStepper.disable();
+        m_yStepper.disable();
+        m_zStepper.disable();
+        m_kernel->sendCommandResponse(OK_COMMAND_RESPONSE, source, commandId);
+    }
+    else
+    {
+        ON_CRITICAL_ERROR_2("Invalid pending MCode ", mcode.code(), __FUNCTION_NAME__, __FILENAME__);
+    }
 }

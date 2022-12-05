@@ -1,18 +1,19 @@
 #include <cnc/config/PwmOutputConfig.h>
+#include <cnc/space.h>
 
 #include <cstring>
 #include <cstdlib>
 
 using namespace std;
 
-PwmOutputConfig::PwmOutputConfig(uint8_t pin, bool inverted, float frequency)
+FLASHMEM PwmOutputConfig::PwmOutputConfig(uint8_t pin, bool inverted, float frequency)
     : m_pin(pin),
       m_inverted(inverted),
       m_frequency(frequency)
 {
 }
 
-tl::optional<PwmOutputConfig> PwmOutputConfig::parse(const char* pinString, float frequency)
+FLASHMEM tl::optional<PwmOutputConfig> PwmOutputConfig::parse(const char* pinString, float frequency)
 {
     size_t size = strlen(pinString);
     if (size == 0)

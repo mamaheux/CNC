@@ -43,10 +43,11 @@ inline tl::optional<T> BoundedQueue<T, MAX_SIZE>::pop()
         return tl::nullopt;
     }
 
-    m_size--;
     size_t index = m_readIndex;
     m_readIndex = (m_readIndex + 1) % MAX_SIZE;
-    return m_data[index];
+    T value = m_data[index];
+    m_size--;
+    return value;
 }
 
 template<class T, size_t MAX_SIZE>
@@ -57,10 +58,10 @@ inline bool BoundedQueue<T, MAX_SIZE>::pop(T& value)
         return false;
     }
 
-    m_size--;
     size_t index = m_readIndex;
     m_readIndex = (m_readIndex + 1) % MAX_SIZE;
     value = m_data[index];
+    m_size--;
     return true;
 }
 
@@ -72,9 +73,9 @@ inline bool BoundedQueue<T, MAX_SIZE>::push(const T& value)
         return false;
     }
 
-    m_size++;
     m_data[m_writeIndex] = value;
     m_writeIndex = (m_writeIndex + 1) % MAX_SIZE;
+    m_size++;
     return true;
 }
 

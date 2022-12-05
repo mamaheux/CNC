@@ -3,6 +3,9 @@
 
 void test_BitMask();
 
+void test_zero_shouldBeZero();
+void test_one_shouldBeOne();
+
 void test_FixedPointQ3_4_multiplyAccumulate();
 void test_FixedPointQ3_4_multiplySubtract();
 void test_FixedPointQ3_4_operatorAddAssignation();

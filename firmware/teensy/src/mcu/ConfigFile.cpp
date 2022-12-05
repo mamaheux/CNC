@@ -3,14 +3,14 @@
 
 #include <cnc/parsing/properties.h>
 
-ConfigFile::ConfigFile(const char* path)
+FLASHMEM ConfigFile::ConfigFile(const char* path)
 {
     CRITICAL_ERROR_CHECK_3(SD.exists(path), "The configuration file does not exist (", path, ")")
     m_file = SD.open(path, FILE_READ);
     CRITICAL_ERROR_CHECK(m_file, "Opening the configuration file failed")
 }
 
-ConfigFile::~ConfigFile()
+FLASHMEM ConfigFile::~ConfigFile()
 {
     if (m_file)
     {
@@ -18,7 +18,7 @@ ConfigFile::~ConfigFile()
     }
 }
 
-bool ConfigFile::readNext(ConfigItem& item)
+FLASHMEM bool ConfigFile::readNext(ConfigItem& item)
 {
     constexpr size_t MAX_LINE_SIZE = 512;
     char line[MAX_LINE_SIZE];

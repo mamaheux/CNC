@@ -3,9 +3,9 @@
 
 #include <cnc/resources/resources.h>
 
-DigitalOutput::DigitalOutput() : m_pin(0), m_inverted(false), m_state(false) {}
+FLASHMEM DigitalOutput::DigitalOutput() : m_pin(0), m_inverted(false), m_state(false) {}
 
-void DigitalOutput::begin(const DigitalOutputConfig& config, bool state)
+FLASHMEM void DigitalOutput::begin(const DigitalOutputConfig& config, bool state)
 {
     CRITICAL_ERROR_CHECK_3(config.pin() < PIN_COUNT, "Invalid pin (", config.pin(), ")");
 

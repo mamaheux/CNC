@@ -1,10 +1,11 @@
 #include <cnc/modules/Module.h>
+#include <cnc/space.h>
 
 constexpr const char* NOT_OVERRIDED_COMMAND_ERROR_MESSAGE = "The module does not override the command methods.";
 
-Module::Module() : m_kernel(nullptr) {}
+FLASHMEM Module::Module() : m_kernel(nullptr) {}
 
-void Module::setKernel(ModuleKernel* kernel)
+FLASHMEM void Module::setKernel(ModuleKernel* kernel)
 {
     m_kernel = kernel;
 }
@@ -34,3 +35,8 @@ void Module::onTargetPositionChanged(const Vector3<float>& machinePosition) {}
 void Module::onCommandResponse(const char* response, CommandSource source, uint32_t commandId, bool isComplete) {}
 
 void Module::update() {}
+
+bool Module::hasPendingMotionCommands()
+{
+    return false;
+}

@@ -3,9 +3,9 @@
 
 #include <cnc/resources/resources.h>
 
-AnalogInput::AnalogInput() : m_pin(0) {}
+FLASHMEM AnalogInput::AnalogInput() : m_pin(0) {}
 
-void AnalogInput::begin(const AnalogInputConfig& config)
+FLASHMEM void AnalogInput::begin(const AnalogInputConfig& config)
 {
     CRITICAL_ERROR_CHECK_3(config.pin() < PIN_COUNT, "Invalid pin (", config.pin(), ")")
 

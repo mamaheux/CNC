@@ -7,6 +7,7 @@
 #include <cnc/parsing/SystemCommand.h>
 #include <cnc/parsing/GCode.h>
 #include <cnc/parsing/MCode.h>
+#include <cnc/resources/MotionLock.h>
 
 #include <cstdlib>
 
@@ -27,6 +28,7 @@ class Kernel : public ModuleKernel
 
     uint32_t m_currentCommandIdByCommandSource[COMMAND_SOURCE_COUNT];
     tl::optional<uint32_t> m_pendingCommandResponseIdByCommandSource[COMMAND_SOURCE_COUNT];
+    MotionLock m_motionLock;
 
 public:
     Kernel();

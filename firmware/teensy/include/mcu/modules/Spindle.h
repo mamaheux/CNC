@@ -11,7 +11,7 @@
 
 #include <tl/optional.hpp>
 
-constexpr size_t MAX_SPINDLE_RESPONSE_SIZE = 64;
+constexpr size_t MAX_SPINDLE_RESPONSE_SIZE = 128;
 
 class Spindle : public IntervalModule
 {
@@ -54,10 +54,10 @@ public:
 
     CommandResult onMCodeCommandReceived(const MCode& mcode, CommandSource source, uint32_t commandId) override;
 
-protected:
     void enable(float targetRpm);
     void disable();
 
+protected:
     void onUpdate(uint32_t elapsedUs) override;
 
     CommandResult enable(const MCode& mcode);

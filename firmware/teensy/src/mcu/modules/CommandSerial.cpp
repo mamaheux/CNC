@@ -10,12 +10,12 @@ using namespace std;
 
 constexpr const char* BAUD_RATE_KEY = "command_serial.baud_rate";
 
-CommandSerial::CommandSerial() : m_lineIndex(0)
+FLASHMEM CommandSerial::CommandSerial() : m_lineIndex(0)
 {
     memset(m_lineBuffer, '\0', COMMAND_SERIAL_LINE_BUFFER_SIZE);
 }
 
-void CommandSerial::configure(const ConfigItem& item)
+FLASHMEM void CommandSerial::configure(const ConfigItem& item)
 {
     if (strcmp(item.getKey(), BAUD_RATE_KEY) == 0)
     {
@@ -23,12 +23,12 @@ void CommandSerial::configure(const ConfigItem& item)
     }
 }
 
-void CommandSerial::checkConfigErrors(const MissingConfigCallback& onMissingConfigItem)
+FLASHMEM void CommandSerial::checkConfigErrors(const MissingConfigCallback& onMissingConfigItem)
 {
     CHECK_CONFIG_ERROR(onMissingConfigItem, m_baudRate.has_value(), BAUD_RATE_KEY);
 }
 
-void CommandSerial::begin()
+FLASHMEM void CommandSerial::begin()
 {
     COMMAND_SERIAL.begin(*m_baudRate);
 

@@ -1,8 +1,8 @@
 #include "mcu/io/Stepper.h"
 
-Stepper::Stepper() : m_position(0) {}
+FLASHMEM Stepper::Stepper() : m_position(0) {}
 
-void Stepper::begin(
+FLASHMEM void Stepper::begin(
     const DigitalOutputConfig& enableConfig,
     const DigitalOutputConfig& directionConfig,
     const DigitalOutputConfig& stepConfig)

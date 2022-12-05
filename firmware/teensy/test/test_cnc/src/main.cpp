@@ -23,6 +23,7 @@
 #include "../include/parsing/test_GCode.h"
 #include "../include/parsing/test_MCode.h"
 
+#include "../include/resources/test_MotionLock.h"
 #include "../include/resources/test_ResourceLock.h"
 
 void testCollections()
@@ -52,6 +53,9 @@ void testConfig()
 void testMath()
 {
     RUN_TEST(test_BitMask);
+
+    RUN_TEST(test_zero_shouldBeZero);
+    RUN_TEST(test_one_shouldBeOne);
 
     RUN_TEST(test_FixedPointQ3_4_multiplyAccumulate);
     RUN_TEST(test_FixedPointQ3_4_multiplySubtract);
@@ -302,6 +306,8 @@ void testParsing()
 
 void testResources()
 {
+    RUN_TEST(test_MotionLock);
+
     RUN_TEST(test_PinLock_isNotRecursive);
     RUN_TEST(test_PinLock_samePin);
 

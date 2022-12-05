@@ -10,8 +10,16 @@
 
 #include <tl/optional.hpp>
 
-constexpr size_t MAX_STEPPER_CONTROLLER_RESPONSE_SIZE = 64;
-constexpr uint32_t MANUAL_STEP_DURATION_US = 1;
+constexpr size_t MAX_STEPPER_CONTROLLER_RESPONSE_SIZE = 128;
+constexpr uint32_t ENABLE_DISABLE_DELAY_US = 10;
+constexpr uint32_t DIRECTION_DELAY_US = 10;
+constexpr uint32_t STEP_DURATION_US = 5;
+
+enum class StepperControlModule
+{
+    ENDSTOPS,
+    LINEAR_BLOCK_EXECUTOR
+};
 
 class StepperController : public Module
 {
@@ -34,8 +42,9 @@ class StepperController : public Module
     Stepper m_xStepper;
     Stepper m_yStepper;
     Stepper m_zStepper;
-    bool m_manualStepEnabled;  // TODO Replace by CommandSource
+    tl::optional<StepperControlModule> m_owner;
 
+    tl::optional<PendingCommand<MCode>> m_pendingMCode;
     char m_response[MAX_STEPPER_CONTROLLER_RESPONSE_SIZE];
 
 public:
@@ -49,82 +58,213 @@ public:
     void checkConfigErrors(const MissingConfigCallback& onMissingConfigItem) override;
     void begin() override;
 
-    CommandResult
-        onSystemCommandReceived(const SystemCommand& command, CommandSource source, uint32_t commandId) override;
-    CommandResult onGCodeCommandReceived(const GCode& gcode, CommandSource source, uint32_t commandId) override;
     CommandResult onMCodeCommandReceived(const MCode& mcode, CommandSource source, uint32_t commandId) override;
 
-    bool enableManualStep();
-    void disableManualStep();
-    void stepManuallyX();
-    void stepManuallyY();
-    void stepManuallyZ();
-    void resetPosition();
+    void update() override;
+
+    bool hasPendingMotionCommands() override;
+
+    bool tryLock(StepperControlModule module);
+    bool unlock(StepperControlModule module);
+    tl::optional<StepperControlModule> owner() const;
+
+    bool enableAndWait(StepperControlModule module);
+    bool disableAndWait(StepperControlModule module);
+    bool setDirectionAndWait(Axis axis, Direction direction, StepperControlModule module);
+    bool stepFull(Axis axis, StepperControlModule module);
+
+    bool setDirection(Axis axis, Direction direction, StepperControlModule module);
+    bool step(Axis axis, StepperControlModule module);
+    bool unstepAll(StepperControlModule module);
+
+    bool resetPosition(const Vector3<int32_t>& stepPosition, StepperControlModule module);
 
 private:
     Vector3<float> getMachinePosition();
     void sendRealTimePositionInSelectedCoordinateSystem(CommandSource source, uint32_t commandId);
     void sendRealTimePositionInMachineCoordinateSystem(CommandSource source, uint32_t commandId);
     void sendPosition(CommandSource source, uint32_t commandId, const Vector3<float>& position);
+
+    void handlePendingMCode(const MCode& mcode, CommandSource source, uint32_t commandId);
 };
 
-inline bool StepperController::enableManualStep()
+inline bool StepperController::tryLock(StepperControlModule module)
 {
-    // TODO
-    return false;
-}
-
-inline void StepperController::disableManualStep()
-{
-    m_manualStepEnabled = false;
-}
-
-inline void StepperController::stepManuallyX()
-{
-    if (!m_manualStepEnabled)
+    if (m_owner != tl::nullopt)
     {
-        return;
+        return false;
+    }
+
+    m_owner = module;
+    return true;
+}
+
+inline bool StepperController::unlock(StepperControlModule module)
+{
+    if (m_owner != module)
+    {
+        return false;
+    }
+
+    m_owner = tl::nullopt;
+    return true;
+}
+
+inline tl::optional<StepperControlModule> StepperController::owner() const
+{
+    return m_owner;
+}
+
+inline bool StepperController::enableAndWait(StepperControlModule module)
+{
+    if (m_owner != module)
+    {
+        return false;
+    }
+
+    m_xStepper.enable();
+    m_yStepper.enable();
+    m_zStepper.enable();
+    delayMicroseconds(ENABLE_DISABLE_DELAY_US);
+    return true;
+}
+
+inline bool StepperController::disableAndWait(StepperControlModule module)
+{
+    if (m_owner != module)
+    {
+        return false;
+    }
+
+    m_xStepper.disable();
+    m_yStepper.disable();
+    m_zStepper.disable();
+    delayMicroseconds(ENABLE_DISABLE_DELAY_US);
+    return true;
+}
+
+inline bool StepperController::setDirectionAndWait(Axis axis, Direction direction, StepperControlModule module)
+{
+    if (m_owner != module)
+    {
+        return false;
+    }
+
+    switch (axis)
+    {
+        case Axis::X:
+            m_xStepper.setDirection(direction);
+            break;
+        case Axis::Y:
+            m_yStepper.setDirection(direction);
+            break;
+        case Axis::Z:
+            m_zStepper.setDirection(direction);
+            break;
+    }
+
+    delayMicroseconds(DIRECTION_DELAY_US);
+    return true;
+}
+
+inline bool StepperController::stepFull(Axis axis, StepperControlModule module)
+{
+    if (m_owner != module)
+    {
+        return false;
+    }
+
+    switch (axis)
+    {
+        case Axis::X:
+            m_xStepper.step();
+            delayMicroseconds(STEP_DURATION_US);
+            m_xStepper.unstep();
+            break;
+        case Axis::Y:
+            m_yStepper.step();
+            delayMicroseconds(STEP_DURATION_US);
+            m_yStepper.unstep();
+            break;
+        case Axis::Z:
+            m_zStepper.step();
+            delayMicroseconds(STEP_DURATION_US);
+            m_zStepper.unstep();
+            break;
+    }
+
+    delayMicroseconds(STEP_DURATION_US);
+    return true;
+}
+
+inline bool StepperController::setDirection(Axis axis, Direction direction, StepperControlModule module)
+{
+    if (m_owner != module)
+    {
+        return false;
+    }
+
+    switch (axis)
+    {
+        case Axis::X:
+            m_xStepper.setDirection(direction);
+            break;
+        case Axis::Y:
+            m_yStepper.setDirection(direction);
+            break;
+        case Axis::Z:
+            m_zStepper.setDirection(direction);
+            break;
+    }
+    return true;
+}
+
+inline bool StepperController::step(Axis axis, StepperControlModule module)
+{
+    if (m_owner != module)
+    {
+        return false;
+    }
+
+    switch (axis)
+    {
+        case Axis::X:
+            m_xStepper.step();
+            break;
+        case Axis::Y:
+            m_yStepper.step();
+            break;
+        case Axis::Z:
+            m_zStepper.step();
+            break;
+    }
+    return true;
+}
+
+inline bool StepperController::unstepAll(StepperControlModule module)
+{
+    if (m_owner != module)
+    {
+        return false;
     }
 
     m_xStepper.step();
-    delayMicroseconds(MANUAL_STEP_DURATION_US);
-    m_xStepper.unstep();
-}
-
-inline void StepperController::stepManuallyY()
-{
-    if (!m_manualStepEnabled)
-    {
-        return;
-    }
-
     m_yStepper.step();
-    delayMicroseconds(MANUAL_STEP_DURATION_US);
-    m_yStepper.unstep();
-}
-
-inline void StepperController::stepManuallyZ()
-{
-    if (!m_manualStepEnabled)
-    {
-        return;
-    }
-
     m_zStepper.step();
-    delayMicroseconds(MANUAL_STEP_DURATION_US);
-    m_zStepper.unstep();
+    return true;
 }
 
-inline void StepperController::resetPosition()
+inline bool StepperController::resetPosition(const Vector3<int32_t>& stepPosition, StepperControlModule module)
 {
-    if (!m_manualStepEnabled)
+    if (m_owner != module)
     {
-        return;
+        return false;
     }
 
-    m_xStepper.resetPosition();
-    m_yStepper.resetPosition();
-    m_zStepper.resetPosition();
+    m_xStepper.resetPosition(stepPosition.x);
+    m_yStepper.resetPosition(stepPosition.y);
+    m_zStepper.resetPosition(stepPosition.z);
+    return true;
 }
 
 #endif

@@ -8,6 +8,7 @@
 #include "mcu/modules/Endstops.h"
 #include "mcu/modules/StepperController.h"
 #include "mcu/modules/Spindle.h"
+#include "mcu/modules/LinearBlockExecutor.h"
 
 #include <cnc/modules/CoordinateTransformer.h>
 #include <cnc/modules/ArcConverter.h>
@@ -23,13 +24,14 @@ CoordinateTransformer coordinateTransformer;
 ArcConverter arcConverter(&coordinateTransformer);
 Planner planner(&coordinateTransformer, &arcConverter);
 
-Endstops endstops;
 StepperController stepperController(&coordinateTransformer, &planner);
+Endstops endstops(&planner, &stepperController);
 Spindle spindle;
+LinearBlockExecutor linearBlockExecutor(&stepperController, &spindle);
 
 Kernel kernel;
 
-void setupKernel()
+FLASHMEM void setupKernel()
 {
     DEBUG_SERIAL.println("Setup the kernel");
 
@@ -44,10 +46,11 @@ void setupKernel()
     kernel.addModule(&endstops);
     kernel.addModule(&stepperController);
     kernel.addModule(&spindle);
+    kernel.addModule(&linearBlockExecutor);
     kernel.begin();
 }
 
-void setup()
+FLASHMEM void setup()
 {
     DEBUG_SERIAL.begin(DEBUG_SERIAL_BAUD_RATE);
     setupCriticalErrorCheck();

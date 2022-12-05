@@ -1,13 +1,14 @@
 #include <cnc/modules/CoordinateTransformer.h>
 #include <cnc/modules/ModuleKernel.h>
+#include <cnc/space.h>
 
 constexpr const char* INVALID_COORDINATE_SYSTEM_COMMAND_ERROR_MESSAGE =
     "The coordindate system (P) is invalid. It must be between 0 and 9.";
 constexpr const char* MISSING_AXIS_COMMAND_ERROR_MESSAGE = "At least one axis must be specified.";
 
-CoordinateSystem::CoordinateSystem() : offset(0.f, 0.f, 0.f), rotation(0.f), rotationInv(0.f) {}
+FLASHMEM CoordinateSystem::CoordinateSystem() : offset(0.f, 0.f, 0.f), rotation(0.f), rotationInv(0.f) {}
 
-CoordinateTransformer::CoordinateTransformer()
+FLASHMEM CoordinateTransformer::CoordinateTransformer()
     : m_isIncrementalMode(false),
       m_scale(1.f),
       m_currentCoordinateSystemIndex(0),
@@ -15,13 +16,13 @@ CoordinateTransformer::CoordinateTransformer()
 {
 }
 
-void CoordinateTransformer::configure(const ConfigItem& item) {}
+FLASHMEM void CoordinateTransformer::configure(const ConfigItem& item) {}
 
-void CoordinateTransformer::checkConfigErrors(const MissingConfigCallback& onMissingConfigItem)
+FLASHMEM void CoordinateTransformer::checkConfigErrors(const MissingConfigCallback& onMissingConfigItem)
 {
 }
 
-void CoordinateTransformer::begin()
+FLASHMEM void CoordinateTransformer::begin()
 {
     m_kernel->registerToEvent(ModuleEventType::GCODE_COMMAND, this);
     m_kernel->registerToEvent(ModuleEventType::TARGET_POSITION, this);

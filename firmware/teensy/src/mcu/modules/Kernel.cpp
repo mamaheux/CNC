@@ -8,8 +8,9 @@ constexpr const char* PREVIOUS_COMMAND_NOT_COMPLETED_ERROR_COMMAND_RESPONSE =
     "error The previous command is not completed.";
 constexpr const char* EXECUTING_ERROR_COMMAND_RESPONSE_PREFIX = "error ";
 constexpr const char* NOT_HANDLED_COMMAND_RESPONSE = "error The command is not handled.";
+constexpr const char* BUSY_COMMAND_RESPONSE = "error The CNC is busy.";
 
-Kernel::Kernel() : m_moduleCount(0)
+FLASHMEM Kernel::Kernel() : m_moduleCount(0)
 {
     for (size_t i = 0; i < MAX_MODULE_COUNT; i++)
     {
@@ -27,7 +28,7 @@ Kernel::Kernel() : m_moduleCount(0)
     }
 }
 
-void Kernel::addModule(Module* module)
+FLASHMEM void Kernel::addModule(Module* module)
 {
     CRITICAL_ERROR_CHECK(m_moduleCount < MAX_MODULE_COUNT, "Too many modules")
 
@@ -36,7 +37,7 @@ void Kernel::addModule(Module* module)
     module->setKernel(this);
 }
 
-void Kernel::registerToEvent(ModuleEventType eventType, Module* module)
+FLASHMEM void Kernel::registerToEvent(ModuleEventType eventType, Module* module)
 {
     auto eventIndex = static_cast<size_t>(eventType);
     CRITICAL_ERROR_CHECK(m_moduleCountByEventType[eventIndex] < MAX_MODULE_COUNT, "Too many modules")
@@ -45,7 +46,7 @@ void Kernel::registerToEvent(ModuleEventType eventType, Module* module)
     m_moduleCountByEventType[eventIndex]++;
 }
 
-void Kernel::begin()
+FLASHMEM void Kernel::begin()
 {
     ConfigFile configFile("config.properties");
     ConfigItem item;
@@ -76,12 +77,21 @@ void Kernel::begin()
 
 void Kernel::update()
 {
+    // TODO unlock motion lock if the movement queue is empty, the last movement is completed and there is no pending command in the planner
+    bool hasPendingMotionCommands = false;
+    for (size_t i = 0; i < m_moduleCount; i++)
+    {
+        hasPendingMotionCommands = hasPendingMotionCommands || m_modules[i]->hasPendingMotionCommands();
+    }
+    if (!hasPendingMotionCommands)
+    {
+        m_motionLock.unlock();
+    }
+
     for (size_t i = 0; i < m_moduleCount; i++)
     {
         m_modules[i]->update();
     }
-
-    // TODO check the source lock timeout
 }
 
 void Kernel::executeCommand(const char* line, CommandSource source, tl::optional<uint32_t>& commandId)
@@ -150,7 +160,6 @@ void Kernel::sendCommandResponse(const char* response, CommandSource source, uin
 void Kernel::dispatchTargetPosition(const Vector3<float>& machinePosition)
 {
     constexpr auto EVENT_INDEX = static_cast<size_t>(ModuleEventType::TARGET_POSITION);
-
     for (size_t i = 0; i < m_moduleCountByEventType[EVENT_INDEX]; i++)
     {
         m_modulesByEventType[EVENT_INDEX][i]->onTargetPositionChanged(machinePosition);
@@ -161,7 +170,7 @@ void Kernel::executeSystemCommand(const char* line, CommandSource source, uint32
 {
     SystemCommand command;
     ParsingResult result = m_systemCommandParser.parse(line, command);
-    // TODO add a lock for for homing depending on the source
+
     switch (result)
     {
         case ParsingResult::OK:
@@ -172,13 +181,14 @@ void Kernel::executeSystemCommand(const char* line, CommandSource source, uint32
             break;
         case ParsingResult::NEXT_LINE_NEEDED:
             sendCommandResponse(OK_COMMAND_RESPONSE, source, commandId);
+            break;
     }
 }
 
 void Kernel::executeGCodeCommand(const char* line, CommandSource source, uint32_t commandId)
 {
     ParsingResult result = m_gcodeParser.parse(line, m_gcode);
-    // TODO add a lock for G code depending on the source
+
     switch (result)
     {
         case ParsingResult::OK:
@@ -189,13 +199,14 @@ void Kernel::executeGCodeCommand(const char* line, CommandSource source, uint32_
             break;
         case ParsingResult::NEXT_LINE_NEEDED:
             sendCommandResponse(OK_COMMAND_RESPONSE, source, commandId);
+            break;
     }
 }
 
 void Kernel::executeMCodeCommand(const char* line, CommandSource source, uint32_t commandId)
 {
     ParsingResult result = m_mcodeParser.parse(line, m_mcode);
-    // TODO add a lock for M3, M5, M17, M18, M24, M32 depending on the source
+
     switch (result)
     {
         case ParsingResult::OK:
@@ -206,6 +217,7 @@ void Kernel::executeMCodeCommand(const char* line, CommandSource source, uint32_
             break;
         case ParsingResult::NEXT_LINE_NEEDED:
             sendCommandResponse(OK_COMMAND_RESPONSE, source, commandId);
+            break;
     }
 }
 
@@ -225,8 +237,13 @@ RawCommandResult Kernel::dispatchRawCommand(const char* line, CommandSource sour
 
 void Kernel::dispatchSystemCommand(const SystemCommand& command, CommandSource source, uint32_t commandId)
 {
-    constexpr auto EVENT_INDEX = static_cast<size_t>(ModuleEventType::SYSTEM_COMMAND);
+    if (!m_motionLock.tryLock(command, source))
+    {
+        sendCommandResponse(BUSY_COMMAND_RESPONSE, source, commandId);
+        return;
+    }
 
+    constexpr auto EVENT_INDEX = static_cast<size_t>(ModuleEventType::SYSTEM_COMMAND);
     CommandResult agregatedResult = CommandResult::notHandled();
     for (size_t i = 0; i < m_moduleCountByEventType[EVENT_INDEX]; i++)
     {
@@ -239,8 +256,13 @@ void Kernel::dispatchSystemCommand(const SystemCommand& command, CommandSource s
 
 void Kernel::dispatchGCodeCommand(const GCode& gcode, CommandSource source, uint32_t commandId)
 {
-    constexpr auto EVENT_INDEX = static_cast<size_t>(ModuleEventType::GCODE_COMMAND);
+    if (!m_motionLock.tryLock(gcode, source))
+    {
+        sendCommandResponse(BUSY_COMMAND_RESPONSE, source, commandId);
+        return;
+    }
 
+    constexpr auto EVENT_INDEX = static_cast<size_t>(ModuleEventType::GCODE_COMMAND);
     CommandResult agregatedResult = CommandResult::notHandled();
     for (size_t i = 0; i < m_moduleCountByEventType[EVENT_INDEX]; i++)
     {
@@ -252,8 +274,13 @@ void Kernel::dispatchGCodeCommand(const GCode& gcode, CommandSource source, uint
 
 void Kernel::dispatchMCodeCommand(const MCode& mcode, CommandSource source, uint32_t commandId)
 {
-    constexpr auto EVENT_INDEX = static_cast<size_t>(ModuleEventType::MCODE_COMMAND);
+    if (!m_motionLock.tryLock(mcode, source))
+    {
+        sendCommandResponse(BUSY_COMMAND_RESPONSE, source, commandId);
+        return;
+    }
 
+    constexpr auto EVENT_INDEX = static_cast<size_t>(ModuleEventType::MCODE_COMMAND);
     CommandResult agregatedResult = CommandResult::notHandled();
     for (size_t i = 0; i < m_moduleCountByEventType[EVENT_INDEX]; i++)
     {

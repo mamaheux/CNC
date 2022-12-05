@@ -18,6 +18,7 @@ void bench_ArcConverter_setArc()
 
     CoordinateTransformer coordinateTransformer;
     ArcConverter arcConverter(&coordinateTransformer);
+    arcConverter.configure(ConfigItem("arc_converter.max_error_in_mm", "0.01"));
 
     uint32_t startIUs = micros();
     for (size_t i = 0; i < COUNT; i++)
@@ -48,6 +49,7 @@ void bench_ArcConverter_getNextSegment()
 
     CoordinateTransformer coordinateTransformer;
     ArcConverter arcConverter(&coordinateTransformer);
+    arcConverter.configure(ConfigItem("arc_converter.max_error_in_mm", "0.01"));
     arcConverter.setArc(arc);
 
     size_t segmentCount = 0;

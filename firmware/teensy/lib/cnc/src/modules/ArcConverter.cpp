@@ -1,5 +1,6 @@
 #include <cnc/modules/ArcConverter.h>
 #include <cnc/modules/ModuleKernel.h>
+#include <cnc/space.h>
 
 #include <cmath>
 #include <cstring>
@@ -16,9 +17,9 @@ constexpr float MINIMUM_RADIUS = 0.1;
 constexpr float RADIUS_TOLERANCE = 1e-2;
 constexpr float MINIMUM_ARC_ANGLE = 1e-5;
 
-constexpr float PI = 3.1415926535897932384626433832795f;
+constexpr float PI_VALUE = 3.1415926535897932384626433832795f;
 
-ArcConverter::ArcConverter(CoordinateTransformer* coordinateTransformer)
+FLASHMEM ArcConverter::ArcConverter(CoordinateTransformer* coordinateTransformer)
     : m_startOtherAxis(0.f),
       m_endOtherAxis(0.f),
       m_currentOtherAxis(0.f),
@@ -34,7 +35,7 @@ ArcConverter::ArcConverter(CoordinateTransformer* coordinateTransformer)
 {
 }
 
-void ArcConverter::configure(const ConfigItem& item)
+FLASHMEM void ArcConverter::configure(const ConfigItem& item)
 {
     if (strcmp(item.getKey(), MAX_ERROR_KEY) == 0)
     {
@@ -42,12 +43,12 @@ void ArcConverter::configure(const ConfigItem& item)
     }
 }
 
-void ArcConverter::checkConfigErrors(const MissingConfigCallback& onMissingConfigItem)
+FLASHMEM void ArcConverter::checkConfigErrors(const MissingConfigCallback& onMissingConfigItem)
 {
     CHECK_CONFIG_ERROR(onMissingConfigItem, m_maxError.has_value(), MAX_ERROR_KEY)
 };
 
-void ArcConverter::begin()
+FLASHMEM void ArcConverter::begin()
 {
     m_kernel->registerToEvent(ModuleEventType::GCODE_COMMAND, this);
     m_kernel->registerToEvent(ModuleEventType::TARGET_POSITION, this);
@@ -266,11 +267,11 @@ bool ArcConverter::calculateSegments(const GCode& gcode)
 
     if (arcAngle < MINIMUM_ARC_ANGLE)
     {
-        arcAngle = 2 * PI;
+        arcAngle = 2 * PI_VALUE;
     }
     else if ((startAngle > endAngle && !isCw) || (startAngle < endAngle && isCw))
     {
-        arcAngle = 2 * PI - arcAngle;
+        arcAngle = 2 * PI_VALUE - arcAngle;
     }
 
     if (gcode.p().has_value())
@@ -280,7 +281,7 @@ bool ArcConverter::calculateSegments(const GCode& gcode)
         {
             return false;
         }
-        arcAngle += 2.f * PI * (p - 1.f);
+        arcAngle += 2.f * PI_VALUE * (p - 1.f);
     }
 
     m_currentAngle = startAngle;
@@ -416,7 +417,7 @@ float atan2Pos(float a, float b)
     float angle = atan2(a, b);
     if (angle < 0.f)
     {
-        angle = 2 * PI + angle;
+        angle = 2 * PI_VALUE + angle;
     }
     return angle;
 }

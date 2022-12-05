@@ -33,7 +33,7 @@
 ## System Commands (GRBL)
 | Name   | Command | Handled |
 | ------ | ------- | ------- |
-| Homing | `$H`    |         |
+| Homing | `$H`    | Yes     |
 
 
 ## G-Codes
@@ -105,7 +105,6 @@
 | `M220`     | Set speed factor (percent).                                                            | Percent (S)       | `M220 S25`       |         |
 | `M957`     | Print the spindle speed (RPM)                                                          |                   | `M957`           | Yes     |
 | `M958`     | Print the spindle PID gain values and set the spindle PID gain values.                 | P, I, D           | `M958 P0.1 I0.2` | Yes     |
-TODO add a command to print a file.
 
 ## Supported M-Code Parameter Names
 - X

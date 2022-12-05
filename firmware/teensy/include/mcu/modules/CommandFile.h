@@ -8,7 +8,7 @@
 #include <SD.h>
 
 constexpr size_t COMMAND_FILE_LINE_BUFFER_SIZE = 256;
-constexpr size_t MAX_COMMAND_FILE_RESPONSE_SIZE = 64;
+constexpr size_t MAX_COMMAND_FILE_RESPONSE_SIZE = 256;
 
 class CommandFile : public Module
 {

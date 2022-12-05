@@ -129,20 +129,24 @@ enum class ModuleEventType : size_t
     GCODE_COMMAND,
     MCODE_COMMAND,
     TARGET_POSITION,
-    COMMAND_RESPONSE,
-    COUNT
+    COMMAND_RESPONSE
 };
-
-constexpr size_t MODULE_EVENT_TYPE_COUNT = static_cast<size_t>(ModuleEventType::COUNT);
+constexpr size_t MODULE_EVENT_TYPE_COUNT = 6;
 
 enum class CommandSource : size_t
 {
     SERIAL_SOURCE,
-    FILE_SOURCE,
-    COUNT
+    FILE_SOURCE
 };
+constexpr size_t COMMAND_SOURCE_COUNT = 2;
 
-constexpr size_t COMMAND_SOURCE_COUNT = static_cast<size_t>(CommandSource::COUNT);
+template<class T>
+struct PendingCommand
+{
+    T command;
+    CommandSource source;
+    uint32_t commandId;
+};
 
 class ModuleKernel;
 
@@ -178,6 +182,8 @@ public:
     virtual void onCommandResponse(const char* response, CommandSource source, uint32_t commandId, bool isComplete);
 
     virtual void update();
+
+    virtual bool hasPendingMotionCommands();
 };
 
 #define CHECK_CONFIG_ERROR(callback, condition, key)                                                                   \

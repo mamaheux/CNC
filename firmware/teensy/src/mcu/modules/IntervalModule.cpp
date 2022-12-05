@@ -2,7 +2,7 @@
 
 #include <Arduino.h>
 
-IntervalModule::IntervalModule()
+FLASHMEM IntervalModule::IntervalModule()
     : m_updatePeriodUs(0),  // As fast as possible
       m_updateLastTimeUs(0)
 {

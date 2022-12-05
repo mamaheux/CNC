@@ -1,4 +1,5 @@
 #include "mcu/modules/Spindle.h"
+#include "mcu/utils/InterruptLock.h"
 #include "mcu/utils/StringPrint.h"
 #include "mcu/criticalError.h"
 
@@ -29,12 +30,12 @@ static void onFeedbackPulse()
     *pulseCount++;
 }
 
-Spindle::Spindle() : m_pulseCount(0), m_cumulativeError(0.f), m_previousError(0.f), m_currentRpm(0.f), m_targetRpm(0.f)
+FLASHMEM Spindle::Spindle() : m_pulseCount(0), m_cumulativeError(0.f), m_previousError(0.f), m_currentRpm(0.f), m_targetRpm(0.f)
 {
     memset(m_response, '\0', MAX_SPINDLE_RESPONSE_SIZE);
 }
 
-void Spindle::configure(const ConfigItem& item)
+FLASHMEM void Spindle::configure(const ConfigItem& item)
 {
     if (strcmp(item.getKey(), ENABLE_PIN_KEY) == 0)
     {
@@ -96,7 +97,7 @@ void Spindle::configure(const ConfigItem& item)
     }
 }
 
-void Spindle::checkConfigErrors(const MissingConfigCallback& onMissingConfigItem)
+FLASHMEM void Spindle::checkConfigErrors(const MissingConfigCallback& onMissingConfigItem)
 {
     CHECK_CONFIG_ERROR(onMissingConfigItem, m_enableConfig.has_value(), ENABLE_PIN_KEY)
     CHECK_CONFIG_ERROR(onMissingConfigItem, m_feedbackConfig.has_value(), FEEDBACK_PIN_KEY)
@@ -110,7 +111,7 @@ void Spindle::checkConfigErrors(const MissingConfigCallback& onMissingConfigItem
     CHECK_CONFIG_ERROR(onMissingConfigItem, m_maxCumulativeError.has_value(), MAX_CUMULATIVE_ERROR_KEY)
 }
 
-void Spindle::begin()
+FLASHMEM void Spindle::begin()
 {
     m_enable.begin(*m_enableConfig, false);
     m_feedback.begin(*m_feedbackConfig);
@@ -160,8 +161,8 @@ void Spindle::enable(float targetRpm)
     else
     {
         m_targetRpm = targetRpm;
-        m_cumulativeError = 0.f;
-        m_previousError = 0.f;
+        m_cumulativeError = 0.f; // TODO check if needed
+        m_previousError = 0.f;  // TODO check if needed
         m_enable.write(true);
         m_pwm.write(0);
     }
@@ -176,8 +177,13 @@ void Spindle::disable()
 
 void Spindle::onUpdate(uint32_t elapsedUs)
 {
-    uint32_t currentPulseCount = m_pulseCount;
-    m_pulseCount = 0;
+    uint32_t currentPulseCount;
+
+    {
+        PinInterruptLock lock;
+        currentPulseCount = m_pulseCount;
+        m_pulseCount = 0;
+    }
 
     float elapsedS = static_cast<float>(elapsedUs) / 1000000.f;
     float instantRpm = static_cast<float>(currentPulseCount) / *m_pulsePerRotation / elapsedS * 60;

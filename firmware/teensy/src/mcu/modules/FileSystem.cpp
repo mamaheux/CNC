@@ -4,11 +4,11 @@
 
 constexpr const char* INVALID_PATH_COMMAND_ERROR_MESSAGE = "The path is invalid.";
 
-void FileSystem::configure(const ConfigItem& item) {}
+FLASHMEM void FileSystem::configure(const ConfigItem& item) {}
 
-void FileSystem::checkConfigErrors(const MissingConfigCallback& onMissingConfigItem) {}
+FLASHMEM void FileSystem::checkConfigErrors(const MissingConfigCallback& onMissingConfigItem) {}
 
-void FileSystem::begin()
+FLASHMEM void FileSystem::begin()
 {
     m_kernel->registerToEvent(ModuleEventType::RAW_COMMAND, this);
     m_kernel->registerToEvent(ModuleEventType::MCODE_COMMAND, this);
