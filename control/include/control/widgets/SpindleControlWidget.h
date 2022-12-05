@@ -34,6 +34,9 @@ private slots:
 
     void onSettingsChanged(const SettingsModel& settings);
 
+    void enableSpindleWidgets();
+    void disableSpindleWidgets();
+
 private:
     void setState(State state);
 

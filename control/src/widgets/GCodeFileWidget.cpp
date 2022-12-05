@@ -132,13 +132,13 @@ void GCodeFileWidget::onStartButtonPressed()
 
 void GCodeFileWidget::onPauseButtonPressed()
 {
-    m_cnc->stopGCodeFile();
+    m_cnc->pauseGCodeFile();
     setState(State::GCODE_FILE_PAUSED);
 }
 
 void GCodeFileWidget::onAbortButtonPressed()
 {
-    m_cnc->stopGCodeFile();
+    m_cnc->abortGCodeFile();
     setState(State::GCODE_FILE_OPENED);
     m_gcodeModel->reset();
 }

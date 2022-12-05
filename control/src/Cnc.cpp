@@ -265,11 +265,19 @@ void Cnc::startGCodeFile()
 {
     m_isGCodeFileStarted = true;
     sendNextGCodeFileCommandIfStarted();
+    emit gcodeFileStated();
 }
 
-void Cnc::stopGCodeFile()
+void Cnc::pauseGCodeFile()
 {
     m_isGCodeFileStarted = false;
+    emit gcodeFilePaused();
+}
+
+void Cnc::abortGCodeFile()
+{
+    m_isGCodeFileStarted = false;
+    emit gcodeFileAborted();
 }
 
 void Cnc::onSerialPortErrorOccurred(QSerialPort::SerialPortError error)
@@ -350,6 +358,11 @@ void Cnc::onSerialPortReadyRead()
         {
             m_commandQueue.clear();
             emit cncError(response.remove(0, 6));
+            if (m_isGCodeFileStarted)
+            {
+                m_isGCodeFileStarted = false;
+                emit gcodeFileAborted();
+            }
             break;
         }
     }
@@ -388,8 +401,13 @@ void Cnc::onStatusTimerTimeout()
 
 void Cnc::sendNextGCodeFileCommandIfStarted()
 {
-    if (m_gcodeModel->isFinished() || !m_isGCodeFileStarted)
+    if (!m_isGCodeFileStarted)
     {
+        return;
+    }
+    if (m_gcodeModel->isFinished())
+    {
+        emit gcodeFileFinished();
         return;
     }
 

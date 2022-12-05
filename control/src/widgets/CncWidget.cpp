@@ -15,6 +15,10 @@ CncWidget::CncWidget(SettingsModel* settings, Cnc* cnc, QWidget* parent)
     connect(m_cnc, &Cnc::cncConnected, this, &CncWidget::onCncConnected);
     connect(m_cnc, &Cnc::cncDisconnected, this, &CncWidget::onCncDisconnected);
 
+    connect(m_cnc, &Cnc::gcodeFileStated, this, &CncWidget::disableHomeButton);
+    connect(m_cnc, &Cnc::gcodeFileAborted, this, &CncWidget::enableHomeButton);
+    connect(m_cnc, &Cnc::gcodeFileFinished, this, &CncWidget::enableHomeButton);
+
     onCncDisconnected();
 }
 
@@ -66,6 +70,16 @@ void CncWidget::onShutdownButtonPressed()
 #endif
 
     QCoreApplication::instance()->quit();
+}
+
+void CncWidget::enableHomeButton()
+{
+    m_homeButton->setEnabled(true);
+}
+
+void CncWidget::disableHomeButton()
+{
+    m_homeButton->setEnabled(false);
 }
 
 void CncWidget::createUi()

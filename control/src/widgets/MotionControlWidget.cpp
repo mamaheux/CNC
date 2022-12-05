@@ -22,6 +22,10 @@ MotionControlWidget::MotionControlWidget(SettingsModel* settings, Cnc* cnc, QWid
     connect(m_cnc, &Cnc::cncConnected, this, &MotionControlWidget::onCncConnected);
     connect(m_cnc, &Cnc::cncDisconnected, this, &MotionControlWidget::onCncDisconnected);
 
+    connect(m_cnc, &Cnc::gcodeFileStated, this, &MotionControlWidget::disableMotionWidgets);
+    connect(m_cnc, &Cnc::gcodeFileAborted, this, &MotionControlWidget::enableMotionWidgets);
+    connect(m_cnc, &Cnc::gcodeFileFinished, this, &MotionControlWidget::enableMotionWidgets);
+
     onCncDisconnected();
 }
 
@@ -30,6 +34,7 @@ void MotionControlWidget::onCncConnected()
     setEnabled(true);
     m_cnc->disableSteppers();
     setState(State::STEPPERS_DISABLED);
+    enableMotionWidgets();
 }
 
 void MotionControlWidget::onCncDisconnected()
@@ -111,6 +116,51 @@ void MotionControlWidget::onResetSpeedFactorButtonPressed()
 void MotionControlWidget::onSettingsChanged(const SettingsModel& settings)
 {
     m_feedRateSpinBox->setRange(settings.minimumFeedRateInMmPerMin(), settings.maximumFeedRateInMmPerMin());
+}
+
+void MotionControlWidget::enableMotionWidgets()
+{
+    setState(m_state);
+
+    m_gotoMachineX0Y0Button->setEnabled(true);
+    m_gotoWorkX0Y0Button->setEnabled(true);
+
+    m_xBackwardButton->setEnabled(true);
+    m_xForwardButton->setEnabled(true);
+    m_yBackwardButton->setEnabled(true);
+    m_yForwardButton->setEnabled(true);
+    m_zBackwardButton->setEnabled(true);
+    m_zForwardButton->setEnabled(true);
+
+    m_01DistanceButton->setEnabled(true);
+    m_1DistanceButton->setEnabled(true);
+    m_10DistanceButton->setEnabled(true);
+    m_100DistanceButton->setEnabled(true);
+
+    m_feedRateSpinBox->setEnabled(true);
+}
+
+void MotionControlWidget::disableMotionWidgets()
+{
+    m_enableSteppersButton->setEnabled(false);
+    m_disableSteppersButton->setEnabled(false);
+
+    m_gotoMachineX0Y0Button->setEnabled(false);
+    m_gotoWorkX0Y0Button->setEnabled(false);
+
+    m_xBackwardButton->setEnabled(false);
+    m_xForwardButton->setEnabled(false);
+    m_yBackwardButton->setEnabled(false);
+    m_yForwardButton->setEnabled(false);
+    m_zBackwardButton->setEnabled(false);
+    m_zForwardButton->setEnabled(false);
+
+    m_01DistanceButton->setEnabled(false);
+    m_1DistanceButton->setEnabled(false);
+    m_10DistanceButton->setEnabled(false);
+    m_100DistanceButton->setEnabled(false);
+
+    m_feedRateSpinBox->setEnabled(false);
 }
 
 void MotionControlWidget::setState(State state)

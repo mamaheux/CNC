@@ -17,12 +17,18 @@ ConsoleWidget::ConsoleWidget(SettingsModel* settings, Cnc* cnc, QWidget* parent)
     connect(m_cnc, &Cnc::cncConnected, this, &ConsoleWidget::onCncConnected);
     connect(m_cnc, &Cnc::cncDisconnected, this, &ConsoleWidget::onCncDisconnected);
 
+    connect(m_cnc, &Cnc::gcodeFileStated, this, &ConsoleWidget::disableSendButton);
+    connect(m_cnc, &Cnc::gcodeFilePaused, this, &ConsoleWidget::enableSendButton);
+    connect(m_cnc, &Cnc::gcodeFileAborted, this, &ConsoleWidget::enableSendButton);
+    connect(m_cnc, &Cnc::gcodeFileFinished, this, &ConsoleWidget::enableSendButton);
+
     onCncDisconnected();
 }
 
 void ConsoleWidget::onCncConnected()
 {
     setEnabled(true);
+    enableSendButton();
 }
 
 void ConsoleWidget::onCncDisconnected()
@@ -40,6 +46,16 @@ void ConsoleWidget::onSendButtonPressed()
     m_cnc->sendCommand(
         m_commandLineEdit->text(),
         [this](const QString& command, const QString& response) { m_logTextEdit->appendPlainText(">>> " + response); });
+}
+
+void ConsoleWidget::enableSendButton()
+{
+    m_sendButton->setEnabled(true);
+}
+
+void ConsoleWidget::disableSendButton()
+{
+    m_sendButton->setEnabled(false);
 }
 
 void ConsoleWidget::createUi()

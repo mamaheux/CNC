@@ -26,6 +26,9 @@ private slots:
 
     void onSendButtonPressed();
 
+    void enableSendButton();
+    void disableSendButton();
+
 private:
     void createUi();
 

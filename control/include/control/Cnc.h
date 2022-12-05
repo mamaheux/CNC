@@ -71,7 +71,8 @@ public:
         std::function<void(const QString& command, const QString& commandResponse)> responseCallback);
 
     void startGCodeFile();
-    void stopGCodeFile();
+    void pauseGCodeFile();
+    void abortGCodeFile();
 
 signals:
     void cncConnected();
@@ -81,6 +82,11 @@ signals:
     void currentWorkPositionChanged(float x, float y, float z);
     void currentMachinePositionChanged(float x, float y, float z);
     void currentRpmChanged(float currentRpm, float targetRpm);
+
+    void gcodeFileStated();
+    void gcodeFilePaused();
+    void gcodeFileAborted();
+    void gcodeFileFinished();
 
 private slots:
     void onSerialPortErrorOccurred(QSerialPort::SerialPortError error);

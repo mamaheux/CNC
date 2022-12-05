@@ -29,6 +29,9 @@ private slots:
     void onZeroYButtonPressed();
     void onZeroZButtonPressed();
 
+    void enableNonStatusWidgets();
+    void disableNonStatusWidgets();
+
 private:
     void createUi();
 

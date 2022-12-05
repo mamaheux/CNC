@@ -26,7 +26,10 @@ private slots:
     void onDisconnectButtonPressed();
     void onHomeButtonPressed();
 
-    static void onShutdownButtonPressed();
+    void onShutdownButtonPressed();
+
+    void enableHomeButton();
+    void disableHomeButton();
 
 private:
     void createUi();

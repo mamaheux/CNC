@@ -294,7 +294,7 @@ public:
     DECLARE_NOT_MOVABLE(CommandValidator);
 
     void configure(const ConfigItem& item) override;
-    void checkConfigErrors(std::function<void(const char*, const char*, const char*)> onMissingConfigItem) override;
+    void checkConfigErrors(const MissingConfigCallback& onMissingConfigItem) override;
     void begin() override;
 
     CommandResult
@@ -319,7 +319,7 @@ private:
 
 void CommandValidator::configure(const ConfigItem& item) {}
 
-void CommandValidator::checkConfigErrors(std::function<void(const char*, const char*, const char*)> onMissingConfigItem)
+void CommandValidator::checkConfigErrors(const MissingConfigCallback& onMissingConfigItem)
 {
 }
 
@@ -503,7 +503,7 @@ public:
     DECLARE_NOT_MOVABLE(LineCreator);
 
     void configure(const ConfigItem& item) override;
-    void checkConfigErrors(std::function<void(const char*, const char*, const char*)> onMissingConfigItem) override;
+    void checkConfigErrors(const MissingConfigCallback& onMissingConfigItem) override;
     void begin() override;
 
     CommandResult onGCodeCommandReceived(const GCode& gcode, CommandSource source, uint32_t commandId) override;
@@ -521,7 +521,7 @@ LineCreator::LineCreator(
 
 void LineCreator::configure(const ConfigItem& item) {}
 
-void LineCreator::checkConfigErrors(std::function<void(const char*, const char*, const char*)> onMissingConfigItem) {}
+void LineCreator::checkConfigErrors(const MissingConfigCallback& onMissingConfigItem) {}
 
 void LineCreator::begin()
 {

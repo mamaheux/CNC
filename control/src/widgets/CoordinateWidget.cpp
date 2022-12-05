@@ -20,12 +20,17 @@ CoordinateWidget::CoordinateWidget(Cnc* cnc, QWidget* parent) : QWidget(parent),
     connect(m_cnc, &Cnc::currentWorkPositionChanged, this, &CoordinateWidget::onCurrentWorkPositionChanged);
     connect(m_cnc, &Cnc::currentMachinePositionChanged, this, &CoordinateWidget::onCurrentMachinePositionChanged);
 
+    connect(m_cnc, &Cnc::gcodeFileStated, this, &CoordinateWidget::disableNonStatusWidgets);
+    connect(m_cnc, &Cnc::gcodeFileAborted, this, &CoordinateWidget::enableNonStatusWidgets);
+    connect(m_cnc, &Cnc::gcodeFileFinished, this, &CoordinateWidget::enableNonStatusWidgets);
+
     onCncDisconnected();
 }
 
 void CoordinateWidget::onCncConnected()
 {
     setEnabled(true);
+    enableNonStatusWidgets();
     m_cnc->setCoordinateSystem(m_coordinateSystemComboBox->currentData().toInt());
 }
 
@@ -71,6 +76,24 @@ void CoordinateWidget::onZeroYButtonPressed()
 void CoordinateWidget::onZeroZButtonPressed()
 {
     m_cnc->zeroZ();
+}
+
+void CoordinateWidget::enableNonStatusWidgets()
+{
+    m_coordinateSystemComboBox->setEnabled(true);
+    m_zeroAllButton->setEnabled(true);
+    m_zeroXButton->setEnabled(true);
+    m_zeroYButton->setEnabled(true);
+    m_zeroZButton->setEnabled(true);
+}
+
+void CoordinateWidget::disableNonStatusWidgets()
+{
+    m_coordinateSystemComboBox->setEnabled(false);
+    m_zeroAllButton->setEnabled(false);
+    m_zeroXButton->setEnabled(false);
+    m_zeroYButton->setEnabled(false);
+    m_zeroZButton->setEnabled(false);
 }
 
 void CoordinateWidget::createUi()

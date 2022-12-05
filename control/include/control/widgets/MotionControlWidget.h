@@ -49,6 +49,9 @@ private slots:
 
     void onSettingsChanged(const SettingsModel& settings);
 
+    void enableMotionWidgets();
+    void disableMotionWidgets();
+
 private:
     void setState(State state);
 
