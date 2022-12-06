@@ -23,10 +23,10 @@ class Cnc : public QObject
 {
     Q_OBJECT
 
-    QQueue<QueuedCommand> m_commandQueue;
-
-    QSerialPort* m_serialPort;
     QTimer* m_statusTimer;
+
+protected:
+    QQueue<QueuedCommand> m_commandQueue;
 
     GCodeModel* m_gcodeModel;
     bool m_isGCodeFileStarted;
@@ -35,9 +35,9 @@ public:
     explicit Cnc(GCodeModel* gcodeModel);
     ~Cnc() override;
 
-    void connect(const QString& portName, qint32 baudRate);
-    void disconnect();
-    bool isConnected() const;
+    virtual void connect(const QString& portName, qint32 baudRate) = 0;
+    virtual void disconnect() = 0;
+    virtual bool isConnected() const = 0;
 
     void home();
     void setCoordinateSystem(int id);
@@ -89,14 +89,53 @@ signals:
     void gcodeFileFinished();
 
 private slots:
-    void onSerialPortErrorOccurred(QSerialPort::SerialPortError error);
-    void onSerialPortReadyRead();
     void onStatusTimerTimeout();
 
     void sendNextGCodeFileCommandIfStarted();
 
-private:
-    void sendHeadCommand();
+protected:
+    virtual void sendHeadCommand() = 0;
+};
+
+class SerialPortCnc : public Cnc
+{
+    Q_OBJECT
+
+    QSerialPort* m_serialPort;
+
+public:
+    explicit SerialPortCnc(GCodeModel* gcodeModel);
+    ~SerialPortCnc() override;
+
+    void connect(const QString& portName, qint32 baudRate) override;
+    void disconnect() override;
+    bool isConnected() const override;
+
+private slots:
+    void onSerialPortErrorOccurred(QSerialPort::SerialPortError error);
+    void onSerialPortReadyRead();
+
+protected:
+    void sendHeadCommand() override;
+};
+
+class CncMock : public Cnc
+{
+    Q_OBJECT
+
+    bool m_isConnected;
+
+public:
+    explicit CncMock(GCodeModel* gcodeModel);
+    ~CncMock() override = default;
+
+    void connect(const QString& portName, qint32 baudRate) override;
+    void disconnect() override;
+    bool isConnected() const override;
+
+protected:
+    void sendHeadCommand() override;
+    void respondToCommand();
 };
 
 #endif

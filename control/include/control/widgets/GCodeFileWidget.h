@@ -35,6 +35,8 @@ private slots:
     void onCncDisconnected();
     void onCncError(const QString& error);
 
+    void onGCodeFileFinished();
+
     void onGCodeChanged();
     void onInvalidGCode(const QStringList& invalidCommands);
 

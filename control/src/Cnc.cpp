@@ -18,11 +18,11 @@ static float parseFloat(const QString& str, const QString& prefix)
     auto spaceIndex = str.indexOf(" ", prefixIndex, Qt::CaseInsensitive);
     if (spaceIndex == -1)
     {
-        return str.midRef(prefixIndex).toFloat();
+        return str.midRef(prefixIndex + 1).toFloat();
     }
     else
     {
-        return str.midRef(prefixIndex, spaceIndex - prefixIndex).toFloat();
+        return str.midRef(prefixIndex + 1, spaceIndex - prefixIndex - 1).toFloat();
     }
 }
 
@@ -31,7 +31,7 @@ static QVector3D parsePosition(const QString& str)
     return {parseFloat(str, "X"), parseFloat(str, "Y"), parseFloat(str, "Z")};
 }
 
-Cnc::Cnc(GCodeModel* gcodeModel) : m_serialPort(nullptr), m_gcodeModel(gcodeModel), m_isGCodeFileStarted(false)
+Cnc::Cnc(GCodeModel* gcodeModel) : m_gcodeModel(gcodeModel), m_isGCodeFileStarted(false)
 {
     m_statusTimer = new QTimer;
     m_statusTimer->setInterval(STATUS_TIMER_INTERVAL_MS);
@@ -39,68 +39,7 @@ Cnc::Cnc(GCodeModel* gcodeModel) : m_serialPort(nullptr), m_gcodeModel(gcodeMode
     m_statusTimer->start();
 }
 
-Cnc::~Cnc()
-{
-    if (m_serialPort != nullptr)
-    {
-        delete m_serialPort;
-        m_serialPort = nullptr;
-    }
-}
-
-void Cnc::connect(const QString& portName, qint32 baudRate)
-{
-    if (m_serialPort != nullptr)
-    {
-        m_serialPort->disconnect();
-        delete m_serialPort;
-    }
-
-    m_isGCodeFileStarted = false;
-    m_commandQueue.clear();
-
-    m_serialPort = new QSerialPort(portName);
-    m_serialPort->setDataBits(QSerialPort::Data8);
-    m_serialPort->setStopBits(QSerialPort::OneStop);
-    m_serialPort->setBaudRate(baudRate, QSerialPort::AllDirections);
-    m_serialPort->setFlowControl(QSerialPort::NoFlowControl);
-
-    if (!m_serialPort->open(QIODevice::ReadWrite))
-    {
-        onSerialPortErrorOccurred(m_serialPort->error());
-        return;
-    }
-
-    QObject::connect(m_serialPort, &QSerialPort::errorOccurred, this, &Cnc::onSerialPortErrorOccurred);
-    QObject::connect(m_serialPort, &QSerialPort::readyRead, this, &Cnc::onSerialPortReadyRead);
-
-    sendCommand("G21");  // Set units to MM
-    disableSteppers();
-    disableSpindle();
-    emit cncConnected();
-}
-
-void Cnc::disconnect()
-{
-    if (m_serialPort == nullptr)
-    {
-        return;
-    }
-
-    m_serialPort->disconnect();
-    m_serialPort->close();
-    delete m_serialPort;
-    m_serialPort = nullptr;
-    m_isGCodeFileStarted = false;
-    m_commandQueue.clear();
-
-    emit cncDisconnected();
-}
-
-bool Cnc::isConnected() const
-{
-    return m_serialPort != nullptr;
-}
+Cnc::~Cnc() {}
 
 void Cnc::home()
 {
@@ -222,7 +161,7 @@ void Cnc::disableSpindle()
 
 void Cnc::sendCommand(const QString& command)
 {
-    if (m_serialPort == nullptr)
+    if (!isConnected())
     {
         return;
     }
@@ -234,7 +173,7 @@ void Cnc::sendCommand(
     const QString& command,
     std::function<void(const QString& command, const QString& commandResponse)> responseCallback)
 {
-    if (m_serialPort == nullptr)
+    if (!isConnected())
     {
         return;
     }
@@ -280,97 +219,9 @@ void Cnc::abortGCodeFile()
     emit gcodeFileAborted();
 }
 
-void Cnc::onSerialPortErrorOccurred(QSerialPort::SerialPortError error)
-{
-    disconnect();
-    switch (error)
-    {
-        case QSerialPort::DeviceNotFoundError:
-            emit cncError("Serial Port Error: The device was not found.");
-            break;
-        case QSerialPort::PermissionError:
-            emit cncError("Serial Port Error: A permission error occurred.");
-            break;
-        case QSerialPort::OpenError:
-            emit cncError("Serial Port Error: The device is already opened.");
-            break;
-        case QSerialPort::ParityError:
-            emit cncError("Serial Port Error: A parity error occurred.");
-            break;
-        case QSerialPort::FramingError:
-            emit cncError("Serial Port Error: A framing error occurred.");
-            break;
-        case QSerialPort::BreakConditionError:
-            emit cncError("Serial Port Error: A break condition occurred.");
-            break;
-        case QSerialPort::WriteError:
-            emit cncError("Serial Port Error: A write error occurred.");
-            break;
-        case QSerialPort::ReadError:
-            emit cncError("Serial Port Error: A read error occurred.");
-            break;
-        case QSerialPort::ResourceError:
-            emit cncError("Serial Port Error: A resource error occurred.");
-            break;
-        case QSerialPort::UnsupportedOperationError:
-            emit cncError("Serial Port Error: An unsupported operation occurred.");
-            break;
-        case QSerialPort::NoError:
-        case QSerialPort::UnknownError:
-            emit cncError("Serial Port Error: An unknown error occurred.");
-            break;
-        case QSerialPort::TimeoutError:
-            emit cncError("Serial Port Error: A timeout error occurred.");
-            break;
-        case QSerialPort::NotOpenError:
-            emit cncError("Serial Port Error: The device is not opened.");
-            break;
-    }
-}
-
-void Cnc::onSerialPortReadyRead()
-{
-    if (!m_serialPort->canReadLine())
-    {
-        return;
-    }
-
-    QString response;
-    QString line;
-    while (true)
-    {
-        line = m_serialPort->readLine().trimmed();
-        response += line;
-        response += '\n';
-
-        if (line.startsWith("ok", Qt::CaseInsensitive))
-        {
-            m_commandQueue.head().responseCallback(m_commandQueue.head().command, response);
-
-            m_commandQueue.dequeue();
-            if (!m_commandQueue.empty())
-            {
-                sendHeadCommand();
-            }
-            break;
-        }
-        else if (line.startsWith("error", Qt::CaseInsensitive))
-        {
-            m_commandQueue.clear();
-            emit cncError(response.remove(0, 6));
-            if (m_isGCodeFileStarted)
-            {
-                m_isGCodeFileStarted = false;
-                emit gcodeFileAborted();
-            }
-            break;
-        }
-    }
-}
-
 void Cnc::onStatusTimerTimeout()
 {
-    if (m_serialPort != nullptr)
+    if (isConnected())
     {
         sendCommandIfNotQueued(
             "M114.1",
@@ -420,7 +271,161 @@ void Cnc::sendNextGCodeFileCommandIfStarted()
         });
 }
 
-void Cnc::sendHeadCommand()
+
+SerialPortCnc::SerialPortCnc(GCodeModel* gcodeModel) : Cnc(gcodeModel), m_serialPort(nullptr) {}
+
+SerialPortCnc::~SerialPortCnc()
+{
+    if (m_serialPort != nullptr)
+    {
+        delete m_serialPort;
+        m_serialPort = nullptr;
+    }
+}
+
+void SerialPortCnc::connect(const QString& portName, qint32 baudRate)
+{
+    if (m_serialPort != nullptr)
+    {
+        m_serialPort->disconnect();
+        delete m_serialPort;
+    }
+
+    m_isGCodeFileStarted = false;
+    m_commandQueue.clear();
+
+    m_serialPort = new QSerialPort(portName);
+    m_serialPort->setDataBits(QSerialPort::Data8);
+    m_serialPort->setStopBits(QSerialPort::OneStop);
+    m_serialPort->setBaudRate(baudRate, QSerialPort::AllDirections);
+    m_serialPort->setFlowControl(QSerialPort::NoFlowControl);
+
+    if (!m_serialPort->open(QIODevice::ReadWrite))
+    {
+        onSerialPortErrorOccurred(m_serialPort->error());
+        return;
+    }
+
+    QObject::connect(m_serialPort, &QSerialPort::errorOccurred, this, &SerialPortCnc::onSerialPortErrorOccurred);
+    QObject::connect(m_serialPort, &QSerialPort::readyRead, this, &SerialPortCnc::onSerialPortReadyRead);
+
+    sendCommand("G21");  // Set units to MM
+    disableSteppers();
+    disableSpindle();
+    emit cncConnected();
+}
+
+void SerialPortCnc::disconnect()
+{
+    if (m_serialPort == nullptr)
+    {
+        return;
+    }
+
+    m_serialPort->disconnect();
+    m_serialPort->close();
+    delete m_serialPort;
+    m_serialPort = nullptr;
+    m_isGCodeFileStarted = false;
+    m_commandQueue.clear();
+
+    emit cncDisconnected();
+}
+
+bool SerialPortCnc::isConnected() const
+{
+    return m_serialPort != nullptr;
+}
+
+void SerialPortCnc::onSerialPortErrorOccurred(QSerialPort::SerialPortError error)
+{
+    disconnect();
+    switch (error)
+    {
+        case QSerialPort::DeviceNotFoundError:
+            emit cncError("Serial Port Error: The device was not found.");
+            break;
+        case QSerialPort::PermissionError:
+            emit cncError("Serial Port Error: A permission error occurred.");
+            break;
+        case QSerialPort::OpenError:
+            emit cncError("Serial Port Error: The device is already opened.");
+            break;
+        case QSerialPort::ParityError:
+            emit cncError("Serial Port Error: A parity error occurred.");
+            break;
+        case QSerialPort::FramingError:
+            emit cncError("Serial Port Error: A framing error occurred.");
+            break;
+        case QSerialPort::BreakConditionError:
+            emit cncError("Serial Port Error: A break condition occurred.");
+            break;
+        case QSerialPort::WriteError:
+            emit cncError("Serial Port Error: A write error occurred.");
+            break;
+        case QSerialPort::ReadError:
+            emit cncError("Serial Port Error: A read error occurred.");
+            break;
+        case QSerialPort::ResourceError:
+            emit cncError("Serial Port Error: A resource error occurred.");
+            break;
+        case QSerialPort::UnsupportedOperationError:
+            emit cncError("Serial Port Error: An unsupported operation occurred.");
+            break;
+        case QSerialPort::NoError:
+        case QSerialPort::UnknownError:
+            emit cncError("Serial Port Error: An unknown error occurred.");
+            break;
+        case QSerialPort::TimeoutError:
+            emit cncError("Serial Port Error: A timeout error occurred.");
+            break;
+        case QSerialPort::NotOpenError:
+            emit cncError("Serial Port Error: The device is not opened.");
+            break;
+    }
+}
+
+void SerialPortCnc::onSerialPortReadyRead()
+{
+    if (!m_serialPort->canReadLine())
+    {
+        return;
+    }
+
+    QString response;
+    QString line;
+    while (true)
+    {
+        line = m_serialPort->readLine().trimmed();
+        response += line;
+        response += '\n';
+
+        if (line.startsWith("ok", Qt::CaseInsensitive))
+        {
+            m_commandQueue.head().responseCallback(m_commandQueue.head().command, response);
+
+            m_commandQueue.dequeue();
+            if (!m_commandQueue.empty())
+            {
+                sendHeadCommand();
+            }
+            break;
+        }
+        else if (line.startsWith("error", Qt::CaseInsensitive))
+        {
+            m_commandQueue.clear();
+            emit cncError(response.remove(0, 6));
+            if (m_isGCodeFileStarted)
+            {
+                m_isGCodeFileStarted = false;
+                emit gcodeFileAborted();
+            }
+            break;
+        }
+    }
+}
+
+void SerialPortCnc::sendHeadCommand()
 {
     if (m_commandQueue.empty())
     {
@@ -428,4 +433,63 @@ void Cnc::sendHeadCommand()
     }
 
     m_serialPort->write(m_commandQueue.head().command.toUtf8());
+}
+
+
+CncMock::CncMock(GCodeModel* gcodeModel) : Cnc(gcodeModel), m_isConnected(false) {}
+
+void CncMock::connect(const QString& portName, qint32 baudRate)
+{
+    qDebug() << "Connect to " << portName << " at " << baudRate;
+    m_isConnected = true;
+    emit cncConnected();
+}
+
+void CncMock::disconnect()
+{
+    qDebug() << "Disconnect";
+    m_isConnected = false;
+    emit cncDisconnected();
+}
+
+bool CncMock::isConnected() const
+{
+    return m_isConnected;
+}
+
+void CncMock::sendHeadCommand()
+{
+    const int RESPONSE_TIME_MS = 10;
+    qDebug() << "Command: " << m_commandQueue.head().command;
+    QTimer::singleShot(RESPONSE_TIME_MS, this, &CncMock::respondToCommand);
+}
+
+void CncMock::respondToCommand()
+{
+    QString response;
+    if (m_commandQueue.head().command.startsWith("M114.1", Qt::CaseInsensitive))
+    {
+        response = "ok X5.1 Y6.2 Z7.3";
+    }
+    else if (m_commandQueue.head().command.startsWith("M114.3", Qt::CaseInsensitive))
+    {
+        response = "ok X1.25 Y2.55 Z3.56";
+    }
+    else if (m_commandQueue.head().command.startsWith("M957", Qt::CaseInsensitive))
+    {
+        response = "ok S995.25 T1000.0";
+    }
+    else
+    {
+        response = "ok";
+    }
+
+    qDebug() << "Command response: " << response;
+    m_commandQueue.head().responseCallback(m_commandQueue.head().command, response);
+
+    m_commandQueue.dequeue();
+    if (!m_commandQueue.empty())
+    {
+        sendHeadCommand();
+    }
 }

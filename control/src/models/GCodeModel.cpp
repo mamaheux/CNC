@@ -275,9 +275,6 @@ void GuiKernel::addInvalidCommand(const char* line, uint32_t commandId, const ch
     CHECK_EXTRA_PARAMETER(gcode, l, "L")
 
 #define CHECK_MCODE_NO_PARAMETER(mcode)                                                                                \
-    CHECK_EXTRA_PARAMETER(mcode, x, "X");                                                                              \
-    CHECK_EXTRA_PARAMETER(mcode, y, "Y");                                                                              \
-    CHECK_EXTRA_PARAMETER(mcode, z, "Z");                                                                              \
     CHECK_EXTRA_PARAMETER(mcode, s, "S");                                                                              \
     CHECK_EXTRA_PARAMETER_NULLPTR(mcode, path, "path");                                                                \
     CHECK_EXTRA_PARAMETER(mcode, p, "P");                                                                              \
@@ -319,9 +316,7 @@ private:
 
 void CommandValidator::configure(const ConfigItem& item) {}
 
-void CommandValidator::checkConfigErrors(const MissingConfigCallback& onMissingConfigItem)
-{
-}
+void CommandValidator::checkConfigErrors(const MissingConfigCallback& onMissingConfigItem) {}
 
 void CommandValidator::begin()
 {
@@ -447,9 +442,6 @@ CommandResult CommandValidator::validateM3(const MCode& mcode)
     CHECK_EXTRA_SUBCODE(mcode);
     CHECK_MISSING_PARAMETER(mcode, s, "S");
 
-    CHECK_EXTRA_PARAMETER(mcode, x, "X");
-    CHECK_EXTRA_PARAMETER(mcode, y, "Y");
-    CHECK_EXTRA_PARAMETER(mcode, z, "Z");
     CHECK_EXTRA_PARAMETER_NULLPTR(mcode, path, "path");
     CHECK_EXTRA_PARAMETER(mcode, p, "P");
     CHECK_EXTRA_PARAMETER(mcode, i, "I");

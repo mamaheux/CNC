@@ -19,6 +19,9 @@ GCodeFileWidget::GCodeFileWidget(GCodeModel* gcodeModel, Cnc* cnc, QWidget* pare
     connect(m_cnc, &Cnc::cncConnected, this, &GCodeFileWidget::onCncConnected);
     connect(m_cnc, &Cnc::cncDisconnected, this, &GCodeFileWidget::onCncDisconnected);
     connect(m_cnc, &Cnc::cncError, this, &GCodeFileWidget::onCncError);
+
+    connect(m_cnc, &Cnc::gcodeFileFinished, this, &GCodeFileWidget::onGCodeFileFinished);
+
     connect(m_gcodeModel, &GCodeModel::gcodeChanged, this, &GCodeFileWidget::onGCodeChanged);
     connect(m_gcodeModel, &GCodeModel::invalidGCode, this, &GCodeFileWidget::onInvalidGCode);
     connect(m_gcodeModel, &GCodeModel::progress, this, &GCodeFileWidget::onGCodeProgress);
@@ -62,6 +65,11 @@ void GCodeFileWidget::onCncError(const QString& error)
     }
 }
 
+void GCodeFileWidget::onGCodeFileFinished()
+{
+    m_gcodeModel->reset();
+}
+
 void GCodeFileWidget::onGCodeChanged()
 {
     if (m_gcodeModel->commandCount() > 0)
@@ -87,7 +95,6 @@ void GCodeFileWidget::onGCodeProgress()
 {
     if (m_gcodeModel->isFinished())
     {
-        m_gcodeModel->reset();
         m_progressBar->setValue(0);
         setState(State::GCODE_FILE_OPENED);
     }

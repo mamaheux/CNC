@@ -10,11 +10,20 @@
 constexpr int SMALL_MAIN_WINDOW_WIDTH = 600;
 constexpr int SMALL_MAIN_WINDOW_HEIGHT = 1024;
 
-int runApp(bool small, bool fullscreen)
+int runApp(bool small, bool fullscreen, bool mockCnc)
 {
     auto settings = SettingsModel::loadOrDefault();
     auto gcodeModel = new GCodeModel;
-    auto cnc = new Cnc(gcodeModel);
+    Cnc* cnc;
+    if (mockCnc)
+    {
+        cnc = new CncMock(gcodeModel);
+    }
+    else
+    {
+        cnc = new SerialPortCnc(gcodeModel);
+    }
+
 
     QWidget* mainWindow;
     if (small)
@@ -66,7 +75,9 @@ int main(int argc, char* argv[])
     parser.addOption(fullscreenOption);
     QCommandLineOption smallOption("small");
     parser.addOption(smallOption);
+    QCommandLineOption mockCnc("mock_cnc");
+    parser.addOption(mockCnc);
     parser.process(app);
 
-    return runApp(parser.isSet(smallOption), parser.isSet(fullscreenOption));
+    return runApp(parser.isSet(smallOption), parser.isSet(fullscreenOption), parser.isSet(mockCnc));
 }
