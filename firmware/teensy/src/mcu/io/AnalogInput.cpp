@@ -3,14 +3,14 @@
 
 #include <cnc/resources/resources.h>
 
-AnalogInput::AnalogInput() : m_pin(0) {
-}
+FLASHMEM AnalogInput::AnalogInput() : m_pin(0) {}
 
-void AnalogInput::begin(const AnalogInputConfig& config) {
-  CRITICAL_ERROR_CHECK_3(config.pin() < PIN_COUNT, "Invalid pin (", config.pin(), ")");
+FLASHMEM void AnalogInput::begin(const AnalogInputConfig& config)
+{
+    CRITICAL_ERROR_CHECK_3(config.pin() < PIN_COUNT, "Invalid pin (", config.pin(), ")")
 
-  m_pin = config.pin();
-  CRITICAL_ERROR_CHECK_3(m_lock.tryLock(m_pin), "Pin ",  m_pin, " already use.");
+    m_pin = config.pin();
+    CRITICAL_ERROR_CHECK_3(m_lock.tryLock(m_pin), "Pin ", m_pin, " already use.")
 
-  analogReadResolution(ADC_RESOLUTION);
+    analogReadResolution(ADC_RESOLUTION);
 }

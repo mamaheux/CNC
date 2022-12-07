@@ -9,19 +9,21 @@
 constexpr uint32_t SETUP_DELAY_MS = 2000;
 constexpr uint32_t LOOP_DELAY_MS = 10000;
 
-void setup() {
-  delay(SETUP_DELAY_MS);
+void setup()
+{
+    delay(SETUP_DELAY_MS);
 
-  UNITY_BEGIN();
+    UNITY_BEGIN();
 }
 
-void loop() {
-  bench_parseGCode();
-  bench_parseMCode();
+void loop()
+{
+    bench_parseGCode();
+    bench_parseMCode();
 
-  bench_ArcConverter_setArc();
-  bench_ArcConverter_getNextSegment();
+    bench_ArcConverter_setArc();
+    bench_ArcConverter_getNextSegment();
 
-  Serial.println();
-  delay(LOOP_DELAY_MS);
+    Serial.println();
+    delay(LOOP_DELAY_MS);
 }

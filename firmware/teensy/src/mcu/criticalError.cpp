@@ -3,12 +3,14 @@
 
 static DigitalOutput led;
 
-void setupCriticalErrorCheck() {
-  led.begin(DigitalOutputConfig(LED_PIN, false), false);
+FLASHMEM void setupCriticalErrorCheck()
+{
+    led.begin(DigitalOutputConfig(LED_PIN, false), false);
 }
 
-void toogleErrorLed() {
-  led.write(true);
-  delay(ERROR_DELAY_MS);
-  led.write(false);
+FLASHMEM void toogleErrorLed()
+{
+    led.write(true);
+    delay(ERROR_DELAY_MS);
+    led.write(false);
 }
