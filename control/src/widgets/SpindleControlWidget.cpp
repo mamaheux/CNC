@@ -102,6 +102,7 @@ void SpindleControlWidget::createUi(SettingsModel* settings)
 
 
     m_spindleRpmSpinBox = new QSpinBox;
+    m_spindleRpmSpinBox->setButtonSymbols(QAbstractSpinBox::PlusMinus);
     m_spindleRpmSpinBox->setRange(settings->minimumSpindleRpm(), settings->maximumSpindleRpm());
     m_spindleRpmSpinBox->setValue(settings->defaultSpindleRpm());
     connect(

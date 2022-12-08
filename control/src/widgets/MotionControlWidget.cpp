@@ -264,6 +264,7 @@ void MotionControlWidget::createUi(SettingsModel* settings)
 
 
     m_feedRateSpinBox = new QSpinBox;
+    m_feedRateSpinBox->setButtonSymbols(QAbstractSpinBox::PlusMinus);
     m_feedRateSpinBox->setRange(settings->minimumFeedRateInMmPerMin(), settings->maximumFeedRateInMmPerMin());
     m_feedRateSpinBox->setSuffix(" mm/min");
     m_feedRateSpinBox->setValue(settings->defaultFeedRateInMmPerMin());

@@ -499,6 +499,9 @@ public:
     void begin() override;
 
     CommandResult onGCodeCommandReceived(const GCode& gcode, CommandSource source, uint32_t commandId) override;
+
+private:
+    Vector3<float> calculateEndPoint(const GCode& g0g1);
 };
 
 LineCreator::LineCreator(
@@ -526,10 +529,7 @@ CommandResult LineCreator::onGCodeCommandReceived(const GCode& gcode, CommandSou
 
     if (gcode.code() == 0 || gcode.code() == 1)
     {
-        float x = *gcode.x().or_else([this]() { return m_startPoint.x; });
-        float y = *gcode.y().or_else([this]() { return m_startPoint.y; });
-        float z = *gcode.z().or_else([this]() { return m_startPoint.z; });
-        auto endPoint = m_coordinateTransformer->gcodeCoordinateToMachineCoordinate(Vector3<float>(x, y, z));
+        auto endPoint = calculateEndPoint(gcode);
         m_lines.push_back(GCodeLine{
             QVector3D(m_startPoint.x, m_startPoint.y, m_startPoint.z),
             QVector3D(endPoint.x, endPoint.y, endPoint.z),
@@ -549,10 +549,7 @@ CommandResult LineCreator::onGCodeCommandReceived(const GCode& gcode, CommandSou
         GCode lineGCode;
         while (m_arcConverter->getNextSegment(lineGCode))
         {
-            float x = *lineGCode.x().or_else([this]() { return m_startPoint.x; });
-            float y = *lineGCode.y().or_else([this]() { return m_startPoint.y; });
-            float z = *lineGCode.z().or_else([this]() { return m_startPoint.z; });
-            auto endPoint = m_coordinateTransformer->gcodeCoordinateToMachineCoordinate(Vector3<float>(x, y, z));
+            auto endPoint = calculateEndPoint(lineGCode);
 
             m_lines.push_back(GCodeLine{
                 QVector3D(m_startPoint.x, m_startPoint.y, m_startPoint.z),
@@ -565,6 +562,26 @@ CommandResult LineCreator::onGCodeCommandReceived(const GCode& gcode, CommandSou
     }
 
     return CommandResult::ok();
+}
+
+Vector3<float> LineCreator::calculateEndPoint(const GCode& g0g1)
+{
+    if (g0g1.isMachineCoordinateSystem())
+    {
+        float x = *g0g1.x().or_else([this]() { return m_startPoint.x; });
+        float y = *g0g1.y().or_else([this]() { return m_startPoint.y; });
+        float z = *g0g1.z().or_else([this]() { return m_startPoint.z; });
+        return Vector3<float>(x, y, z);
+    }
+    else
+    {
+        auto gcodeStartPoint = m_coordinateTransformer->machineCoordinateToGcode(m_startPoint);
+        float x = *g0g1.x().or_else([gcodeStartPoint]() { return gcodeStartPoint.x; });
+        float y = *g0g1.y().or_else([gcodeStartPoint]() { return gcodeStartPoint.y; });
+        float z = *g0g1.z().or_else([gcodeStartPoint]() { return gcodeStartPoint.z; });
+        auto e = m_coordinateTransformer->gcodeCoordinateToMachineCoordinate(Vector3<float>(x, y, z));
+        return m_coordinateTransformer->gcodeCoordinateToMachineCoordinate(Vector3<float>(x, y, z));
+    }
 }
 
 

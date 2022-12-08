@@ -42,7 +42,22 @@ int runApp(bool small, bool fullscreen, bool mockCnc)
                               "QPushButton {qproperty-iconSize: 23px;} "
                               "QGroupBox {font-weight: bold;} "
                               "QLCDNumber {min-height: 34px;} "
-                              "QChartView {padding: 0px; margin: 0px;}");
+                              "QChartView {padding: 0px; margin: 0px;} "
+                              "QSpinBox { border: 1px solid #ABABAB; border-radius: 3px;} "
+                              "QSpinBox::up-button {"
+                              "  subcontrol-origin: margin;"
+                              "  subcontrol-position: center left;"
+                              "  left: 1px;"
+                              "  height: 24px;"
+                              "  width: 32px;"
+                              "}"
+                              "QSpinBox::down-button {"
+                              "  subcontrol-origin: margin;"
+                              "  subcontrol-position: center right;"
+                              "  right: 1px;"
+                              "  height: 24px;"
+                              "  width: 32px;"
+                              "}");
     mainWindow->show();
 
     if (fullscreen)

@@ -6,6 +6,8 @@
 #include <QGroupBox>
 #include <QSerialPortInfo>
 
+constexpr int MINIMUM_DIALOG_WIDTH = 450;
+
 constexpr int MINIMUM_BAUD_RATE = 1;
 constexpr int MAXIMUM_BAUD_RATE = 10000000;
 
@@ -78,6 +80,7 @@ void SettingsDialog::onOkButtonPressed()
 void SettingsDialog::createUi()
 {
     setWindowTitle("Settings");
+    setMinimumWidth(MINIMUM_DIALOG_WIDTH);
 
     m_portComboBox = new QComboBox;
     for (auto& info : QSerialPortInfo::availablePorts())
@@ -112,6 +115,7 @@ void SettingsDialog::createUi()
 
 
     m_minimumFeedRateInMmPerMinSpinBox = new QSpinBox;
+    m_minimumFeedRateInMmPerMinSpinBox->setButtonSymbols(QAbstractSpinBox::PlusMinus);
     m_minimumFeedRateInMmPerMinSpinBox->setSuffix(" mm/min");
     m_minimumFeedRateInMmPerMinSpinBox->setRange(MINIMUM_FEED_RATE_IN_MM_PER_MIN, MAXIMUM_FEED_RATE_IN_MM_PER_MIN);
     m_minimumFeedRateInMmPerMinSpinBox->setValue(m_settings->minimumFeedRateInMmPerMin());
@@ -122,6 +126,7 @@ void SettingsDialog::createUi()
         &SettingsDialog::updateFeedRateRanges);
 
     m_maximumFeedRateInMmPerMinSpinBox = new QSpinBox;
+    m_maximumFeedRateInMmPerMinSpinBox->setButtonSymbols(QAbstractSpinBox::PlusMinus);
     m_maximumFeedRateInMmPerMinSpinBox->setSuffix(" mm/min");
     m_maximumFeedRateInMmPerMinSpinBox->setRange(MINIMUM_FEED_RATE_IN_MM_PER_MIN, MAXIMUM_FEED_RATE_IN_MM_PER_MIN);
     m_maximumFeedRateInMmPerMinSpinBox->setValue(m_settings->maximumFeedRateInMmPerMin());
@@ -132,6 +137,7 @@ void SettingsDialog::createUi()
         &SettingsDialog::updateFeedRateRanges);
 
     m_defaultFeedRateInMmPerMinSpinBox = new QSpinBox;
+    m_defaultFeedRateInMmPerMinSpinBox->setButtonSymbols(QAbstractSpinBox::PlusMinus);
     m_defaultFeedRateInMmPerMinSpinBox->setSuffix(" mm/min");
     m_defaultFeedRateInMmPerMinSpinBox->setRange(MINIMUM_FEED_RATE_IN_MM_PER_MIN, MAXIMUM_FEED_RATE_IN_MM_PER_MIN);
     m_defaultFeedRateInMmPerMinSpinBox->setValue(m_settings->defaultFeedRateInMmPerMin());
@@ -146,6 +152,7 @@ void SettingsDialog::createUi()
 
 
     m_minimumSpindleRpmSpinBox = new QSpinBox;
+    m_minimumSpindleRpmSpinBox->setButtonSymbols(QAbstractSpinBox::PlusMinus);
     m_minimumSpindleRpmSpinBox->setRange(MINIMUM_SPINDLE_RPM, MAXIMUM_SPINDLE_RPM);
     m_minimumSpindleRpmSpinBox->setValue(m_settings->minimumSpindleRpm());
     connect(
@@ -155,6 +162,7 @@ void SettingsDialog::createUi()
         &SettingsDialog::updateSpindleRpmRanges);
 
     m_maximumSpindleRpmSpinBox = new QSpinBox;
+    m_maximumSpindleRpmSpinBox->setButtonSymbols(QAbstractSpinBox::PlusMinus);
     m_maximumSpindleRpmSpinBox->setRange(MINIMUM_SPINDLE_RPM, MAXIMUM_SPINDLE_RPM);
     m_maximumSpindleRpmSpinBox->setValue(m_settings->maximumSpindleRpm());
     connect(
@@ -164,6 +172,7 @@ void SettingsDialog::createUi()
         &SettingsDialog::updateSpindleRpmRanges);
 
     m_defaultSpindleRpmSpinBox = new QSpinBox;
+    m_defaultSpindleRpmSpinBox->setButtonSymbols(QAbstractSpinBox::PlusMinus);
     m_defaultSpindleRpmSpinBox->setRange(MINIMUM_SPINDLE_RPM, MAXIMUM_SPINDLE_RPM);
     m_defaultSpindleRpmSpinBox->setValue(m_settings->defaultSpindleRpm());
 
@@ -177,16 +186,19 @@ void SettingsDialog::createUi()
 
 
     m_xCncSizeInMmSpinBox = new QSpinBox;
+    m_xCncSizeInMmSpinBox->setButtonSymbols(QAbstractSpinBox::PlusMinus);
     m_xCncSizeInMmSpinBox->setSuffix(" mm");
     m_xCncSizeInMmSpinBox->setRange(MINIMUM_CNC_SIZE_IN_MM, MAXIMUM_CNC_SIZE_IN_MM);
     m_xCncSizeInMmSpinBox->setValue(static_cast<int>(m_settings->xCncSizeInMm()));
 
     m_yCncSizeInMmSpinBox = new QSpinBox;
+    m_yCncSizeInMmSpinBox->setButtonSymbols(QAbstractSpinBox::PlusMinus);
     m_yCncSizeInMmSpinBox->setSuffix(" mm");
     m_yCncSizeInMmSpinBox->setRange(MINIMUM_CNC_SIZE_IN_MM, MAXIMUM_CNC_SIZE_IN_MM);
     m_yCncSizeInMmSpinBox->setValue(static_cast<int>(m_settings->yCncSizeInMm()));
 
     m_zCncSizeInMmSpinBox = new QSpinBox;
+    m_zCncSizeInMmSpinBox->setButtonSymbols(QAbstractSpinBox::PlusMinus);
     m_zCncSizeInMmSpinBox->setSuffix(" mm");
     m_zCncSizeInMmSpinBox->setRange(MINIMUM_CNC_SIZE_IN_MM, MAXIMUM_CNC_SIZE_IN_MM);
     m_zCncSizeInMmSpinBox->setValue(static_cast<int>(m_settings->zCncSizeInMm()));
