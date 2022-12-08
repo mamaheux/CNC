@@ -14,9 +14,6 @@ class MCodeParser;
 
 class MCode
 {
-    tl::optional<float> m_x;
-    tl::optional<float> m_y;
-    tl::optional<float> m_z;
     tl::optional<float> m_s;
     tl::optional<float> m_p;
     tl::optional<float> m_i;
@@ -29,9 +26,6 @@ class MCode
 public:
     MCode();
 
-    tl::optional<float> x() const;
-    tl::optional<float> y() const;
-    tl::optional<float> z() const;
     tl::optional<float> s() const;
     tl::optional<float> p() const;
     tl::optional<float> i() const;
@@ -41,26 +35,10 @@ public:
     uint32_t code() const;
     tl::optional<uint32_t> subcode() const;
 
-private:
     void clear();
 
     friend MCodeParser;
 };
-
-inline tl::optional<float> MCode::x() const
-{
-    return m_x;
-}
-
-inline tl::optional<float> MCode::y() const
-{
-    return m_y;
-}
-
-inline tl::optional<float> MCode::z() const
-{
-    return m_z;
-}
 
 inline tl::optional<float> MCode::s() const
 {

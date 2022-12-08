@@ -52,10 +52,9 @@ public:
 
     bool isMachineCoordinateSystem() const;
 
-    static GCode g1(const Vector3<float>& position, tl::optional<float> f, bool isMachineCoordinateSystem);
-
-private:
     void clear();
+
+    static GCode g1(const Vector3<float>& position, tl::optional<float> f, bool isMachineCoordinateSystem);
 
     friend GCodeParser;
 };

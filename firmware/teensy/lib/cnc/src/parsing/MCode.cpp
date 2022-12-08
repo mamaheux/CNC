@@ -7,10 +7,7 @@
 using namespace std;
 
 MCode::MCode()
-    : m_x(tl::nullopt),
-      m_y(tl::nullopt),
-      m_z(tl::nullopt),
-      m_s(tl::nullopt),
+    : m_s(tl::nullopt),
       m_p(tl::nullopt),
       m_i(tl::nullopt),
       m_d(tl::nullopt),
@@ -22,9 +19,6 @@ MCode::MCode()
 
 void MCode::clear()
 {
-    m_x = tl::nullopt;
-    m_y = tl::nullopt;
-    m_z = tl::nullopt;
     m_s = tl::nullopt;
     m_p = tl::nullopt;
     m_i = tl::nullopt;
@@ -117,18 +111,6 @@ ParsingResult MCodeParser::parseParameters(char* start, MCode& mcode)
             return ParsingResult::OK;
         case ' ':
             return parseParameters(start + 1, mcode);
-        case 'X':
-        case 'x':
-            mcode.m_x = atof(start + 1);
-            break;
-        case 'Y':
-        case 'y':
-            mcode.m_y = atof(start + 1);
-            break;
-        case 'Z':
-        case 'z':
-            mcode.m_z = atof(start + 1);
-            break;
         case 'S':
         case 's':
             mcode.m_s = atof(start + 1);

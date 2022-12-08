@@ -43,4 +43,6 @@ void test_parseGCode_G91();
 void test_parseGCode_G92();
 void test_parseGCode_G92D1();
 
+void test_GCode_clear();
+
 #endif

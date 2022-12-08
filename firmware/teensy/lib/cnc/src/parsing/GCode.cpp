@@ -34,6 +34,7 @@ void GCode::clear()
     m_k = tl::nullopt;
     m_s = tl::nullopt;
     m_p = tl::nullopt;
+    m_r = tl::nullopt;
     m_l = tl::nullopt;
     m_code = numeric_limits<uint32_t>::max();
     m_subcode = tl::nullopt;

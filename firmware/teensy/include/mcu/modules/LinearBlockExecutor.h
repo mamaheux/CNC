@@ -11,7 +11,7 @@
 
 #include <Arduino.h>
 
-constexpr size_t LINEAR_BLOCK_EXECUTOR_QUEUE_SIZE = 50;
+constexpr size_t LINEAR_BLOCK_EXECUTOR_QUEUE_SIZE = 100;
 
 class LinearBlockExecutor : public Module
 {
@@ -63,7 +63,7 @@ inline bool LinearBlockExecutor::addLinearBlock(const LinearBlock& block, uint32
         m_firstBlockTimestampMs = millis();
     }
 
-    TimerInterruptLock lock; // TODO Check if there are glichs, check if needed
+    TimerInterruptLock lock;  // TODO Check if there are glichs, check if needed
     m_queueDurationUs += block.durationUs;
     queueDuration = m_queueDurationUs;
     return m_queue.push(block);

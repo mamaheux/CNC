@@ -203,6 +203,9 @@ void testModules()
     RUN_TEST(test_ArcConverter_g3XZ);
     RUN_TEST(test_ArcConverter_g2YZ);
     RUN_TEST(test_ArcConverter_g3YZ);
+    RUN_TEST(test_ArcConverter_g2Offset);
+    RUN_TEST(test_ArcConverter_g2Rotation);
+    RUN_TEST(test_ArcConverter_g2OffsetRotation);
 }
 
 void testParsing()
@@ -275,33 +278,36 @@ void testParsing()
     RUN_TEST(test_parseGCode_G91);
     RUN_TEST(test_parseGCode_G92);
     RUN_TEST(test_parseGCode_G92D1);
+    RUN_TEST(test_GCode_clear);
 
     RUN_TEST(test_parseMCode_empty);
     RUN_TEST(test_parseMCode_tooBig);
-    RUN_TEST(test_parseGCode_M3);
-    RUN_TEST(test_parseGCode_M5);
-    RUN_TEST(test_parseGCode_M17);
-    RUN_TEST(test_parseGCode_M18);
-    RUN_TEST(test_parseGCode_M84);
-    RUN_TEST(test_parseGCode_M20);
-    RUN_TEST(test_parseGCode_M23);
-    RUN_TEST(test_parseGCode_M24);
-    RUN_TEST(test_parseGCode_M25);
-    RUN_TEST(test_parseGCode_M26);
-    RUN_TEST(test_parseGCode_M27);
-    RUN_TEST(test_parseGCode_M28);
-    RUN_TEST(test_parseGCode_M29);
-    RUN_TEST(test_parseGCode_M30);
-    RUN_TEST(test_parseGCode_M32);
-    RUN_TEST(test_parseGCode_M114);
-    RUN_TEST(test_parseGCode_M114D1);
-    RUN_TEST(test_parseGCode_M114D2);
-    RUN_TEST(test_parseGCode_M114D3);
-    RUN_TEST(test_parseGCode_M203);
-    RUN_TEST(test_parseGCode_M204);
-    RUN_TEST(test_parseGCode_M220);
-    RUN_TEST(test_parseGCode_M957);
-    RUN_TEST(test_parseGCode_M958);
+    RUN_TEST(test_parseMCode_M3);
+    RUN_TEST(test_parseMCode_M5);
+    RUN_TEST(test_parseMCode_M17);
+    RUN_TEST(test_parseMCode_M18);
+    RUN_TEST(test_parseMCode_M84);
+    RUN_TEST(test_parseMCode_M20);
+    RUN_TEST(test_parseMCode_M23);
+    RUN_TEST(test_parseMCode_M24);
+    RUN_TEST(test_parseMCode_M25);
+    RUN_TEST(test_parseMCode_M26);
+    RUN_TEST(test_parseMCode_M27);
+    RUN_TEST(test_parseMCode_M28);
+    RUN_TEST(test_parseMCode_M29);
+    RUN_TEST(test_parseMCode_M30);
+    RUN_TEST(test_parseMCode_M32);
+    RUN_TEST(test_parseMCode_M114);
+    RUN_TEST(test_parseMCode_M114D1);
+    RUN_TEST(test_parseMCode_M114D2);
+    RUN_TEST(test_parseMCode_M114D3);
+    RUN_TEST(test_parseMCode_M203);
+    RUN_TEST(test_parseMCode_M204);
+    RUN_TEST(test_parseMCode_M220);
+    RUN_TEST(test_parseMCode_M957);
+    RUN_TEST(test_parseMCode_M958);
+    RUN_TEST(test_MCode_clear);
+    RUN_TEST(test_MCode_clearM32);
 }
 
 void testResources()

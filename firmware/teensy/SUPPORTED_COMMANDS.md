@@ -16,8 +16,8 @@
 ## Modal State
 - Machine Coordinates
 - Worskspace Coordinates (9)
-- `G0` Feedrate
-- `G1`, `G2`, `G3` Feedrate
+- `G0` Feed Rate
+- `G1`, `G2`, `G3` Feed Rate
 - Predefined Position (`G28.1`)
 - Global Offset (`G92`)
 
@@ -53,7 +53,7 @@
 | `G20`      | [Link 1](https://smoothieware.org/g20), [Link 2](http://linuxcnc.org/docs/html/gcode/g-code.html#gcode:g20-g21)       |                                                                                       | `G20`                 | Yes     |
 | `G21`      | [Link 1](https://smoothieware.org/g21), [Link 2](http://linuxcnc.org/docs/html/gcode/g-code.html#gcode:g20-g21)       |                                                                                       | `G21`                 | Yes     |
 | `G28`      | [Link 1](https://smoothieware.org/g28-cnc), [Link 2](http://linuxcnc.org/docs/html/gcode/g-code.html#gcode:g28-g28.1) | Axes (optional)                                                                       | `G28`                 |         |
-| `G28.1`    | [Link](http://linuxcnc.org/docs/html/gcode/g-code.html#gcode:g28-g28.1)                                               |                                                                                       | `G28.1`               |         |
+| `G28.1`    | [Link](http://linuxcnc.org/docs/html/gcode/g-code.html#gcode:g28-g28.1)                                               |                                                                                       | `G28.1`               | Yes     |
 | `G53`      | [Link](http://linuxcnc.org/docs/html/gcode/g-code.html#gcode:g53)                                                     | G1 or G1 (modal commands are permitted)                                               | `G53 G0 X0 Y0 Z0`     | Yes     |
 | `G54-59.3` | [Link](http://linuxcnc.org/docs/html/gcode/g-code.html#gcode:g54-g59.3)                                               |                                                                                       | `G54`                 | Yes     |
 | `G90`      | [Link 1](https://smoothieware.org/g90), [Link 2](http://linuxcnc.org/docs/html/gcode/g-code.html#gcode:g90-g91)       |                                                                                       | `G90`                 | Yes     |
@@ -80,36 +80,33 @@
 
 ## M-Codes
 
-| M-Code     | Documentation                                                                          | Parameters        | Example          | Handled |
-| ---------- | -------------------------------------------------------------------------------------- | ----------------- | ---------------- | ------- |
-| `M3`       | [Link](https://smoothieware.org/m3)                                                    | Spindle Speed (S) | `M3 S500`        | Yes     |
-| `M5`       | [Link](https://smoothieware.org/m5)                                                    |                   | `M5`             | Yes     |
-| `M17`      | Enable all stepper motors.                                                             |                   | `M17`            | Yes     |
-| `M18`      | Disable all stepper motors.                                                            |                   | `M18`            | Yes     |
-| `M20`      | List all files.                                                                        |                   | `M20`            | Yes     |
-| `M23`      | Select a G-Code file.                                                                  | File path         | `M23 file.gcode` | Yes     |
-| `M24`      | Start or resume the selected file.                                                     |                   | `M24`            | Yes     |
-| `M25`      | Pause the selected file.                                                               |                   | `M25`            | Yes     |
-| `M26`      | Abort the selected file.                                                               |                   | `M26`            | Yes     |
-| `M27`      | Report the progress of the selected file (line count).                                 |                   | `M27`            | Yes     |
-| `M28`      | Start to write the specified file.                                                     | File path         | `M28 file.gcode` | Yes     |
-| `M29`      | End to write the current file.                                                         |                   | `M29`            | Yes     |
-| `M30`      | Delete the specified file.                                                             | File path         | `M30 file.gcode` | Yes     |
-| `M32`      | Select a G-Code file and start the selected file.                                      | File path         | `M32 file.gcode` | Yes     |
-| `M114`     | Print the last requested position in the selected coordinate system                    |                   | `M114`           |         |
-| `M114.1`   | Print the real time position in the selected coordinate system                         |                   | `M114.1`         | Yes     |
-| `M114.2`   | Print the last requested position in the machine coordinate system                     |                   | `M114.2`         |         |
-| `M114.3`   | Print the real time position in the machine coordinate system                          |                   | `M114.3`         | Yes     |
-| `M203`     | Print the the maximum feedrate values and set the maximum feedrate (mm/sec).           | Axes              | `M203 X200`      |         |
-| `M204`     | Print the the maximum acceleration values and set the maximum acceleration (mm^2/sec). | Axes              | `M204 X200`      |         |
-| `M220`     | Set speed factor (percent).                                                            | Percent (S)       | `M220 S25`       |         |
-| `M957`     | Print the spindle speed (RPM)                                                          |                   | `M957`           | Yes     |
-| `M958`     | Print the spindle PID gain values and set the spindle PID gain values.                 | P, I, D           | `M958 P0.1 I0.2` | Yes     |
+| M-Code     | Documentation                                                              | Parameters        | Example          | Handled |
+| ---------- | -------------------------------------------------------------------------- | ----------------- | ---------------- | ------- |
+| `M3`       | [Link](https://smoothieware.org/m3)                                        | Spindle Speed (S) | `M3 S500`        | Yes     |
+| `M5`       | [Link](https://smoothieware.org/m5)                                        |                   | `M5`             | Yes     |
+| `M17`      | Enable all stepper motors.                                                 |                   | `M17`            | Yes     |
+| `M18`      | Disable all stepper motors.                                                |                   | `M18`            | Yes     |
+| `M20`      | List all files.                                                            |                   | `M20`            | Yes     |
+| `M23`      | Select a G-Code file.                                                      | File path         | `M23 file.gcode` | Yes     |
+| `M24`      | Start or resume the selected file.                                         |                   | `M24`            | Yes     |
+| `M25`      | Pause the selected file.                                                   |                   | `M25`            | Yes     |
+| `M26`      | Abort the selected file.                                                   |                   | `M26`            | Yes     |
+| `M27`      | Report the progress of the selected file (line count).                     |                   | `M27`            | Yes     |
+| `M28`      | Start to write the specified file.                                         | File path         | `M28 file.gcode` | Yes     |
+| `M29`      | End to write the current file.                                             |                   | `M29`            | Yes     |
+| `M30`      | Delete the specified file.                                                 | File path         | `M30 file.gcode` | Yes     |
+| `M32`      | Select a G-Code file and start the selected file.                          | File path         | `M32 file.gcode` | Yes     |
+| `M114`     | Print the last requested position in the selected coordinate system        |                   | `M114`           | Yes     |
+| `M114.1`   | Print the real time position in the selected coordinate system             |                   | `M114.1`         | Yes     |
+| `M114.2`   | Print the last requested position in the machine coordinate system         |                   | `M114.2`         | Yes     |
+| `M114.3`   | Print the real time position in the machine coordinate system              |                   | `M114.3`         | Yes     |
+| `M203`     | Print the maximum feed rate values and set the maximum feed rate (mm/sec). | Feed rate (S)     | `M203 S200`      | Yes     |
+| `M204`     | Print the acceleration values and set the acceleration (mm^2/sec).         | Acceleration (S)  | `M204 S200`      | Yes     |
+| `M220`     | Print the speed factor and set the speed factor (percent).                 | Percent (S)       | `M220 S25`       | Yes     |
+| `M957`     | Print the spindle speed (RPM)                                              |                   | `M957`           | Yes     |
+| `M958`     | Print the spindle PID gain values and set the spindle PID gain values.     | P, I, D           | `M958 P0.1 I0.2` | Yes     |
 
 ## Supported M-Code Parameter Names
-- X
-- Y
-- Z
 - S
 - File parameter
 - P

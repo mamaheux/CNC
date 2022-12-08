@@ -25,7 +25,12 @@ constexpr const char* Z_MIN_OR_Z_MAX_PIN_KEY = "endstops.z.min_pin or endstops.z
 constexpr const char* CONTROL_FAST_PERIOD_US_KEY = "endstops.control.fast_period_us";
 constexpr const char* CONTROL_SLOW_PERIOD_US_KEY = "endstops.control.slow_period_us";
 
-FLASHMEM Endstops::Endstops(Planner* planner, StepperController* stepperController) : m_planner(planner), m_stepperController(stepperController), m_findXMin(false), m_findYMin (false), m_findZMin(false)
+FLASHMEM Endstops::Endstops(Planner* planner, StepperController* stepperController)
+    : m_planner(planner),
+      m_stepperController(stepperController),
+      m_findXMin(false),
+      m_findYMin(false),
+      m_findZMin(false)
 {
 }
 
@@ -79,16 +84,25 @@ FLASHMEM void Endstops::configure(const ConfigItem& item)
 
 FLASHMEM void Endstops::checkConfigErrors(const MissingConfigCallback& onMissingConfigItem)
 {
-    CHECK_CONFIG_ERROR(onMissingConfigItem, m_xMinConfig.has_value() || m_xMaxConfig.has_value(), X_MIN_OR_X_MAX_PIN_KEY)
-    CHECK_CONFIG_ERROR(onMissingConfigItem, m_yMinConfig.has_value() || m_yMaxConfig.has_value(), Y_MIN_OR_Y_MAX_PIN_KEY)
-    CHECK_CONFIG_ERROR(onMissingConfigItem, m_zMinConfig.has_value() || m_zMaxConfig.has_value(), Z_MIN_OR_Z_MAX_PIN_KEY)
+    CHECK_CONFIG_ERROR(
+        onMissingConfigItem,
+        m_xMinConfig.has_value() || m_xMaxConfig.has_value(),
+        X_MIN_OR_X_MAX_PIN_KEY);
+    CHECK_CONFIG_ERROR(
+        onMissingConfigItem,
+        m_yMinConfig.has_value() || m_yMaxConfig.has_value(),
+        Y_MIN_OR_Y_MAX_PIN_KEY);
+    CHECK_CONFIG_ERROR(
+        onMissingConfigItem,
+        m_zMinConfig.has_value() || m_zMaxConfig.has_value(),
+        Z_MIN_OR_Z_MAX_PIN_KEY);
 
-    CHECK_CONFIG_ERROR(onMissingConfigItem, m_xRangeInMm.has_value(), X_RANGE_IN_MM_KEY)
-    CHECK_CONFIG_ERROR(onMissingConfigItem, m_yRangeInMm.has_value(), Y_RANGE_IN_MM_KEY)
-    CHECK_CONFIG_ERROR(onMissingConfigItem, m_zRangeInMm.has_value(), Z_RANGE_IN_MM_KEY)
+    CHECK_CONFIG_ERROR(onMissingConfigItem, m_xRangeInMm.has_value(), X_RANGE_IN_MM_KEY);
+    CHECK_CONFIG_ERROR(onMissingConfigItem, m_yRangeInMm.has_value(), Y_RANGE_IN_MM_KEY);
+    CHECK_CONFIG_ERROR(onMissingConfigItem, m_zRangeInMm.has_value(), Z_RANGE_IN_MM_KEY);
 
-    CHECK_CONFIG_ERROR(onMissingConfigItem, m_controlFastPeriodUs.has_value(), CONTROL_FAST_PERIOD_US_KEY)
-    CHECK_CONFIG_ERROR(onMissingConfigItem, m_controlSlowPeriodUs.has_value(), CONTROL_SLOW_PERIOD_US_KEY)
+    CHECK_CONFIG_ERROR(onMissingConfigItem, m_controlFastPeriodUs.has_value(), CONTROL_FAST_PERIOD_US_KEY);
+    CHECK_CONFIG_ERROR(onMissingConfigItem, m_controlSlowPeriodUs.has_value(), CONTROL_SLOW_PERIOD_US_KEY);
 }
 
 FLASHMEM void Endstops::begin()
@@ -129,8 +143,7 @@ FLASHMEM void Endstops::begin()
     setUpdatePeriodUs(*m_controlSlowPeriodUs);
 }
 
-CommandResult
-        Endstops::onSystemCommandReceived(const SystemCommand& command, CommandSource source, uint32_t commandId)
+CommandResult Endstops::onSystemCommandReceived(const SystemCommand& command, CommandSource source, uint32_t commandId)
 {
     switch (command)
     {
@@ -178,7 +191,7 @@ void Endstops::onUpdate(uint32_t elapsedMs)
             performSlowState(*m_pendingHoming);
             break;
         case HomingState::COMPLETED:
-            performCompletedState();
+            performCompletedState(*m_pendingHoming);
             m_pendingHoming = tl::nullopt;
             break;
     }
@@ -230,7 +243,7 @@ void Endstops::performSlowState(PendingHoming& pendingHoming)
     performMoveState(pendingHoming, false, HomingState::COMPLETED);
 }
 
-void Endstops::performCompletedState()
+void Endstops::performCompletedState(PendingHoming& pendingHoming)
 {
     float xPosition = m_findXMin ? 0.f : *m_xRangeInMm;
     float yPosition = m_findYMin ? 0.f : *m_yRangeInMm;
@@ -244,6 +257,8 @@ void Endstops::performCompletedState()
     m_planner->reset({xPosition, yPosition, zPosition}, range);
     m_stepperController->resetPosition({xStepPosition, yStepPosition, zStepPosition}, StepperControlModule::ENDSTOPS);
     m_stepperController->unlock(StepperControlModule::ENDSTOPS);
+
+    m_kernel->sendCommandResponse(OK_COMMAND_RESPONSE, pendingHoming.source, pendingHoming.commandId);
 }
 
 void Endstops::setDirection(bool inverse)

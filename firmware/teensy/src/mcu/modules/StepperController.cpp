@@ -67,20 +67,19 @@ FLASHMEM void StepperController::configure(const ConfigItem& item)
     }
 }
 
-FLASHMEM void StepperController::checkConfigErrors(
-    const MissingConfigCallback& onMissingConfigItem)
+FLASHMEM void StepperController::checkConfigErrors(const MissingConfigCallback& onMissingConfigItem)
 {
-    CHECK_CONFIG_ERROR(onMissingConfigItem, m_xEnableConfig.has_value(), X_ENABLE_PIN_KEY)
-    CHECK_CONFIG_ERROR(onMissingConfigItem, m_xDirectionConfig.has_value(), X_DIRECTION_PIN_KEY)
-    CHECK_CONFIG_ERROR(onMissingConfigItem, m_xStepConfig.has_value(), X_STEP_PIN_KEY)
+    CHECK_CONFIG_ERROR(onMissingConfigItem, m_xEnableConfig.has_value(), X_ENABLE_PIN_KEY);
+    CHECK_CONFIG_ERROR(onMissingConfigItem, m_xDirectionConfig.has_value(), X_DIRECTION_PIN_KEY);
+    CHECK_CONFIG_ERROR(onMissingConfigItem, m_xStepConfig.has_value(), X_STEP_PIN_KEY);
 
-    CHECK_CONFIG_ERROR(onMissingConfigItem, m_yEnableConfig.has_value(), Y_ENABLE_PIN_KEY)
-    CHECK_CONFIG_ERROR(onMissingConfigItem, m_yDirectionConfig.has_value(), Y_DIRECTION_PIN_KEY)
-    CHECK_CONFIG_ERROR(onMissingConfigItem, m_yStepConfig.has_value(), Y_STEP_PIN_KEY)
+    CHECK_CONFIG_ERROR(onMissingConfigItem, m_yEnableConfig.has_value(), Y_ENABLE_PIN_KEY);
+    CHECK_CONFIG_ERROR(onMissingConfigItem, m_yDirectionConfig.has_value(), Y_DIRECTION_PIN_KEY);
+    CHECK_CONFIG_ERROR(onMissingConfigItem, m_yStepConfig.has_value(), Y_STEP_PIN_KEY);
 
-    CHECK_CONFIG_ERROR(onMissingConfigItem, m_zEnableConfig.has_value(), Z_ENABLE_PIN_KEY)
-    CHECK_CONFIG_ERROR(onMissingConfigItem, m_zDirectionConfig.has_value(), Z_DIRECTION_PIN_KEY)
-    CHECK_CONFIG_ERROR(onMissingConfigItem, m_zStepConfig.has_value(), Z_STEP_PIN_KEY)
+    CHECK_CONFIG_ERROR(onMissingConfigItem, m_zEnableConfig.has_value(), Z_ENABLE_PIN_KEY);
+    CHECK_CONFIG_ERROR(onMissingConfigItem, m_zDirectionConfig.has_value(), Z_DIRECTION_PIN_KEY);
+    CHECK_CONFIG_ERROR(onMissingConfigItem, m_zStepConfig.has_value(), Z_STEP_PIN_KEY);
 }
 
 FLASHMEM void StepperController::begin()

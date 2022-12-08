@@ -187,9 +187,12 @@ public:
 };
 
 #define CHECK_CONFIG_ERROR(callback, condition, key)                                                                   \
-    if (!(condition))                                                                                                  \
+    do                                                                                                                 \
     {                                                                                                                  \
-        (callback)(key, __FUNCTION_NAME__, __FILENAME__);                                                              \
-    }
+        if (!(condition))                                                                                              \
+        {                                                                                                              \
+            (callback)(key, __FUNCTION_NAME__, __FILENAME__);                                                          \
+        }                                                                                                              \
+    } while (false)
 
 #endif

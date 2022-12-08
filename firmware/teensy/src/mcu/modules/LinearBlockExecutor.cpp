@@ -22,9 +22,18 @@ static inline void loadNextBlock()
         return;
     }
 
-    stepperController->setDirection(Axis::X, currentBlock->directions[AXIS_X_INDEX], StepperControlModule::LINEAR_BLOCK_EXECUTOR);
-    stepperController->setDirection(Axis::Y, currentBlock->directions[AXIS_Y_INDEX], StepperControlModule::LINEAR_BLOCK_EXECUTOR);
-    stepperController->setDirection(Axis::Z, currentBlock->directions[AXIS_Z_INDEX], StepperControlModule::LINEAR_BLOCK_EXECUTOR);
+    stepperController->setDirection(
+        Axis::X,
+        currentBlock->directions[AXIS_X_INDEX],
+        StepperControlModule::LINEAR_BLOCK_EXECUTOR);
+    stepperController->setDirection(
+        Axis::Y,
+        currentBlock->directions[AXIS_Y_INDEX],
+        StepperControlModule::LINEAR_BLOCK_EXECUTOR);
+    stepperController->setDirection(
+        Axis::Z,
+        currentBlock->directions[AXIS_Z_INDEX],
+        StepperControlModule::LINEAR_BLOCK_EXECUTOR);
 
     if (currentBlock->spindleRpm != tl::nullopt)
     {
@@ -47,7 +56,7 @@ static inline void decelerate()
     for (size_t axis = 0; axis < AXIS_COUNT; axis++)
     {
         currentBlock->stepPerTick[axis] += currentBlock->decelerationPerTick[axis];
-        currentBlock->stepPerTick[axis] = std::max(currentBlock->stepPerTick[axis], currentBlock->minStepPerTick);
+        currentBlock->stepPerTick[axis] = std::max(currentBlock->stepPerTick[axis], currentBlock->minStepPerTick[axis]);
     }
 }
 
@@ -79,7 +88,8 @@ static inline void step()
     {
         accelerate();
     }
-    else if (currentBlock->currentTick >= currentBlock->plateauUntilTick &&
+    else if (
+        currentBlock->currentTick >= currentBlock->plateauUntilTick &&
         currentBlock->currentTick < currentBlock->plateauUntilTick)
     {
         decelerate();
@@ -106,7 +116,7 @@ static void onTick()
         {
             loadNextBlock();
             isStep = true;
-            return; // Make sure the direction and enable pulses are wide enough
+            return;  // Make sure the direction and enable pulses are wide enough
         }
         else
         {
@@ -120,12 +130,12 @@ static void onTick()
     isStep = !isStep;
 }
 
-FLASHMEM LinearBlockExecutor::LinearBlockExecutor(StepperController* stepperController, Spindle* spindle) :
-    m_stepperController(stepperController),
-    m_spindle(spindle),
-    m_queueDurationUs(0),
-    m_timerStarted(false),
-    m_firstBlockTimestampMs(0)
+FLASHMEM LinearBlockExecutor::LinearBlockExecutor(StepperController* stepperController, Spindle* spindle)
+    : m_stepperController(stepperController),
+      m_spindle(spindle),
+      m_queueDurationUs(0),
+      m_timerStarted(false),
+      m_firstBlockTimestampMs(0)
 {
 }
 
@@ -143,8 +153,8 @@ FLASHMEM void LinearBlockExecutor::configure(const ConfigItem& item)
 
 FLASHMEM void LinearBlockExecutor::checkConfigErrors(const MissingConfigCallback& onMissingConfigItem)
 {
-    CHECK_CONFIG_ERROR(onMissingConfigItem, m_tickIntervalUs.has_value(), TICK_INTERVAL_US_KEY)
-    CHECK_CONFIG_ERROR(onMissingConfigItem, m_queueDelayMs.has_value(), QUEUE_DELAY_MS_KEY)
+    CHECK_CONFIG_ERROR(onMissingConfigItem, m_tickIntervalUs.has_value(), TICK_INTERVAL_US_KEY);
+    CHECK_CONFIG_ERROR(onMissingConfigItem, m_queueDelayMs.has_value(), QUEUE_DELAY_MS_KEY);
 }
 
 void LinearBlockExecutor::begin()

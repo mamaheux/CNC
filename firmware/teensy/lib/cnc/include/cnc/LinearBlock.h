@@ -25,28 +25,27 @@ constexpr size_t AXIS_COUNT = 3;
 
 typedef FixedPoint<1, 62> LinearBlockFixedPoint;
 
-// TODO remove comments
 struct LinearBlock
 {
-    Direction directions[AXIS_COUNT]; // Handle
+    Direction directions[AXIS_COUNT];
 
-    uint64_t currentTick; // Handle
-    uint64_t accelerationUntilTick; // Handle
-    uint64_t plateauUntilTick; // Handle
-    uint64_t decelerationUntilTick; // Handle
+    uint64_t currentTick;
+    uint64_t accelerationUntilTick;
+    uint64_t plateauUntilTick;
+    uint64_t decelerationUntilTick;
 
     uint32_t currentStepCount[AXIS_COUNT];
     uint32_t totalStepCount[AXIS_COUNT];
 
-    LinearBlockFixedPoint accelerationPerTick[AXIS_COUNT]; // Handle
-    LinearBlockFixedPoint decelerationPerTick[AXIS_COUNT]; // Handle
+    LinearBlockFixedPoint accelerationPerTick[AXIS_COUNT];
+    LinearBlockFixedPoint decelerationPerTick[AXIS_COUNT];
     LinearBlockFixedPoint stepPerTick[AXIS_COUNT];
     LinearBlockFixedPoint stepCounter[AXIS_COUNT];
 
-    LinearBlockFixedPoint minStepPerTick; // Handle
+    LinearBlockFixedPoint minStepPerTick[AXIS_COUNT];
 
-    uint32_t durationUs;  // Handle
-    tl::optional<float> spindleRpm;  // Handle
+    uint32_t durationUs;
+    tl::optional<float> spindleRpm;
 };
 
 #endif

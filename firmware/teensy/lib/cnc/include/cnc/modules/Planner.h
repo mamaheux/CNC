@@ -10,7 +10,21 @@
 
 #include <tl/optional.hpp>
 
-constexpr size_t PLANNER_QUEUE_SIZE = 128;
+struct PlannerLine
+{
+    Vector3<float> startPoint;
+    Vector3<float> endPoint;
+
+    float m_feedRateInMmPerS;
+    tl::optional<float> spindleRpm;
+};
+
+struct PendingGCode
+{
+    GCode gcode;
+    CommandSource source;
+    uint32_t commandId;
+};
 
 class Planner : public Module
 {
@@ -20,14 +34,22 @@ class Planner : public Module
     tl::optional<float> m_xStepCountPerMm;
     tl::optional<float> m_yStepCountPerMm;
     tl::optional<float> m_zStepCountPerMm;
+    tl::optional<float> m_minFeedRateInMmPerS;
+    tl::optional<float> m_maxFeedRateInMmPerS;
     tl::optional<float> m_accelerationInMmPerSS;
     tl::optional<float> m_junctionDeviation;
+    tl::optional<uint32_t> m_pendingLineDelayMs;
 
-    tl::optional<CommandSource> m_currentSource;
-    BoundedQueue<LinearBlock, PLANNER_QUEUE_SIZE> m_blockQueue;
+    InclusiveRange3<float> m_machineRange;  // TODO use
+    Vector3<float> m_lastTargetPosition;
+    tl::optional<Vector3<float>> m_g28TargetPosition;
 
-    InclusiveRange3<float> m_machineRange;
-    Vector3<float> m_lastRequestedPosition;
+    float m_speedFactor;  // TODO use
+    float m_g0FeedRateInMmPerS;  // TODO use
+    tl::optional<float> m_g1g2g3FeedRateInMmPerS;  // TODO use
+
+    tl::optional<PlannerLine> m_pendingLine;
+    tl::optional<PendingGCode> m_pendingGCode;
 
 public:
     Planner(CoordinateTransformer* coordinateTransformer, ArcConverter* arcConverter);
@@ -41,14 +63,29 @@ public:
     void begin() override;
 
     CommandResult onGCodeCommandReceived(const GCode& gcode, CommandSource source, uint32_t commandId) override;
-    CommandResult onMCodeCommandReceived(const MCode& gcode, CommandSource source, uint32_t commandId) override;
+    CommandResult onMCodeCommandReceived(const MCode& mcode, CommandSource source, uint32_t commandId) override;
 
     void update() override;
 
-    void reset(const Vector3<float>& position, const InclusiveRange3<float>& range);
+    bool hasPendingMotionCommands() override;
+
+    void reset(const Vector3<float>& machinePosition, const InclusiveRange3<float>& range);
     float xStepCountPerMm() const;
     float yStepCountPerMm() const;
     float zStepCountPerMm() const;
+
+private:
+    void sendLastTargetPositionInSelectedCoordinateSystem(CommandSource source, uint32_t commandId);
+    void sendLastTargetPositionInMachineCoordinateSystem(CommandSource source, uint32_t commandId);
+
+    void updateMaxFeedRateInMmPerS(const MCode& mcode);
+    void updateAccelerationInMmPerSS(const MCode& mcode);
+    void updateSpeedFactor(const MCode& mcode);
+
+protected:
+    virtual void sendPosition(CommandSource source, uint32_t commandId, const Vector3<float>& position) = 0;
+    virtual void sendOkWithS(CommandSource source, uint32_t commandId, float sValue) = 0;
+    virtual void sendOkWithP(CommandSource source, uint32_t commandId, float pValue) = 0;
 };
 
 inline float Planner::xStepCountPerMm() const

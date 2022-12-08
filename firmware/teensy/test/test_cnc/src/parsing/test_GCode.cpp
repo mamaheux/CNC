@@ -657,3 +657,41 @@ void test_parseGCode_G92D1()
     TEST_ASSERT(1 == code.subcode());
     TEST_ASSERT_NO_PARAMETERS(code);
 }
+
+void test_GCode_clear()
+{
+    GCode code;
+    GCodeParser parser;
+
+    TEST_ASSERT_EQUAL(ParsingResult::OK, parser.parse("G53 G92.1 X2 Y3 Z4 F5 I6 J7 K8 S9 P10 R11 L12", code));
+    TEST_ASSERT_EQUAL(92, code.code());
+    TEST_ASSERT(1 == code.subcode());
+    TEST_ASSERT(2 == code.x());
+    TEST_ASSERT(3 == code.y());
+    TEST_ASSERT(4 == code.z());
+    TEST_ASSERT(5 == code.f());
+    TEST_ASSERT(6 == code.i());
+    TEST_ASSERT(7 == code.j());
+    TEST_ASSERT(8 == code.k());
+    TEST_ASSERT(9 == code.s());
+    TEST_ASSERT(10 == code.p());
+    TEST_ASSERT(11 == code.r());
+    TEST_ASSERT(12 == code.l());
+    TEST_ASSERT_TRUE(code.isMachineCoordinateSystem());
+
+    code.clear();
+    TEST_ASSERT_EQUAL(4294967295, code.code());
+    TEST_ASSERT(tl::nullopt == code.subcode());
+    TEST_ASSERT(tl::nullopt == code.x());
+    TEST_ASSERT(tl::nullopt == code.y());
+    TEST_ASSERT(tl::nullopt == code.z());
+    TEST_ASSERT(tl::nullopt == code.f());
+    TEST_ASSERT(tl::nullopt == code.i());
+    TEST_ASSERT(tl::nullopt == code.j());
+    TEST_ASSERT(tl::nullopt == code.k());
+    TEST_ASSERT(tl::nullopt == code.s());
+    TEST_ASSERT(tl::nullopt == code.p());
+    TEST_ASSERT(tl::nullopt == code.r());
+    TEST_ASSERT(tl::nullopt == code.l());
+    TEST_ASSERT_FALSE(code.isMachineCoordinateSystem());
+}

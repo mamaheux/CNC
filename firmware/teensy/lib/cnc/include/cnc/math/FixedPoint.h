@@ -59,8 +59,12 @@ public:
     constexpr FixedPoint(double value);
     FixedPoint(const FixedPoint<IntegerSize, FractionSize>& other);
 
-    FixedPoint<IntegerSize, FractionSize>& multiplyAccumulate(const FixedPoint<IntegerSize, FractionSize>& left, const FixedPoint<IntegerSize, FractionSize>& right);
-    FixedPoint<IntegerSize, FractionSize>& multiplySubtract(const FixedPoint<IntegerSize, FractionSize>& left, const FixedPoint<IntegerSize, FractionSize>& right);
+    FixedPoint<IntegerSize, FractionSize>& multiplyAccumulate(
+        const FixedPoint<IntegerSize, FractionSize>& left,
+        const FixedPoint<IntegerSize, FractionSize>& right);
+    FixedPoint<IntegerSize, FractionSize>& multiplySubtract(
+        const FixedPoint<IntegerSize, FractionSize>& left,
+        const FixedPoint<IntegerSize, FractionSize>& right);
 
     FixedPoint<IntegerSize, FractionSize>& operator=(const FixedPoint<IntegerSize, FractionSize>& other);
 
@@ -86,53 +90,67 @@ private:
     static T abs_(T value);
 
 public:
-    friend inline FixedPoint<IntegerSize, FractionSize> operator+(const FixedPoint<IntegerSize, FractionSize>& left, const FixedPoint<IntegerSize, FractionSize>& right)
+    friend inline FixedPoint<IntegerSize, FractionSize>
+        operator+(const FixedPoint<IntegerSize, FractionSize>& left, const FixedPoint<IntegerSize, FractionSize>& right)
     {
         return FixedPoint(static_cast<T>(left.m_value + right.m_value));
     }
 
-    friend inline FixedPoint<IntegerSize, FractionSize> operator-(const FixedPoint<IntegerSize, FractionSize>& left, const FixedPoint<IntegerSize, FractionSize>& right)
+    friend inline FixedPoint<IntegerSize, FractionSize>
+        operator-(const FixedPoint<IntegerSize, FractionSize>& left, const FixedPoint<IntegerSize, FractionSize>& right)
     {
         return FixedPoint<IntegerSize, FractionSize>(static_cast<T>(left.m_value - right.m_value));
     }
 
-    friend inline FixedPoint<IntegerSize, FractionSize> operator*(const FixedPoint<IntegerSize, FractionSize>& left, const FixedPoint<IntegerSize, FractionSize>& right)
+    friend inline FixedPoint<IntegerSize, FractionSize>
+        operator*(const FixedPoint<IntegerSize, FractionSize>& left, const FixedPoint<IntegerSize, FractionSize>& right)
     {
         return FixedPoint(FixedPoint<IntegerSize, FractionSize>::multiplyFixedPoint(left.m_value, right.m_value));
     }
 
     friend inline FixedPoint<IntegerSize, FractionSize> operator/(const FixedPoint& left, const FixedPoint& right)
     {
-        return FixedPoint<IntegerSize, FractionSize>(FixedPoint<IntegerSize, FractionSize>::divideFixedPoint(left.m_value, right.m_value));
+        return FixedPoint<IntegerSize, FractionSize>(
+            FixedPoint<IntegerSize, FractionSize>::divideFixedPoint(left.m_value, right.m_value));
     }
 
 
-    friend inline bool operator==(const FixedPoint<IntegerSize, FractionSize>& left, const FixedPoint<IntegerSize, FractionSize>& right)
+    friend inline bool operator==(
+        const FixedPoint<IntegerSize, FractionSize>& left,
+        const FixedPoint<IntegerSize, FractionSize>& right)
     {
         return left.m_value == right.m_value;
     }
 
-    friend inline bool operator!=(const FixedPoint<IntegerSize, FractionSize>& left, const FixedPoint<IntegerSize, FractionSize>& right)
+    friend inline bool operator!=(
+        const FixedPoint<IntegerSize, FractionSize>& left,
+        const FixedPoint<IntegerSize, FractionSize>& right)
     {
         return left.m_value != right.m_value;
     }
 
-    friend inline bool operator<(const FixedPoint<IntegerSize, FractionSize>& left, const FixedPoint<IntegerSize, FractionSize>& right)
+    friend inline bool
+        operator<(const FixedPoint<IntegerSize, FractionSize>& left, const FixedPoint<IntegerSize, FractionSize>& right)
     {
         return left.m_value < right.m_value;
     }
 
-    friend inline bool operator<=(const FixedPoint<IntegerSize, FractionSize>& left, const FixedPoint<IntegerSize, FractionSize>& right)
+    friend inline bool operator<=(
+        const FixedPoint<IntegerSize, FractionSize>& left,
+        const FixedPoint<IntegerSize, FractionSize>& right)
     {
         return left.m_value <= right.m_value;
     }
 
-    friend inline bool operator>(const FixedPoint<IntegerSize, FractionSize>& left, const FixedPoint<IntegerSize, FractionSize>& right)
+    friend inline bool
+        operator>(const FixedPoint<IntegerSize, FractionSize>& left, const FixedPoint<IntegerSize, FractionSize>& right)
     {
         return left.m_value > right.m_value;
     }
 
-    friend inline bool operator>=(const FixedPoint<IntegerSize, FractionSize>& left, const FixedPoint<IntegerSize, FractionSize>& right)
+    friend inline bool operator>=(
+        const FixedPoint<IntegerSize, FractionSize>& left,
+        const FixedPoint<IntegerSize, FractionSize>& right)
     {
         return left.m_value >= right.m_value;
     }
@@ -157,13 +175,15 @@ inline constexpr FixedPoint<IntegerSize, FractionSize>::FixedPoint(T fixedPointV
 }
 
 template<size_t IntegerSize, size_t FractionSize>
-inline constexpr FixedPoint<IntegerSize, FractionSize>::FixedPoint(float value) : m_value(std::round(static_cast<T>(value * ONE_FIXED_POINT)))
+inline constexpr FixedPoint<IntegerSize, FractionSize>::FixedPoint(float value)
+    : m_value(std::round(static_cast<T>(value * ONE_FIXED_POINT)))
 {
     static_assert(IntegerSize + FractionSize + 1 == sizeof(T) * 8, "All bits of the type must be used");
 }
 
 template<size_t IntegerSize, size_t FractionSize>
-inline constexpr FixedPoint<IntegerSize, FractionSize>::FixedPoint(double value) : m_value(std::round(static_cast<T>(value * ONE_FIXED_POINT)))
+inline constexpr FixedPoint<IntegerSize, FractionSize>::FixedPoint(double value)
+    : m_value(std::round(static_cast<T>(value * ONE_FIXED_POINT)))
 {
     static_assert(IntegerSize + FractionSize + 1 == sizeof(T) * 8, "All bits of the type must be used");
 }

@@ -87,7 +87,7 @@ private:
     void performRetractState(PendingHoming& pendingHoming);
     void performSetupSlowState(PendingHoming& pendingHoming);
     void performSlowState(PendingHoming& pendingHoming);
-    void performCompletedState();
+    void performCompletedState(PendingHoming& pendingHoming);
 
     void setDirection(bool inverse);
     void performMoveState(PendingHoming& pendingHoming, bool inverse, HomingState nextState);

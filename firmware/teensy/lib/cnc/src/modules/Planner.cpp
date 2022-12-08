@@ -8,13 +8,19 @@ constexpr const char* X_STEP_COUNT_PER_MM_KEY = "planner.x.step_count_per_mm";
 constexpr const char* Y_STEP_COUNT_PER_MM_KEY = "planner.y.step_count_per_mm";
 constexpr const char* Z_STEP_COUNT_PER_MM_KEY = "planner.z.step_count_per_mm";
 
-constexpr const char* ACCELERATION_IN_MM_PER_SS_KEY = "planner.acceleration_in_mm_per_ss";
+constexpr const char* MIN_FEED_RATE_IN_MM_PER_S_KEY = "planner.min_feed_rate_in_mm_per_s";
+constexpr const char* MAX_FEED_RATE_IN_MM_PER_S_KEY = "planner.max_feed_rate_in_mm_per_s";
+constexpr const char* ACCELERATION_IN_MM_PER_SS_KEY = "planner.x_acceleration_in_mm_per_ss";
 constexpr const char* JUNCTION_DEVIATION_KEY = "planner.junction_deviation";
+
+constexpr const char* PENDING_LINE_DELAY_MS_KEY = "planner.pending_line_delay_ms";
 
 FLASHMEM Planner::Planner(CoordinateTransformer* coordinateTransformer, ArcConverter* arcConverter)
     : m_coordinateTransformer(coordinateTransformer),
       m_arcConverter(arcConverter),
-      m_machineRange(Vector3<float>(), Vector3<float>())
+      m_machineRange(Vector3<float>(), Vector3<float>()),
+      m_speedFactor(1.f),
+      m_g0FeedRateInMmPerS(0.f)
 {
 }
 
@@ -32,6 +38,14 @@ FLASHMEM void Planner::configure(const ConfigItem& item)
     {
         m_zStepCountPerMm = item.getValueFloat();
     }
+    else if (strcmp(item.getKey(), MIN_FEED_RATE_IN_MM_PER_S_KEY) == 0)
+    {
+        m_minFeedRateInMmPerS = item.getValueFloat();
+    }
+    else if (strcmp(item.getKey(), MAX_FEED_RATE_IN_MM_PER_S_KEY) == 0)
+    {
+        m_maxFeedRateInMmPerS = item.getValueFloat();
+    }
     else if (strcmp(item.getKey(), ACCELERATION_IN_MM_PER_SS_KEY) == 0)
     {
         m_accelerationInMmPerSS = item.getValueFloat();
@@ -40,47 +54,140 @@ FLASHMEM void Planner::configure(const ConfigItem& item)
     {
         m_junctionDeviation = item.getValueFloat();
     }
+    else if (strcmp(item.getKey(), PENDING_LINE_DELAY_MS_KEY) == 0)
+    {
+        m_pendingLineDelayMs = item.getValueInt();
+    }
 }
 
 FLASHMEM void Planner::checkConfigErrors(const MissingConfigCallback& onMissingConfigItem)
 {
-    CHECK_CONFIG_ERROR(onMissingConfigItem, m_xStepCountPerMm.has_value(), X_STEP_COUNT_PER_MM_KEY)
-    CHECK_CONFIG_ERROR(onMissingConfigItem, m_yStepCountPerMm.has_value(), Y_STEP_COUNT_PER_MM_KEY)
-    CHECK_CONFIG_ERROR(onMissingConfigItem, m_zStepCountPerMm.has_value(), Z_STEP_COUNT_PER_MM_KEY)
-    CHECK_CONFIG_ERROR(onMissingConfigItem, m_accelerationInMmPerSS.has_value(), ACCELERATION_IN_MM_PER_SS_KEY)
-    CHECK_CONFIG_ERROR(onMissingConfigItem, m_junctionDeviation.has_value(), JUNCTION_DEVIATION_KEY)
+    CHECK_CONFIG_ERROR(onMissingConfigItem, m_xStepCountPerMm.has_value(), X_STEP_COUNT_PER_MM_KEY);
+    CHECK_CONFIG_ERROR(onMissingConfigItem, m_yStepCountPerMm.has_value(), Y_STEP_COUNT_PER_MM_KEY);
+    CHECK_CONFIG_ERROR(onMissingConfigItem, m_zStepCountPerMm.has_value(), Z_STEP_COUNT_PER_MM_KEY);
+
+    CHECK_CONFIG_ERROR(onMissingConfigItem, m_minFeedRateInMmPerS.has_value(), MIN_FEED_RATE_IN_MM_PER_S_KEY);
+    CHECK_CONFIG_ERROR(onMissingConfigItem, m_maxFeedRateInMmPerS.has_value(), MAX_FEED_RATE_IN_MM_PER_S_KEY);
+    CHECK_CONFIG_ERROR(onMissingConfigItem, m_accelerationInMmPerSS.has_value(), ACCELERATION_IN_MM_PER_SS_KEY);
+    CHECK_CONFIG_ERROR(onMissingConfigItem, m_junctionDeviation.has_value(), JUNCTION_DEVIATION_KEY);
+
+    CHECK_CONFIG_ERROR(onMissingConfigItem, m_pendingLineDelayMs.has_value(), PENDING_LINE_DELAY_MS_KEY);
 }
 
 FLASHMEM void Planner::begin()
 {
+    m_g0FeedRateInMmPerS = *m_maxFeedRateInMmPerS;
+
     m_kernel->registerToEvent(ModuleEventType::GCODE_COMMAND, this);
     m_kernel->registerToEvent(ModuleEventType::MCODE_COMMAND, this);
 }
 
 CommandResult Planner::onGCodeCommandReceived(const GCode& gcode, CommandSource source, uint32_t commandId)
 {
-    // TODO handle g0 and g1 by creating a linear block
-    // TODO handle g2 and g3 by creating linear blocks with ArcConverter
-    // TODO hangle G28 and G28.1
-    // TODO call m_kernel->dispatchTargetPosition
+    if (gcode.code() == 0 || gcode.code() == 1 || gcode.code() == 2 || gcode.code() == 3 ||
+        (gcode.code() == 28 && gcode.subcode() == tl::nullopt))
+    {
+        m_pendingGCode = {gcode, source, commandId};
+        return CommandResult::pending();
+    }
+    else if (gcode.code() == 28 && gcode.subcode() == 1u)
+    {
+        m_g28TargetPosition = m_lastTargetPosition;
+        return CommandResult::ok();
+    }
+
     return CommandResult::notHandled();
 }
 
-CommandResult Planner::onMCodeCommandReceived(const MCode& gcode, CommandSource source, uint32_t commandId)
+CommandResult Planner::onMCodeCommandReceived(const MCode& mcode, CommandSource source, uint32_t commandId)
 {
-    // TODO handle M114 M114.2 M203 M204 M220
-    return CommandResult::notHandled();
+    if (mcode.code() == 114 && mcode.subcode() == tl::nullopt)
+    {
+        sendLastTargetPositionInSelectedCoordinateSystem(source, commandId);
+    }
+    else if (mcode.code() == 114 && mcode.subcode() == 2u)
+    {
+        sendLastTargetPositionInMachineCoordinateSystem(source, commandId);
+    }
+    else if (mcode.code() == 203)
+    {
+        updateMaxFeedRateInMmPerS(mcode);
+        sendOkWithS(source, commandId, *m_maxFeedRateInMmPerS);
+    }
+    else if (mcode.code() == 204)
+    {
+        updateAccelerationInMmPerSS(mcode);
+        sendOkWithS(source, commandId, *m_accelerationInMmPerSS);
+    }
+    else if (mcode.code() == 220)
+    {
+        updateSpeedFactor(mcode);
+        sendOkWithS(source, commandId, m_speedFactor * 100.f);
+    }
+    else
+    {
+        return CommandResult::notHandled();
+    }
+
+    return CommandResult::okResponseSent();
 }
 
 void Planner::update()
 {
     // TODO handle pending gcode
+    // TODO handle pending line
+
+    // TODO handle g0 and g1 by creating a linear block
+    // TODO handle g2 and g3 by creating linear blocks with ArcConverter
+    // TODO hangle G28 and G28.1
+    // TODO call m_kernel->dispatchTargetPosition
 }
 
-void Planner::reset(const Vector3<float>& position, const InclusiveRange3<float>& range)
+bool Planner::hasPendingMotionCommands()
+{
+    return !m_arcConverter->isFinished() || m_pendingLine.has_value() || m_pendingGCode.has_value();
+}
+
+void Planner::reset(const Vector3<float>& machinePosition, const InclusiveRange3<float>& range)
 {
     m_machineRange = range;
-    m_lastRequestedPosition = position;
+    m_lastTargetPosition = machinePosition;
+    m_g28TargetPosition = tl::nullopt;
+    m_kernel->dispatchTargetPosition(machinePosition);
+}
 
-    m_kernel->dispatchTargetPosition(position);
+void Planner::sendLastTargetPositionInSelectedCoordinateSystem(CommandSource source, uint32_t commandId)
+{
+    Vector3<float> position = m_coordinateTransformer->machineCoordinateToUserCurrentCoordinate(m_lastTargetPosition);
+    sendPosition(source, commandId, position);
+}
+
+void Planner::sendLastTargetPositionInMachineCoordinateSystem(CommandSource source, uint32_t commandId)
+{
+    Vector3<float> position = m_coordinateTransformer->machineCoordinateToUserMachineCoordinate(m_lastTargetPosition);
+    sendPosition(source, commandId, position);
+}
+
+void Planner::updateMaxFeedRateInMmPerS(const MCode& mcode)
+{
+    if (mcode.s().has_value())
+    {
+        m_maxFeedRateInMmPerS = *mcode.s();
+    }
+}
+
+void Planner::updateAccelerationInMmPerSS(const MCode& mcode)
+{
+    if (mcode.s().has_value())
+    {
+        m_accelerationInMmPerSS = *mcode.s();
+    }
+}
+
+void Planner::updateSpeedFactor(const MCode& mcode)
+{
+    if (mcode.s().has_value())
+    {
+        m_speedFactor = *mcode.s() / 100.f;
+    }
 }

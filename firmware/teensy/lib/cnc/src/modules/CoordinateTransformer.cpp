@@ -18,9 +18,7 @@ FLASHMEM CoordinateTransformer::CoordinateTransformer()
 
 FLASHMEM void CoordinateTransformer::configure(const ConfigItem& item) {}
 
-FLASHMEM void CoordinateTransformer::checkConfigErrors(const MissingConfigCallback& onMissingConfigItem)
-{
-}
+FLASHMEM void CoordinateTransformer::checkConfigErrors(const MissingConfigCallback& onMissingConfigItem) {}
 
 FLASHMEM void CoordinateTransformer::begin()
 {

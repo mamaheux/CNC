@@ -524,3 +524,56 @@ void test_ArcConverter_g3YZ()
         {2.79314f, 5.36395f, 7.50778f, 9.05399f, 9.8795f, 10.f},
         {0.398002f, 1.56033f, 3.39445f, 5.75438f, 8.45226f, 10.f});
 }
+
+void test_ArcConverter_g2Offset()
+{
+    CoordinateTransformer coordinateTransformer;
+    ArcConverter arcConverter(&coordinateTransformer);
+
+    coordinateTransformer.onTargetPositionChanged(Vector3<float>(10.f, 100.f, 5.f));
+    arcConverter.onTargetPositionChanged(Vector3<float>(10.f, 100.f, 5.f));
+
+    TEST_ASSERT_EQUAL(
+        CommandResultType::OK,
+        coordinateTransformer.onGCodeCommandReceived(toGCode("G10 L2 P0 X10 Y100 Z5"), CommandSource::SERIAL_SOURCE, 0)
+            .type());
+
+    arcConverter.configure(createMaxErrorInMmConfigItem());
+    TEST_ASSERT_EQUAL(CommandResultType::OK, arcConverter.setArc(toGCode("G2 X1 Y1 I1")).type());
+    assertArc(arcConverter, {10.38f, 11.f}, {100.784602f, 101.f}, {5.f, 5.f});
+}
+
+void test_ArcConverter_g2Rotation()
+{
+    CoordinateTransformer coordinateTransformer;
+    ArcConverter arcConverter(&coordinateTransformer);
+
+    coordinateTransformer.onTargetPositionChanged(Vector3<float>(0.f, 0.f, 0.f));
+    arcConverter.onTargetPositionChanged(Vector3<float>(0.f, 0.f, 0.f));
+
+    TEST_ASSERT_EQUAL(
+        CommandResultType::OK,
+        coordinateTransformer.onGCodeCommandReceived(toGCode("G10 L2 P0 R90"), CommandSource::SERIAL_SOURCE, 0).type());
+
+    arcConverter.configure(createMaxErrorInMmConfigItem());
+    TEST_ASSERT_EQUAL(CommandResultType::OK, arcConverter.setArc(toGCode("G2 X1 Y1 I1")).type());
+    assertArc(arcConverter, {-0.784602f, -1.f}, {0.38f, 1.f}, {0.f, 0.f});
+}
+
+void test_ArcConverter_g2OffsetRotation()
+{
+    CoordinateTransformer coordinateTransformer;
+    ArcConverter arcConverter(&coordinateTransformer);
+
+    coordinateTransformer.onTargetPositionChanged(Vector3<float>(0.f, 0.f, 5.f));
+    arcConverter.onTargetPositionChanged(Vector3<float>(0.f, 0.f, 5.f));
+
+    TEST_ASSERT_EQUAL(
+        CommandResultType::OK,
+        coordinateTransformer.onGCodeCommandReceived(toGCode("G10 L2 P0 R90 Z5"), CommandSource::SERIAL_SOURCE, 0)
+            .type());
+
+    arcConverter.configure(createMaxErrorInMmConfigItem());
+    TEST_ASSERT_EQUAL(CommandResultType::OK, arcConverter.setArc(toGCode("G2 X1 Y1 I1")).type());
+    assertArc(arcConverter, {-0.784602f, -1.f}, {0.38f, 1.f}, {5.f, 5.f});
+}

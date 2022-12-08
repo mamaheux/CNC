@@ -45,7 +45,7 @@ FLASHMEM void ArcConverter::configure(const ConfigItem& item)
 
 FLASHMEM void ArcConverter::checkConfigErrors(const MissingConfigCallback& onMissingConfigItem)
 {
-    CHECK_CONFIG_ERROR(onMissingConfigItem, m_maxError.has_value(), MAX_ERROR_KEY)
+    CHECK_CONFIG_ERROR(onMissingConfigItem, m_maxError.has_value(), MAX_ERROR_KEY);
 };
 
 FLASHMEM void ArcConverter::begin()
@@ -228,7 +228,12 @@ void ArcConverter::setCenterPointFromOffset(const GCode& gcode)
             offset.z = *gcode.k();
         }
 
-        m_centerPoint = m_startPoint + toPlan(offset).first;
+        auto centerPoint = gcodePositionToMachinePosition(
+            m_previousGcodePosition.x + offset.x,
+            m_previousGcodePosition.y + offset.y,
+            m_previousGcodePosition.z + offset.z,
+            false);
+        m_centerPoint = toPlan(centerPoint).first;
     }
     else
     {

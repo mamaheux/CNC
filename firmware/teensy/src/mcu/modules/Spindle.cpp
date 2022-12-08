@@ -30,7 +30,12 @@ static void onFeedbackPulse()
     *pulseCount++;
 }
 
-FLASHMEM Spindle::Spindle() : m_pulseCount(0), m_cumulativeError(0.f), m_previousError(0.f), m_currentRpm(0.f), m_targetRpm(0.f)
+FLASHMEM Spindle::Spindle()
+    : m_pulseCount(0),
+      m_cumulativeError(0.f),
+      m_previousError(0.f),
+      m_currentRpm(0.f),
+      m_targetRpm(0.f)
 {
     memset(m_response, '\0', MAX_SPINDLE_RESPONSE_SIZE);
 }
@@ -99,16 +104,16 @@ FLASHMEM void Spindle::configure(const ConfigItem& item)
 
 FLASHMEM void Spindle::checkConfigErrors(const MissingConfigCallback& onMissingConfigItem)
 {
-    CHECK_CONFIG_ERROR(onMissingConfigItem, m_enableConfig.has_value(), ENABLE_PIN_KEY)
-    CHECK_CONFIG_ERROR(onMissingConfigItem, m_feedbackConfig.has_value(), FEEDBACK_PIN_KEY)
-    CHECK_CONFIG_ERROR(onMissingConfigItem, m_pwmConfig.has_value(), PWM_PIN_KEY)
-    CHECK_CONFIG_ERROR(onMissingConfigItem, m_p.has_value(), P_GAIN_KEY)
-    CHECK_CONFIG_ERROR(onMissingConfigItem, m_i.has_value(), I_GAIN_KEY)
-    CHECK_CONFIG_ERROR(onMissingConfigItem, m_d.has_value(), D_GAIN_KEY)
-    CHECK_CONFIG_ERROR(onMissingConfigItem, m_controlPeriodUs.has_value(), CONTROL_PERIOD_US_KEY)
-    CHECK_CONFIG_ERROR(onMissingConfigItem, m_rpmDecay.has_value(), RPM_DECAY_KEY)
-    CHECK_CONFIG_ERROR(onMissingConfigItem, m_pulsePerRotation.has_value(), PULSE_PER_ROTATION_KEY)
-    CHECK_CONFIG_ERROR(onMissingConfigItem, m_maxCumulativeError.has_value(), MAX_CUMULATIVE_ERROR_KEY)
+    CHECK_CONFIG_ERROR(onMissingConfigItem, m_enableConfig.has_value(), ENABLE_PIN_KEY);
+    CHECK_CONFIG_ERROR(onMissingConfigItem, m_feedbackConfig.has_value(), FEEDBACK_PIN_KEY);
+    CHECK_CONFIG_ERROR(onMissingConfigItem, m_pwmConfig.has_value(), PWM_PIN_KEY);
+    CHECK_CONFIG_ERROR(onMissingConfigItem, m_p.has_value(), P_GAIN_KEY);
+    CHECK_CONFIG_ERROR(onMissingConfigItem, m_i.has_value(), I_GAIN_KEY);
+    CHECK_CONFIG_ERROR(onMissingConfigItem, m_d.has_value(), D_GAIN_KEY);
+    CHECK_CONFIG_ERROR(onMissingConfigItem, m_controlPeriodUs.has_value(), CONTROL_PERIOD_US_KEY);
+    CHECK_CONFIG_ERROR(onMissingConfigItem, m_rpmDecay.has_value(), RPM_DECAY_KEY);
+    CHECK_CONFIG_ERROR(onMissingConfigItem, m_pulsePerRotation.has_value(), PULSE_PER_ROTATION_KEY);
+    CHECK_CONFIG_ERROR(onMissingConfigItem, m_maxCumulativeError.has_value(), MAX_CUMULATIVE_ERROR_KEY);
 }
 
 FLASHMEM void Spindle::begin()
@@ -161,10 +166,8 @@ void Spindle::enable(float targetRpm)
     else
     {
         m_targetRpm = targetRpm;
-        m_cumulativeError = 0.f; // TODO check if needed
-        m_previousError = 0.f;  // TODO check if needed
-        m_enable.write(true);
         m_pwm.write(0);
+        m_enable.write(true);
     }
 }
 
@@ -172,7 +175,9 @@ void Spindle::disable()
 {
     m_enable.write(false);
     m_pwm.write(0);
-    m_targetRpm = 0;
+    m_targetRpm = 0.f;
+    m_cumulativeError = 0.f;
+    m_previousError = 0.f;
 }
 
 void Spindle::onUpdate(uint32_t elapsedUs)
