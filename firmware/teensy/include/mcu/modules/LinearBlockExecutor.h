@@ -11,7 +11,7 @@
 
 #include <Arduino.h>
 
-constexpr size_t LINEAR_BLOCK_EXECUTOR_QUEUE_SIZE = 100;
+constexpr size_t LINEAR_BLOCK_EXECUTOR_QUEUE_SIZE = 200;
 
 class LinearBlockExecutor : public Module
 {

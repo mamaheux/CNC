@@ -15,9 +15,14 @@ struct PlannerLine
     Vector3<float> startPoint;
     Vector3<float> endPoint;
 
-    float m_feedRateInMmPerS;
+    float feedRateInMmPerS;
     tl::optional<float> spindleRpm;
 };
+
+tl::optional<float> calculateJunctionFeedRateInMmPerS(const PlannerLine& currentLine,
+    const PlannerLine& nextLine,
+    float maxAccelerationInMmPerSS,
+    float deviationInMm);
 
 struct PendingGCode
 {
@@ -38,7 +43,8 @@ class Planner : public Module
     tl::optional<float> m_maxFeedRateInMmPerS;
     tl::optional<float> m_accelerationInMmPerSS;
     tl::optional<float> m_junctionDeviation;
-    tl::optional<uint32_t> m_pendingLineDelayMs;
+    tl::optional<uint32_t> m_pendingLineMaxDelayMs;
+    // TODO add queue duration threshold for sleep
 
     InclusiveRange3<float> m_machineRange;  // TODO use
     Vector3<float> m_lastTargetPosition;

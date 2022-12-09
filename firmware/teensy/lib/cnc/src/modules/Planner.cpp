@@ -4,6 +4,8 @@
 
 #include <cstring>
 
+#include <iostream> // TODO remove
+
 constexpr const char* X_STEP_COUNT_PER_MM_KEY = "planner.x.step_count_per_mm";
 constexpr const char* Y_STEP_COUNT_PER_MM_KEY = "planner.y.step_count_per_mm";
 constexpr const char* Z_STEP_COUNT_PER_MM_KEY = "planner.z.step_count_per_mm";
@@ -13,7 +15,65 @@ constexpr const char* MAX_FEED_RATE_IN_MM_PER_S_KEY = "planner.max_feed_rate_in_
 constexpr const char* ACCELERATION_IN_MM_PER_SS_KEY = "planner.x_acceleration_in_mm_per_ss";
 constexpr const char* JUNCTION_DEVIATION_KEY = "planner.junction_deviation";
 
-constexpr const char* PENDING_LINE_DELAY_MS_KEY = "planner.pending_line_delay_ms";
+constexpr const char* PENDING_LINE_MAX_DELAY_MS_KEY = "planner.pending_line_max_delay_ms";
+
+
+
+// Inspired by https://onehossshay.wordpress.com/2011/09/24/improving_grbl_cornering_algorithm/
+tl::optional<float> calculateJunctionFeedRateInMmPerS(const PlannerLine& currentLine,
+    const PlannerLine& nextLine,
+    float maxAccelerationInMmPerSS,
+    float deviationInMm)
+{
+    constexpr float MAX_DISTANCE = 0.01f;
+    constexpr float EPS = 1e-6;
+    if ((currentLine.endPoint - nextLine.startPoint).norm() > MAX_DISTANCE)
+    {
+        return tl::nullopt;
+    }
+
+    Vector3<float> entry = currentLine.endPoint - currentLine.startPoint;
+    Vector3<float> exit = nextLine.endPoint - nextLine.startPoint;
+
+    float cosTheta = -entry.dot(exit) / (entry.norm() * exit.norm() + EPS);
+    float sinHalfTheta = std::sqrt((1.f - cosTheta) / 2.f + EPS);
+    float radius = deviationInMm * sinHalfTheta / (1.f - sinHalfTheta + EPS);
+
+    float feedRateJunctionInMmPerS = std::sqrt(maxAccelerationInMmPerSS * radius);
+
+    return std::min(feedRateJunctionInMmPerS, std::min(currentLine.feedRateInMmPerS, nextLine.feedRateInMmPerS));
+}
+
+LinearBlock lineToLinearBlock(const PlannerLine& line,
+    float entryFeedRateInMmPerS,
+    float exitFeedRateInMmPerS,
+    float tickDurationUs)
+{
+    LinearBlock block;
+    block.directions; // TODO
+
+    block.currentTick = 0;
+    block.accelerationUntilTick; // TODO
+    block.plateauUntilTick; // TODO
+    block.decelerationUntilTick; // TODO
+
+    block.currentStepCount[AXIS_X_INDEX] = 0;
+    block.currentStepCount[AXIS_Y_INDEX] = 0;
+    block.currentStepCount[AXIS_Z_INDEX] = 0;
+    block.totalStepCount; // TODO
+
+    block.accelerationPerTick; // TODO
+    block.decelerationPerTick; // TODO
+    block.stepPerTick; // TODO
+
+    block.stepCounter[AXIS_X_INDEX] = LinearBlockFixedPoint::ZERO;
+    block.stepCounter[AXIS_Y_INDEX] = LinearBlockFixedPoint::ZERO;
+    block.stepCounter[AXIS_Z_INDEX] = LinearBlockFixedPoint::ZERO;
+
+    block.minStepPerTick; // TODO
+    block.durationUs; // TODO
+    block.spindleRpm; // TODO
+}
 
 FLASHMEM Planner::Planner(CoordinateTransformer* coordinateTransformer, ArcConverter* arcConverter)
     : m_coordinateTransformer(coordinateTransformer),
@@ -54,9 +114,9 @@ FLASHMEM void Planner::configure(const ConfigItem& item)
     {
         m_junctionDeviation = item.getValueFloat();
     }
-    else if (strcmp(item.getKey(), PENDING_LINE_DELAY_MS_KEY) == 0)
+    else if (strcmp(item.getKey(), PENDING_LINE_MAX_DELAY_MS_KEY) == 0)
     {
-        m_pendingLineDelayMs = item.getValueInt();
+        m_pendingLineMaxDelayMs = item.getValueInt();
     }
 }
 
@@ -71,7 +131,7 @@ FLASHMEM void Planner::checkConfigErrors(const MissingConfigCallback& onMissingC
     CHECK_CONFIG_ERROR(onMissingConfigItem, m_accelerationInMmPerSS.has_value(), ACCELERATION_IN_MM_PER_SS_KEY);
     CHECK_CONFIG_ERROR(onMissingConfigItem, m_junctionDeviation.has_value(), JUNCTION_DEVIATION_KEY);
 
-    CHECK_CONFIG_ERROR(onMissingConfigItem, m_pendingLineDelayMs.has_value(), PENDING_LINE_DELAY_MS_KEY);
+    CHECK_CONFIG_ERROR(onMissingConfigItem, m_pendingLineMaxDelayMs.has_value(), PENDING_LINE_MAX_DELAY_MS_KEY);
 }
 
 FLASHMEM void Planner::begin()
@@ -141,6 +201,8 @@ void Planner::update()
     // TODO handle g2 and g3 by creating linear blocks with ArcConverter
     // TODO hangle G28 and G28.1
     // TODO call m_kernel->dispatchTargetPosition
+
+    // TODO max queue duration
 }
 
 bool Planner::hasPendingMotionCommands()

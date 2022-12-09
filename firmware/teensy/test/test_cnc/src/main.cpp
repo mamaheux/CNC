@@ -16,6 +16,7 @@
 #include "../include/modules/test_Module.h"
 #include "../include/modules/test_CoordinateTransformer.h"
 #include "../include/modules/test_ArcConverter.h"
+#include "../include/modules/test_Planner.h"
 
 #include "../include/parsing/test_properties.h"
 #include "../include/parsing/test_trim.h"
@@ -206,6 +207,13 @@ void testModules()
     RUN_TEST(test_ArcConverter_g2Offset);
     RUN_TEST(test_ArcConverter_g2Rotation);
     RUN_TEST(test_ArcConverter_g2OffsetRotation);
+
+    RUN_TEST(test_junctionFeedRateInMmPerS_notValidLines);
+    RUN_TEST(test_junctionFeedRateInMmPerS_0Deg);
+    RUN_TEST(test_junctionFeedRateInMmPerS_45Deg);
+    RUN_TEST(test_junctionFeedRateInMmPerS_90Deg);
+    RUN_TEST(test_junctionFeedRateInMmPerS_135Deg);
+    RUN_TEST(test_junctionFeedRateInMmPerS_180Deg);
 }
 
 void testParsing()

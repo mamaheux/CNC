@@ -77,7 +77,6 @@ FLASHMEM void Kernel::begin()
 
 void Kernel::update()
 {
-    // TODO unlock motion lock if there is no pending command in the planner
     bool hasPendingMotionCommands = false;
     for (size_t i = 0; i < m_moduleCount; i++)
     {
