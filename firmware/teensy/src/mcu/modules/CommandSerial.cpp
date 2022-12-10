@@ -71,9 +71,13 @@ void CommandSerial::onCommandResponse(const char* response, CommandSource source
         return;
     }
 
-    COMMAND_SERIAL.println(response);
     if (isComplete)
     {
+        COMMAND_SERIAL.println(response);
         m_pendingCommandId = tl::nullopt;
+    }
+    else
+    {
+        COMMAND_SERIAL.print(response);
     }
 }

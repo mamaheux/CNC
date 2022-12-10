@@ -257,15 +257,17 @@ void Spindle::updatePidGains(const MCode& mcode)
 
 void Spindle::sendPidGains(CommandSource source, uint32_t commandId)
 {
+    constexpr int DIGITS_COUNT = 6;
+
     StringPrint stringPrint(m_response, MAX_SPINDLE_RESPONSE_SIZE);
     stringPrint.print(OK_COMMAND_RESPONSE);
     stringPrint.print(' ');
     stringPrint.print('P');
-    stringPrint.print(*m_p);
+    stringPrint.print(*m_p, DIGITS_COUNT);
     stringPrint.print(" I");
-    stringPrint.print(*m_i);
+    stringPrint.print(*m_i, DIGITS_COUNT);
     stringPrint.print(" D");
-    stringPrint.print(*m_d);
+    stringPrint.print(*m_d, DIGITS_COUNT);
     stringPrint.finish();
 
     m_kernel->sendCommandResponse(m_response, source, commandId);

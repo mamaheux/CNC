@@ -10,5 +10,8 @@ constexpr uint8_t LED_PIN = 13;
 
 #define COMMAND_SERIAL Serial8
 
+//#define DEBUG_SERIAL SerialUSB1
+//#define COMMAND_SERIAL Serial
+
 
 #endif

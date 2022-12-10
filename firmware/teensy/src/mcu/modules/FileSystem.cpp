@@ -2,6 +2,7 @@
 
 #include <cnc/modules/ModuleKernel.h>
 
+constexpr const char* MISSING_PATH_COMMAND_ERROR_MESSAGE = "The path is missing.";
 constexpr const char* INVALID_PATH_COMMAND_ERROR_MESSAGE = "The path is invalid.";
 
 FLASHMEM void FileSystem::configure(const ConfigItem& item) {}
@@ -94,10 +95,16 @@ void FileSystem::sendFileEntry(File& file, size_t spaceCount, CommandSource sour
     }
 
     m_kernel->sendCommandResponse(m_response, source, commandId, false);
+    m_kernel->sendCommandResponse("\r\n", source, commandId, false);
 }
 
 CommandResult FileSystem::startNewFile(const char* path)
 {
+    if (path == nullptr)
+    {
+        return CommandResult::error(MISSING_PATH_COMMAND_ERROR_MESSAGE);
+    }
+
     m_newFile = SD.open(path, FILE_WRITE);
     if (m_newFile)
     {
@@ -126,7 +133,11 @@ void FileSystem::writeOrStopNewFile(const char* line, CommandSource source, uint
 
 CommandResult FileSystem::deleteFile(const char* path)
 {
-    if (SD.remove(path))
+    if (path == nullptr)
+    {
+        return CommandResult::error(MISSING_PATH_COMMAND_ERROR_MESSAGE);
+    }
+    else if (SD.remove(path))
     {
         return CommandResult::ok();
     }
