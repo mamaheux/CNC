@@ -17,10 +17,10 @@ ConsoleWidget::ConsoleWidget(SettingsModel* settings, Cnc* cnc, QWidget* parent)
     connect(m_cnc, &Cnc::cncConnected, this, &ConsoleWidget::onCncConnected);
     connect(m_cnc, &Cnc::cncDisconnected, this, &ConsoleWidget::onCncDisconnected);
 
-    connect(m_cnc, &Cnc::gcodeFileStated, this, &ConsoleWidget::disableSendButton);
-    connect(m_cnc, &Cnc::gcodeFilePaused, this, &ConsoleWidget::enableSendButton);
-    connect(m_cnc, &Cnc::gcodeFileAborted, this, &ConsoleWidget::enableSendButton);
-    connect(m_cnc, &Cnc::gcodeFileFinished, this, &ConsoleWidget::enableSendButton);
+    connect(m_cnc, &Cnc::gcodeFileStated, this, &ConsoleWidget::disableSending);
+    connect(m_cnc, &Cnc::gcodeFilePaused, this, &ConsoleWidget::enableSending);
+    connect(m_cnc, &Cnc::gcodeFileAborted, this, &ConsoleWidget::enableSending);
+    connect(m_cnc, &Cnc::gcodeFileFinished, this, &ConsoleWidget::enableSending);
 
     onCncDisconnected();
 }
@@ -28,7 +28,7 @@ ConsoleWidget::ConsoleWidget(SettingsModel* settings, Cnc* cnc, QWidget* parent)
 void ConsoleWidget::onCncConnected()
 {
     setEnabled(true);
-    enableSendButton();
+    enableSending();
 }
 
 void ConsoleWidget::onCncDisconnected()
@@ -48,13 +48,15 @@ void ConsoleWidget::onSendButtonPressed()
         [this](const QString& command, const QString& response) { m_logTextEdit->appendPlainText(">>> " + response); });
 }
 
-void ConsoleWidget::enableSendButton()
+void ConsoleWidget::enableSending()
 {
+    m_commandLineEdit->setEnabled(true);
     m_sendButton->setEnabled(true);
 }
 
-void ConsoleWidget::disableSendButton()
+void ConsoleWidget::disableSending()
 {
+    m_commandLineEdit->setEnabled(false);
     m_sendButton->setEnabled(false);
 }
 
@@ -70,6 +72,7 @@ void ConsoleWidget::createUi()
     m_commandCompleter->setCaseSensitivity(Qt::CaseInsensitive);
     m_commandLineEdit = new QLineEdit;
     m_commandLineEdit->setCompleter(m_commandCompleter);
+    connect(m_commandLineEdit, &QLineEdit::returnPressed, this, &ConsoleWidget::onSendButtonPressed);
 
     m_sendButton = new QPushButton("Send");
     connect(m_sendButton, &QPushButton::pressed, this, &ConsoleWidget::onSendButtonPressed);
