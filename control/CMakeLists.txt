@@ -29,6 +29,7 @@ file(GLOB_RECURSE
 
 add_executable(control
     ${source_files}
+    resources/resources.qrc
 )
 
 target_link_libraries(control

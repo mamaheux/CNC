@@ -102,6 +102,7 @@ class SerialPortCnc : public Cnc
     Q_OBJECT
 
     QSerialPort* m_serialPort;
+    QString m_currentResponse;
 
 public:
     explicit SerialPortCnc(GCodeModel* gcodeModel);

@@ -10,8 +10,32 @@
 constexpr int SMALL_MAIN_WINDOW_WIDTH = 600;
 constexpr int SMALL_MAIN_WINDOW_HEIGHT = 1024;
 
+void messageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
+{
+    QByteArray localMsg = msg.toLocal8Bit();
+    switch (type) {
+        case QtDebugMsg:
+            fprintf(stderr, "Debug: %s\n", localMsg.constData());
+            break;
+        case QtInfoMsg:
+            fprintf(stderr, "Info: %s\n", localMsg.constData());
+            break;
+        case QtWarningMsg:
+            fprintf(stderr, "Warning: %s\n", localMsg.constData());
+            break;
+        case QtCriticalMsg:
+            fprintf(stderr, "Critical: %s\n", localMsg.constData());
+            break;
+        case QtFatalMsg:
+            fprintf(stderr, "Fatal: %s\n", localMsg.constData());
+            break;
+    }
+}
+
 int runApp(bool small, bool fullscreen, bool mockCnc)
 {
+    qInstallMessageHandler(messageHandler);
+
     auto settings = SettingsModel::loadOrDefault();
     auto gcodeModel = new GCodeModel;
     Cnc* cnc;

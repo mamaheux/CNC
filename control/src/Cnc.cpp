@@ -392,36 +392,41 @@ void SerialPortCnc::onSerialPortReadyRead()
         return;
     }
 
-    QString response;
     QString line;
-    while (true)
+    QString trimmedLine;
+    bool okOrErrorReceived = false;
+    while (m_serialPort->canReadLine())
     {
-        line = m_serialPort->readLine().trimmed();
-        response += line;
-        response += '\n';
+        line = m_serialPort->readLine();
+        line.remove(QRegExp("[\\n\\r]"));
+        trimmedLine = line.trimmed();
+        m_currentResponse += line;
+        m_currentResponse += '\n';
 
-        if (line.startsWith("ok", Qt::CaseInsensitive))
+        if (trimmedLine.startsWith("ok", Qt::CaseInsensitive))
         {
-            m_commandQueue.head().responseCallback(m_commandQueue.head().command, response);
-
-            m_commandQueue.dequeue();
-            if (!m_commandQueue.empty())
-            {
-                sendHeadCommand();
-            }
+            m_commandQueue.head().responseCallback(m_commandQueue.head().command, m_currentResponse);
+            okOrErrorReceived = true;
             break;
         }
-        else if (line.startsWith("error", Qt::CaseInsensitive))
+        else if (trimmedLine.startsWith("error", Qt::CaseInsensitive))
         {
             m_commandQueue.clear();
-            emit cncError(response.remove(0, 6));
+            emit cncError(m_currentResponse.remove(0, 6));
             if (m_isGCodeFileStarted)
             {
                 m_isGCodeFileStarted = false;
                 emit gcodeFileAborted();
             }
+            okOrErrorReceived = true;
             break;
         }
+    }
+
+    if (okOrErrorReceived && !m_commandQueue.empty())
+    {
+        m_commandQueue.dequeue();
+        sendHeadCommand();
     }
 }
 
@@ -432,6 +437,7 @@ void SerialPortCnc::sendHeadCommand()
         return;
     }
 
+    m_currentResponse = "";
     m_serialPort->write(m_commandQueue.head().command.toUtf8());
 }
 

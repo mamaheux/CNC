@@ -21,7 +21,7 @@ void MainWindow::onCncError(const QString& error)
 
 void MainWindow::createUi()
 {
-    // TODO add an icon from the CAD
+    setWindowIcon(QIcon(":images/cnc.png"));
 
     m_cncWidget = new CncWidget(m_settings, m_cnc);
 
