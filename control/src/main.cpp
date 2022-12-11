@@ -53,8 +53,11 @@ int runApp(bool small, bool fullscreen, bool mockCnc)
     if (small)
     {
         mainWindow = new SmallMainWindow(settings, gcodeModel, cnc);
-        mainWindow->setMinimumSize(SMALL_MAIN_WINDOW_WIDTH, SMALL_MAIN_WINDOW_HEIGHT);
-        mainWindow->setMaximumSize(SMALL_MAIN_WINDOW_WIDTH, SMALL_MAIN_WINDOW_HEIGHT);
+        if (!fullscreen)
+        {
+            mainWindow->setMinimumSize(SMALL_MAIN_WINDOW_WIDTH, SMALL_MAIN_WINDOW_HEIGHT);
+            mainWindow->setMaximumSize(SMALL_MAIN_WINDOW_WIDTH, SMALL_MAIN_WINDOW_HEIGHT);
+        }
     }
     else
     {
