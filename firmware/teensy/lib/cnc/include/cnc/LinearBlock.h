@@ -34,8 +34,8 @@ struct LinearBlock
     uint64_t plateauUntilTick;
     uint64_t decelerationUntilTick;
 
-    uint32_t currentStepCount[AXIS_COUNT];
-    uint32_t totalStepCount[AXIS_COUNT];
+    int32_t currentStepCount[AXIS_COUNT];
+    int32_t totalStepCount[AXIS_COUNT];
 
     LinearBlockFixedPoint accelerationPerTick[AXIS_COUNT];
     LinearBlockFixedPoint decelerationPerTick[AXIS_COUNT];

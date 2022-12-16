@@ -2,9 +2,11 @@
 
 #include <cmath>
 
-constexpr const char* TICK_INTERVAL_US_KEY = "linear_block_executor.tick_interval_us";
+constexpr const char* TICK_FREQUENCY_KEY = "linear_block_executor.tick_frequency";
 constexpr const char* QUEUE_DELAY_MS_KEY = "linear_block_executor.queue_delay_ms";
 
+
+// Inspired by Smoothieware StepTicker.cpp
 static bool isStep = true;
 static volatile uint32_t* queueDurationUs = nullptr;
 static volatile bool* noMoreBlock = nullptr;
@@ -90,7 +92,7 @@ static inline void step()
     }
     else if (
         currentBlock->currentTick >= currentBlock->plateauUntilTick &&
-        currentBlock->currentTick < currentBlock->plateauUntilTick)
+        currentBlock->currentTick < currentBlock->decelerationUntilTick)
     {
         decelerate();
     }
@@ -141,9 +143,9 @@ FLASHMEM LinearBlockExecutor::LinearBlockExecutor(StepperController* stepperCont
 
 FLASHMEM void LinearBlockExecutor::configure(const ConfigItem& item)
 {
-    if (strcmp(item.getKey(), TICK_INTERVAL_US_KEY) == 0)
+    if (strcmp(item.getKey(), TICK_FREQUENCY_KEY) == 0)
     {
-        m_tickIntervalUs = item.getValueDouble();
+        m_tickFrequency = item.getValueDouble();
     }
     else if (strcmp(item.getKey(), QUEUE_DELAY_MS_KEY) == 0)
     {
@@ -153,7 +155,7 @@ FLASHMEM void LinearBlockExecutor::configure(const ConfigItem& item)
 
 FLASHMEM void LinearBlockExecutor::checkConfigErrors(const MissingConfigCallback& onMissingConfigItem)
 {
-    CHECK_CONFIG_ERROR(onMissingConfigItem, m_tickIntervalUs.has_value(), TICK_INTERVAL_US_KEY);
+    CHECK_CONFIG_ERROR(onMissingConfigItem, m_tickFrequency.has_value(), TICK_FREQUENCY_KEY);
     CHECK_CONFIG_ERROR(onMissingConfigItem, m_queueDelayMs.has_value(), QUEUE_DELAY_MS_KEY);
 }
 
@@ -197,7 +199,7 @@ void LinearBlockExecutor::startTimer()
     stepperController = m_stepperController;
     spindle = m_spindle;
 
-    m_timer.begin(onTick, *m_tickIntervalUs / 2);
+    m_timer.begin(onTick, 1 / (2 * *m_tickFrequency));
     m_timer.priority(0);
 
     m_timerStarted = true;

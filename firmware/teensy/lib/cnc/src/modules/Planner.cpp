@@ -3,8 +3,10 @@
 #include <cnc/space.h>
 
 #include <cstring>
+#include <cmath>
 
-#include <iostream> // TODO remove
+#undef round
+#undef abs
 
 constexpr const char* X_STEP_COUNT_PER_MM_KEY = "planner.x.step_count_per_mm";
 constexpr const char* Y_STEP_COUNT_PER_MM_KEY = "planner.y.step_count_per_mm";
@@ -12,15 +14,19 @@ constexpr const char* Z_STEP_COUNT_PER_MM_KEY = "planner.z.step_count_per_mm";
 
 constexpr const char* MIN_FEED_RATE_IN_MM_PER_S_KEY = "planner.min_feed_rate_in_mm_per_s";
 constexpr const char* MAX_FEED_RATE_IN_MM_PER_S_KEY = "planner.max_feed_rate_in_mm_per_s";
-constexpr const char* ACCELERATION_IN_MM_PER_SS_KEY = "planner.x_acceleration_in_mm_per_ss";
+constexpr const char* ACCELERATION_IN_MM_PER_SS_KEY = "planner.acceleration_in_mm_per_ss";
 constexpr const char* JUNCTION_DEVIATION_KEY = "planner.junction_deviation";
 
 constexpr const char* PENDING_LINE_MAX_DELAY_MS_KEY = "planner.pending_line_max_delay_ms";
 
-
+inline float pow2(float x)
+{
+    return x * x;
+}
 
 // Inspired by https://onehossshay.wordpress.com/2011/09/24/improving_grbl_cornering_algorithm/
-tl::optional<float> calculateJunctionFeedRateInMmPerS(const PlannerLine& currentLine,
+tl::optional<float> calculateJunctionFeedRateInMmPerS(
+    const PlannerLine& currentLine,
     const PlannerLine& nextLine,
     float maxAccelerationInMmPerSS,
     float deviationInMm)
@@ -44,35 +50,240 @@ tl::optional<float> calculateJunctionFeedRateInMmPerS(const PlannerLine& current
     return std::min(feedRateJunctionInMmPerS, std::min(currentLine.feedRateInMmPerS, nextLine.feedRateInMmPerS));
 }
 
-LinearBlock lineToLinearBlock(const PlannerLine& line,
+tl::optional<PlannerBlock> PlannerBlock::fromLine(
+    const PlannerLine& line,
     float entryFeedRateInMmPerS,
     float exitFeedRateInMmPerS,
-    float tickDurationUs)
+    float accelerationInMmPerSS)
 {
+    if (entryFeedRateInMmPerS > line.feedRateInMmPerS || exitFeedRateInMmPerS > line.feedRateInMmPerS)
+    {
+        return tl::nullopt;
+    }
+
+    PlannerBlock block;
+    block.m_startPoint = line.startPoint;
+    block.m_endPoint = line.endPoint;
+    block.m_distance = (line.endPoint - line.startPoint).norm();
+
+    block.setDirectionFromLine(line);
+    block.setAccelerationAndFeedRates(
+        entryFeedRateInMmPerS,
+        line.feedRateInMmPerS,
+        exitFeedRateInMmPerS,
+        accelerationInMmPerSS);
+    block.calculateTrapezoid(accelerationInMmPerSS);
+
+    block.m_spindleRpm = line.spindleRpm;
+
+    return block;
+}
+
+void PlannerBlock::setDirectionFromLine(const PlannerLine& line)
+{
+    if (line.endPoint.x >= line.startPoint.x)
+    {
+        m_directions[AXIS_X_INDEX] = Direction::FORWARD;
+    }
+    else
+    {
+        m_directions[AXIS_X_INDEX] = Direction::BACKWARD;
+    }
+
+    if (line.endPoint.y >= line.startPoint.y)
+    {
+        m_directions[AXIS_Y_INDEX] = Direction::FORWARD;
+    }
+    else
+    {
+        m_directions[AXIS_Y_INDEX] = Direction::BACKWARD;
+    }
+
+    if (line.endPoint.z >= line.startPoint.z)
+    {
+        m_directions[AXIS_Z_INDEX] = Direction::FORWARD;
+    }
+    else
+    {
+        m_directions[AXIS_Z_INDEX] = Direction::BACKWARD;
+    }
+}
+
+void PlannerBlock::setAccelerationAndFeedRates(
+    float entryFeedRateInMmPerS,
+    float feedRateInMmPerS,
+    float exitFeedRateInMmPerS,
+    float accelerationInMmPerSS)
+{
+    m_entryFeedRateInMmPerS = entryFeedRateInMmPerS;
+
+    float da2 = 2.f * m_distance * accelerationInMmPerSS;
+    float squaredEntryFeedRateInMmPerS = pow2(entryFeedRateInMmPerS);
+    float squaredFeedRateInMmPerS = pow2(feedRateInMmPerS);
+    float squaredExitFeedRateInMmPerS = pow2(exitFeedRateInMmPerS);
+
+    float maxFeedRateOnlyAcceleration = std::sqrt(da2 + squaredEntryFeedRateInMmPerS);
+    float minFeedRateOnlyDeceleration = std::sqrt(squaredEntryFeedRateInMmPerS - da2);
+    float maxFeedRateAccelerationAndDeceleration = std::sqrt(da2 + squaredEntryFeedRateInMmPerS + squaredExitFeedRateInMmPerS) / 1.41421356237f;
+
+    float distanceOnlyAcceleration = (squaredFeedRateInMmPerS - squaredEntryFeedRateInMmPerS) / (2.f * accelerationInMmPerSS);
+    float distanceOnlyDeceleration = (squaredFeedRateInMmPerS - squaredExitFeedRateInMmPerS) / (2.f * accelerationInMmPerSS);
+
+    if (entryFeedRateInMmPerS < exitFeedRateInMmPerS && maxFeedRateOnlyAcceleration < feedRateInMmPerS)
+    {
+        m_feedRateInMmPerS = maxFeedRateOnlyAcceleration;
+        m_exitFeedRateInMmPerS = maxFeedRateOnlyAcceleration;
+    }
+    else if (minFeedRateOnlyDeceleration > exitFeedRateInMmPerS)
+    {
+        m_feedRateInMmPerS = m_entryFeedRateInMmPerS;
+        m_exitFeedRateInMmPerS = minFeedRateOnlyDeceleration;
+    }
+    else if ((distanceOnlyAcceleration + distanceOnlyDeceleration) < m_distance)
+    {
+        m_feedRateInMmPerS = feedRateInMmPerS;
+        m_exitFeedRateInMmPerS = exitFeedRateInMmPerS;
+    }
+    else
+    {
+        m_feedRateInMmPerS = maxFeedRateAccelerationAndDeceleration;
+        m_exitFeedRateInMmPerS = exitFeedRateInMmPerS;
+    }
+}
+
+void PlannerBlock::calculateTrapezoid(float accelerationInMmPerSS)
+{
+    m_accelerationDurationS = (m_feedRateInMmPerS - m_entryFeedRateInMmPerS) / accelerationInMmPerSS;
+    m_decelerationDurationS = (m_feedRateInMmPerS - m_exitFeedRateInMmPerS) / accelerationInMmPerSS;
+
+    float accelerationDistance = 0.5f * (m_feedRateInMmPerS + m_entryFeedRateInMmPerS) * m_accelerationDurationS;
+    float decelerationDistance = 0.5f * (m_feedRateInMmPerS + m_exitFeedRateInMmPerS) * m_decelerationDurationS;
+    float plateauDistance = m_distance - accelerationDistance - decelerationDistance;
+
+    m_plateauDurationS = plateauDistance / m_feedRateInMmPerS;
+}
+
+LinearBlock PlannerBlock::toLinearBlock(
+    float xStepCountPerMm,
+    float yStepCountPerMm,
+    float zStepCountPerMm,
+    float minFeedRateInMmPerS,
+    float tickFrequency)
+{
+    double xStepCountPerMmDouble = xStepCountPerMm;
+    double yStepCountPerMmDouble = yStepCountPerMm;
+    double zStepCountPerMmDouble = zStepCountPerMm;
+    double tickFrequencyDouble = tickFrequency;
+
     LinearBlock block;
-    block.directions; // TODO
+    // Set directions
+    block.directions[AXIS_X_INDEX] = m_directions[AXIS_X_INDEX];
+    block.directions[AXIS_Y_INDEX] = m_directions[AXIS_Y_INDEX];
+    block.directions[AXIS_Z_INDEX] = m_directions[AXIS_Z_INDEX];
 
+    // Set section durations
     block.currentTick = 0;
-    block.accelerationUntilTick; // TODO
-    block.plateauUntilTick; // TODO
-    block.decelerationUntilTick; // TODO
+    block.accelerationUntilTick =
+        static_cast<uint64_t>(std::round(static_cast<double>(m_accelerationDurationS) * tickFrequencyDouble));
+    block.plateauUntilTick = static_cast<uint64_t>(
+        std::round(static_cast<double>(m_accelerationDurationS + m_plateauDurationS) * tickFrequencyDouble));
+    block.decelerationUntilTick = static_cast<uint64_t>(std::round(
+        static_cast<double>(m_accelerationDurationS + m_plateauDurationS + m_decelerationDurationS) *
+        tickFrequencyDouble));
 
+
+    // Set step count
     block.currentStepCount[AXIS_X_INDEX] = 0;
     block.currentStepCount[AXIS_Y_INDEX] = 0;
     block.currentStepCount[AXIS_Z_INDEX] = 0;
-    block.totalStepCount; // TODO
 
-    block.accelerationPerTick; // TODO
-    block.decelerationPerTick; // TODO
-    block.stepPerTick; // TODO
+    Vector3<double> startPointDouble(
+        static_cast<double>(m_startPoint.x),
+        static_cast<double>(m_startPoint.y),
+        static_cast<double>(m_startPoint.z));
+    Vector3<double> endPointDouble(
+        static_cast<double>(m_endPoint.x),
+        static_cast<double>(m_endPoint.y),
+        static_cast<double>(m_endPoint.z));
 
+    int32_t startXInStep = static_cast<int32_t>(std::round(startPointDouble.x * xStepCountPerMmDouble));
+    int32_t startYInStep = static_cast<int32_t>(std::round(startPointDouble.y * yStepCountPerMmDouble));
+    int32_t startZInStep = static_cast<int32_t>(std::round(startPointDouble.z * zStepCountPerMmDouble));
+    int32_t endXInStep = static_cast<int32_t>(std::round(endPointDouble.x * xStepCountPerMmDouble));
+    int32_t endYInStep = static_cast<int32_t>(std::round(endPointDouble.y * yStepCountPerMmDouble));
+    int32_t endZInStep = static_cast<int32_t>(std::round(endPointDouble.z * zStepCountPerMmDouble));
+    block.totalStepCount[AXIS_X_INDEX] = std::abs(startXInStep - endXInStep);
+    block.totalStepCount[AXIS_Y_INDEX] = std::abs(startYInStep - endYInStep);
+    block.totalStepCount[AXIS_Z_INDEX] = std::abs(startZInStep - endZInStep);
+
+
+    // Set acceleration
+    double entryFeedRateInMmPerSDouble = static_cast<double>(m_entryFeedRateInMmPerS);
+    double feedRateInMmPerSDouble = static_cast<double>(m_feedRateInMmPerS);
+    double exitFeedRateInMmPerSDouble = static_cast<double>(m_exitFeedRateInMmPerS);
+
+    Vector3<double> direction = (endPointDouble - startPointDouble).normalized();
+    Vector3<double> absDirection(std::abs(direction.x), std::abs(direction.y), std::abs(direction.z));
+    double xMmToTickScale = absDirection.x * xStepCountPerMm / tickFrequencyDouble;
+    double yMmToTickScale = absDirection.y * yStepCountPerMm / tickFrequencyDouble;
+    double zMmToTickScale = absDirection.z * zStepCountPerMm / tickFrequencyDouble;
+
+    double accelerationDurationS = static_cast<double>(block.accelerationUntilTick) / tickFrequencyDouble;
+    double accelerationInMmPerSS = (feedRateInMmPerSDouble - entryFeedRateInMmPerSDouble) / accelerationDurationS;
+
+    if (std::isnan(accelerationInMmPerSS))
+    {
+        block.accelerationPerTick[AXIS_X_INDEX] = LinearBlockFixedPoint::ZERO;
+        block.accelerationPerTick[AXIS_Y_INDEX] = LinearBlockFixedPoint::ZERO;
+        block.accelerationPerTick[AXIS_Z_INDEX] = LinearBlockFixedPoint::ZERO;
+    }
+    else
+    {
+        block.accelerationPerTick[AXIS_X_INDEX] = accelerationInMmPerSS * xMmToTickScale;
+        block.accelerationPerTick[AXIS_Y_INDEX] = accelerationInMmPerSS * yMmToTickScale;
+        block.accelerationPerTick[AXIS_Z_INDEX] = accelerationInMmPerSS * zMmToTickScale;
+    }
+
+
+    // Set deceleration
+    double decelerationDurationS =
+        static_cast<double>(block.decelerationUntilTick - block.plateauUntilTick) / tickFrequencyDouble;
+    double decelerationInMmPerSS = (exitFeedRateInMmPerSDouble - feedRateInMmPerSDouble) / decelerationDurationS;
+
+    if (std::isnan(decelerationInMmPerSS))
+    {
+        block.decelerationPerTick[AXIS_X_INDEX] = LinearBlockFixedPoint::ZERO;
+        block.decelerationPerTick[AXIS_Y_INDEX] = LinearBlockFixedPoint::ZERO;
+        block.decelerationPerTick[AXIS_Z_INDEX] = LinearBlockFixedPoint::ZERO;
+    }
+    else
+    {
+        block.decelerationPerTick[AXIS_X_INDEX] = decelerationInMmPerSS * xMmToTickScale;
+        block.decelerationPerTick[AXIS_Y_INDEX] = decelerationInMmPerSS * yMmToTickScale;
+        block.decelerationPerTick[AXIS_Z_INDEX] = decelerationInMmPerSS * zMmToTickScale;
+    }
+
+    block.stepPerTick[AXIS_X_INDEX] = entryFeedRateInMmPerSDouble * xMmToTickScale;
+    block.stepPerTick[AXIS_Y_INDEX] = entryFeedRateInMmPerSDouble * yMmToTickScale;
+    block.stepPerTick[AXIS_Z_INDEX] = entryFeedRateInMmPerSDouble * zMmToTickScale;
+
+    // Set step counter
     block.stepCounter[AXIS_X_INDEX] = LinearBlockFixedPoint::ZERO;
     block.stepCounter[AXIS_Y_INDEX] = LinearBlockFixedPoint::ZERO;
     block.stepCounter[AXIS_Z_INDEX] = LinearBlockFixedPoint::ZERO;
 
-    block.minStepPerTick; // TODO
-    block.durationUs; // TODO
-    block.spindleRpm; // TODO
+    // Set minStepPerTick
+    double minFeedRateInMmPerSDouble = minFeedRateInMmPerS;
+    block.minStepPerTick[AXIS_X_INDEX] = minFeedRateInMmPerSDouble * xMmToTickScale;
+    block.minStepPerTick[AXIS_Y_INDEX] = minFeedRateInMmPerSDouble * yMmToTickScale;
+    block.minStepPerTick[AXIS_Z_INDEX] = minFeedRateInMmPerSDouble * zMmToTickScale;
+
+
+    // Set missing attributes
+    block.durationUs = static_cast<uint32_t>(static_cast<double>(block.decelerationUntilTick) / tickFrequencyDouble * 1e6);
+    block.spindleRpm = m_spindleRpm;
+
+    return block;
 }
 
 FLASHMEM Planner::Planner(CoordinateTransformer* coordinateTransformer, ArcConverter* arcConverter)
@@ -194,6 +405,18 @@ CommandResult Planner::onMCodeCommandReceived(const MCode& mcode, CommandSource 
 
 void Planner::update()
 {
+    if (!m_arcConverter->isFinished())
+    {
+        // TODO completeArc
+    }
+    else if (m_pendingLine.has_value())
+    {
+        // TODO handle pending line
+    }
+    else if (m_pendingGCode.has_value())
+    {
+        // TODO handle gcode
+    }
     // TODO handle pending gcode
     // TODO handle pending line
 

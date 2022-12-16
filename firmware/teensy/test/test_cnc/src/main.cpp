@@ -214,6 +214,29 @@ void testModules()
     RUN_TEST(test_junctionFeedRateInMmPerS_90Deg);
     RUN_TEST(test_junctionFeedRateInMmPerS_135Deg);
     RUN_TEST(test_junctionFeedRateInMmPerS_180Deg);
+
+    RUN_TEST(test_PlannerBlockFromLine_invalid);
+    RUN_TEST(test_PlannerBlockFromLine_directions);
+    RUN_TEST(test_PlannerBlockFromLine_spindleRpm);
+    RUN_TEST(test_PlannerBlockFromLine_noMovement);
+    RUN_TEST(test_PlannerBlockFromLine_accelerationOnly);
+    RUN_TEST(test_PlannerBlockFromLine_decelerationOnly);
+    RUN_TEST(test_PlannerBlockFromLine_accelerationPlateau);
+    RUN_TEST(test_PlannerBlockFromLine_plateauDeceleration);
+    RUN_TEST(test_PlannerBlockFromLine_plateau);
+    RUN_TEST(test_PlannerBlockFromLine_accelerationPlateauDeceleration);
+    RUN_TEST(test_PlannerBlockFromLine_accelerationDeceleration);
+
+    RUN_TEST(test_PlannerBlockToLinearBlock_directions);
+    RUN_TEST(test_PlannerBlockToLinearBlock_spindleRpm);
+    RUN_TEST(test_PlannerBlockToLinearBlock_noMovement);
+    RUN_TEST(test_PlannerBlockToLinearBlock_accelerationOnly);
+    RUN_TEST(test_PlannerBlockToLinearBlock_decelerationOnly);
+    RUN_TEST(test_PlannerBlockToLinearBlock_accelerationPlateau);
+    RUN_TEST(test_PlannerBlockToLinearBlock_plateauDeceleration);
+    RUN_TEST(test_PlannerBlockToLinearBlock_plateau);
+    RUN_TEST(test_PlannerBlockToLinearBlock_accelerationPlateauDeceleration);
+    RUN_TEST(test_PlannerBlockToLinearBlock_accelerationDeceleration);
 }
 
 void testParsing()

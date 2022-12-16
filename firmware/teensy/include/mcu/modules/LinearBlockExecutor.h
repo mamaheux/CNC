@@ -18,7 +18,7 @@ class LinearBlockExecutor : public Module
     StepperController* m_stepperController;
     Spindle* m_spindle;
 
-    tl::optional<double> m_tickIntervalUs;
+    tl::optional<double> m_tickFrequency;
     tl::optional<uint32_t> m_queueDelayMs;
 
     IntervalTimer m_timer;
@@ -43,7 +43,7 @@ public:
     void update() override;
     bool hasPendingMotionCommands() override;
 
-    double tickIntervalUs() const;
+    double tickFrequency() const;
     bool addLinearBlock(const LinearBlock& block, uint32_t& queueDuration);
 
 private:
@@ -51,9 +51,9 @@ private:
     void stopTimer();
 };
 
-inline double LinearBlockExecutor::tickIntervalUs() const
+inline double LinearBlockExecutor::tickFrequency() const
 {
-    return *m_tickIntervalUs;
+    return *m_tickFrequency;
 }
 
 inline bool LinearBlockExecutor::addLinearBlock(const LinearBlock& block, uint32_t& queueDuration)
@@ -63,7 +63,7 @@ inline bool LinearBlockExecutor::addLinearBlock(const LinearBlock& block, uint32
         m_firstBlockTimestampMs = millis();
     }
 
-    TimerInterruptLock lock;  // TODO Check if there are glichs, check if needed
+    TimerInterruptLock lock;
     m_queueDurationUs += block.durationUs;
     queueDuration = m_queueDurationUs;
     return m_queue.push(block);

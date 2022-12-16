@@ -3,8 +3,6 @@
 
 #include <cstring>
 
-#include <iostream>  // TODO remove
-
 using namespace std;
 
 #define TEST_ASSERT_NO_PARAMETERS(code)                                                                                \

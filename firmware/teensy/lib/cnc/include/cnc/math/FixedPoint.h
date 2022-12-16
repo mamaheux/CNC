@@ -82,6 +82,7 @@ public:
 
     explicit operator float() const;
     explicit operator double() const;
+    explicit operator T() const;
 
 private:
     static T multiplyFixedPoint(T left, T right);
@@ -292,21 +293,19 @@ inline FixedPoint<IntegerSize, FractionSize> FixedPoint<IntegerSize, FractionSiz
 template<size_t IntegerSize, size_t FractionSize>
 inline FixedPoint<IntegerSize, FractionSize>::operator float() const
 {
-    T signValue = FixedPoint::sign_(m_value);
-    T absValue = FixedPoint::abs_(m_value);
-    float integerPart = absValue >> FractionSize;
-    float fractionalPart = static_cast<float>(absValue & FRACTION_MASK) / ONE_FIXED_POINT;
-    return (integerPart + fractionalPart) * signValue;
+    return static_cast<float>(m_value) / static_cast<float>(ONE_FIXED_POINT);
 }
 
 template<size_t IntegerSize, size_t FractionSize>
 inline FixedPoint<IntegerSize, FractionSize>::operator double() const
 {
-    T signValue = FixedPoint::sign_(m_value);
-    T absValue = FixedPoint::abs_(m_value);
-    double integerPart = absValue >> FractionSize;
-    double fractionalPart = static_cast<double>(absValue & FRACTION_MASK) / ONE_FIXED_POINT;
-    return (integerPart + fractionalPart) * signValue;
+    return static_cast<double>(m_value) / static_cast<double>(ONE_FIXED_POINT);
+}
+
+template<size_t IntegerSize, size_t FractionSize>
+inline FixedPoint<IntegerSize, FractionSize>::operator FixedPoint<IntegerSize, FractionSize>::T() const
+{
+    return m_value;
 }
 
 template<size_t IntegerSize, size_t FractionSize>

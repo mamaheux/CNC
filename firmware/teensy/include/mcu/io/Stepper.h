@@ -7,12 +7,6 @@
 
 #include <cstdint>
 
-inline float directionToFloat(Direction direction)
-{
-    constexpr float VALUES[] = {1.f, -1.f};
-    return VALUES[static_cast<size_t>(direction)];
-}
-
 inline int32_t directionToInt(Direction direction)
 {
     constexpr int32_t VALUES[] = {1, -1};

@@ -5,8 +5,6 @@
 #include <cmath>
 #include <cstring>
 
-#include <iostream> // TODO remove
-
 using namespace std;
 
 constexpr const char* MAX_ERROR_KEY = "arc_converter.max_error_in_mm";
@@ -295,8 +293,6 @@ bool ArcConverter::calculateSegments(const GCode& gcode)
     m_angleStep = min(arcAngle, maxAngleStep);
     m_segmentCount = static_cast<size_t>(ceil(arcAngle / m_angleStep));
     m_segmentIndex = 0;
-
-    cout << "m_segmentCount=" << m_segmentCount << endl;
 
     m_currentOtherAxis = m_startOtherAxis;
     m_otherAxisStep = (m_endOtherAxis - m_startOtherAxis) * m_angleStep / arcAngle;

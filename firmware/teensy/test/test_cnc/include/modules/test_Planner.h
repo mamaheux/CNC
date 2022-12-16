@@ -8,4 +8,27 @@ void test_junctionFeedRateInMmPerS_90Deg();
 void test_junctionFeedRateInMmPerS_135Deg();
 void test_junctionFeedRateInMmPerS_180Deg();
 
+void test_PlannerBlockFromLine_invalid();
+void test_PlannerBlockFromLine_directions();
+void test_PlannerBlockFromLine_spindleRpm();
+void test_PlannerBlockFromLine_noMovement();
+void test_PlannerBlockFromLine_accelerationOnly();
+void test_PlannerBlockFromLine_decelerationOnly();
+void test_PlannerBlockFromLine_accelerationPlateau();
+void test_PlannerBlockFromLine_plateauDeceleration();
+void test_PlannerBlockFromLine_plateau();
+void test_PlannerBlockFromLine_accelerationPlateauDeceleration();
+void test_PlannerBlockFromLine_accelerationDeceleration();
+
+void test_PlannerBlockToLinearBlock_directions();
+void test_PlannerBlockToLinearBlock_spindleRpm();
+void test_PlannerBlockToLinearBlock_noMovement();
+void test_PlannerBlockToLinearBlock_accelerationOnly();
+void test_PlannerBlockToLinearBlock_decelerationOnly();
+void test_PlannerBlockToLinearBlock_accelerationPlateau();
+void test_PlannerBlockToLinearBlock_plateauDeceleration();
+void test_PlannerBlockToLinearBlock_plateau();
+void test_PlannerBlockToLinearBlock_accelerationPlateauDeceleration();
+void test_PlannerBlockToLinearBlock_accelerationDeceleration();
+
 #endif
