@@ -34,6 +34,8 @@ void Module::onTargetPositionChanged(const Vector3<float>& machinePosition) {}
 
 void Module::onCommandResponse(const char* response, CommandSource source, uint32_t commandId, bool isComplete) {}
 
+bool Module::onLinearBlock(const LinearBlock& block, uint32_t& queueDurationUs, size_t& queueSize) { return false; }
+
 void Module::update() {}
 
 bool Module::hasPendingMotionCommands()

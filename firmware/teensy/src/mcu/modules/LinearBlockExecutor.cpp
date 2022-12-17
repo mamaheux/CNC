@@ -1,4 +1,7 @@
 #include "mcu/modules/LinearBlockExecutor.h"
+#include "mcu/modules/Planner.h"
+
+#include <cnc/modules/ModuleKernel.h>
 
 #include <cmath>
 
@@ -132,13 +135,14 @@ static void onTick()
     isStep = !isStep;
 }
 
-FLASHMEM LinearBlockExecutor::LinearBlockExecutor(StepperController* stepperController, Spindle* spindle)
+FLASHMEM LinearBlockExecutor::LinearBlockExecutor(StepperController* stepperController, Spindle* spindle, Planner* planner)
     : m_stepperController(stepperController),
       m_spindle(spindle),
       m_queueDurationUs(0),
       m_timerStarted(false),
       m_firstBlockTimestampMs(0)
 {
+    planner->setLinearBlockExecutor(this);
 }
 
 FLASHMEM void LinearBlockExecutor::configure(const ConfigItem& item)
@@ -165,6 +169,8 @@ void LinearBlockExecutor::begin()
 
     m_timerStarted = false;
     m_firstBlockTimestampMs = 0;
+
+    m_kernel->registerToEvent(ModuleEventType::LINEAR_BLOCK, this);
 }
 
 void LinearBlockExecutor::update()
@@ -186,6 +192,25 @@ void LinearBlockExecutor::update()
 bool LinearBlockExecutor::hasPendingMotionCommands()
 {
     return m_timerStarted;
+}
+
+bool LinearBlockExecutor::onLinearBlock(const LinearBlock& block, uint32_t& queueDurationUs, size_t& queueSize)
+{
+    if (!m_timerStarted)
+    {
+        m_firstBlockTimestampMs = millis();
+    }
+
+    TimerInterruptLock lock;
+    bool ok = m_queue.push(block);
+    if (ok)
+    {
+        m_queueDurationUs += block.durationUs;
+    }
+
+    queueDurationUs = m_queueDurationUs;
+    queueSize = m_queue.size();
+    return ok;
 }
 
 void LinearBlockExecutor::startTimer()

@@ -29,7 +29,8 @@ static void assertArc(
     const vector<float>& x,
     const vector<float>& y,
     const vector<float>& z,
-    tl::optional<float> f = tl::nullopt)
+    tl::optional<float> f = tl::nullopt,
+    tl::optional<float> s = tl::nullopt)
 {
     GCode code;
     TEST_ASSERT(x.size() == y.size());
@@ -43,6 +44,7 @@ static void assertArc(
         TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, z[i], *code.z());
         TEST_ASSERT_TRUE(code.isMachineCoordinateSystem());
         TEST_ASSERT(code.f() == f);
+        TEST_ASSERT(code.s() == s);
     }
 
     TEST_ASSERT_FALSE(arcConverter.getNextSegment(code));
@@ -123,6 +125,7 @@ void test_ArcConverter_invalidCode()
     CoordinateTransformer coordinateTransformer;
     ArcConverter arcConverter(&coordinateTransformer);
 
+    TEST_ASSERT_TRUE(arcConverter.isFinished());
     TEST_ASSERT_EQUAL(CommandResultType::NOT_HANDLED, arcConverter.setArc(toGCode("G0")).type());
     TEST_ASSERT_EQUAL(CommandResultType::NOT_HANDLED, arcConverter.setArc(toGCode("G1")).type());
 }
@@ -134,6 +137,7 @@ void test_ArcConverter_invalidCenterPoint()
 
     // Default plan (XY)
     TEST_ASSERT_EQUAL(CommandResultType::ERROR, arcConverter.setArc(toGCode("G2")).type());
+    TEST_ASSERT_TRUE(arcConverter.isFinished());
     TEST_ASSERT_EQUAL(CommandResultType::ERROR, arcConverter.setArc(toGCode("G2 K3")).type());
     TEST_ASSERT_EQUAL(CommandResultType::ERROR, arcConverter.setArc(toGCode("G2 I1 J2 K3")).type());
     TEST_ASSERT_EQUAL(CommandResultType::ERROR, arcConverter.setArc(toGCode("G3")).type());
@@ -185,9 +189,10 @@ void test_ArcConverter_invalidRadius()
     ArcConverter arcConverter(&coordinateTransformer);
 
     // The distance between the center point and the start point is not equal
-    // to the distance between the center point and the en point.
+    // to the distance between the center point and the end point.
     arcConverter.onTargetPositionChanged(Vector3<float>(0.f, 0.f, 0.f));
     TEST_ASSERT_EQUAL(CommandResultType::ERROR, arcConverter.setArc(toGCode("G2 X2 Y2 I0.1 J0.1")).type());
+    TEST_ASSERT_TRUE(arcConverter.isFinished());
     TEST_ASSERT_EQUAL(CommandResultType::ERROR, arcConverter.setArc(toGCode("G3 X2 Y2 I0.1 J0.1")).type());
 
     // Too small radius
@@ -201,9 +206,10 @@ void test_ArcConverter_invalidP()
     ArcConverter arcConverter(&coordinateTransformer);
 
     // The distance between the center point and the start point is not equal
-    // to the distance between the center point and the en point.
+    // to the distance between the center point and the end point.
     arcConverter.onTargetPositionChanged(Vector3<float>(0.f, 0.f, 0.f));
     TEST_ASSERT_EQUAL(CommandResultType::ERROR, arcConverter.setArc(toGCode("G2 X1 Y1 I1 P1.01")).type());
+    TEST_ASSERT_TRUE(arcConverter.isFinished());
 }
 
 void test_ArcConverter_absoluteR()
@@ -418,13 +424,14 @@ void test_ArcConverter_offsetAndAbsolute()
         CommandResultType::OK,
         arcConverter.onGCodeCommandReceived(toGCode("G90.1"), CommandSource::SERIAL_SOURCE, 0).type());
     arcConverter.onTargetPositionChanged(Vector3<float>(0.f, 0.f, 0.f));
-    TEST_ASSERT_EQUAL(CommandResultType::OK, arcConverter.setArc(toGCode("G2 X1 I0 F10")).type());
+    TEST_ASSERT_EQUAL(CommandResultType::OK, arcConverter.setArc(toGCode("G2 X1 I0 F10 S5000")).type());
     assertArc(
         arcConverter,
         {0.38f, 1.2312f, 1.90669f, 2.f},
         {0.784602f, 0.972906f, 0.421802f, 0.f},
         {0.f, 0.f, 0.f, 0.f},
-        10);
+        10.f,
+        5000.f);
 }
 
 void test_ArcConverter_g53()
@@ -576,4 +583,48 @@ void test_ArcConverter_g2OffsetRotation()
     arcConverter.configure(createMaxErrorInMmConfigItem());
     TEST_ASSERT_EQUAL(CommandResultType::OK, arcConverter.setArc(toGCode("G2 X1 Y1 I1")).type());
     assertArc(arcConverter, {-0.784602f, -1.f}, {0.38f, 1.f}, {5.f, 5.f});
+}
+
+void test_ArcConverter_moveBack()
+{
+    CoordinateTransformer coordinateTransformer;
+    ArcConverter arcConverter(&coordinateTransformer);
+
+    arcConverter.configure(createMaxErrorInMmConfigItem());
+    arcConverter.onTargetPositionChanged(Vector3<float>(0.f, 0.f, 0.f));
+    TEST_ASSERT_EQUAL(CommandResultType::OK, arcConverter.setArc(toGCode("G2 X1 Y1 Z2 I1")).type());
+
+    GCode code;
+    TEST_ASSERT_TRUE(arcConverter.getNextSegment(code));
+    TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 0.38f, *code.x());
+    TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 0.7846018f, *code.y());
+    TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 1.14853f, *code.z());
+    TEST_ASSERT_TRUE(code.isMachineCoordinateSystem());
+
+    arcConverter.moveBack();
+    TEST_ASSERT_TRUE(arcConverter.getNextSegment(code));
+    TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 0.38f, *code.x());
+    TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 0.7846018f, *code.y());
+    TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 1.14853f, *code.z());
+    TEST_ASSERT_TRUE(code.isMachineCoordinateSystem());
+
+    TEST_ASSERT_TRUE(arcConverter.getNextSegment(code));
+    TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 1.f, *code.x());
+    TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 1.f, *code.y());
+    TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 2.f, *code.z());
+    TEST_ASSERT_TRUE(code.isMachineCoordinateSystem());
+}
+
+void test_ArcConverter_clear()
+{
+    CoordinateTransformer coordinateTransformer;
+    ArcConverter arcConverter(&coordinateTransformer);
+
+    arcConverter.configure(createMaxErrorInMmConfigItem());
+    arcConverter.onTargetPositionChanged(Vector3<float>(0.f, 0.f, 0.f));
+    TEST_ASSERT_EQUAL(CommandResultType::OK, arcConverter.setArc(toGCode("G2 X1 Y1 I1")).type());
+
+    TEST_ASSERT_FALSE(arcConverter.isFinished());
+    arcConverter.clear();
+    TEST_ASSERT_TRUE(arcConverter.isFinished());
 }

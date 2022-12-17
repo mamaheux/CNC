@@ -13,6 +13,8 @@
 
 constexpr size_t LINEAR_BLOCK_EXECUTOR_QUEUE_SIZE = 200;
 
+class Planner;
+
 class LinearBlockExecutor : public Module
 {
     StepperController* m_stepperController;
@@ -30,7 +32,7 @@ class LinearBlockExecutor : public Module
     volatile bool m_noMoreBlock;
 
 public:
-    LinearBlockExecutor(StepperController* stepperController, Spindle* spindle);
+    LinearBlockExecutor(StepperController* stepperController, Spindle* spindle, Planner* planner);
     ~LinearBlockExecutor() override = default;
 
     DECLARE_NOT_COPYABLE(LinearBlockExecutor);
@@ -43,30 +45,18 @@ public:
     void update() override;
     bool hasPendingMotionCommands() override;
 
-    double tickFrequency() const;
-    bool addLinearBlock(const LinearBlock& block, uint32_t& queueDuration);
+    float tickFrequency() const;
+
+    bool onLinearBlock(const LinearBlock& block, uint32_t& queueDurationUs, size_t& queueSize);
 
 private:
     void startTimer();
     void stopTimer();
 };
 
-inline double LinearBlockExecutor::tickFrequency() const
+inline float LinearBlockExecutor::tickFrequency() const
 {
-    return *m_tickFrequency;
-}
-
-inline bool LinearBlockExecutor::addLinearBlock(const LinearBlock& block, uint32_t& queueDuration)
-{
-    if (!m_timerStarted)
-    {
-        m_firstBlockTimestampMs = millis();
-    }
-
-    TimerInterruptLock lock;
-    m_queueDurationUs += block.durationUs;
-    queueDuration = m_queueDurationUs;
-    return m_queue.push(block);
+    return static_cast<float>(*m_tickFrequency);
 }
 
 #endif

@@ -22,8 +22,6 @@ void test_parseGCode_G18();
 void test_parseGCode_G19();
 void test_parseGCode_G20();
 void test_parseGCode_G21();
-void test_parseGCode_G28();
-void test_parseGCode_G28D1();
 
 void test_parseGCode_G53();
 void test_parseGCode_G53NextLine();

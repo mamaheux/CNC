@@ -18,6 +18,8 @@ enum class ArcConverterPlan
 class ArcConverter : public Module
 {
     tl::optional<float> m_feedrate;
+    tl::optional<float> m_spindleRpm;
+
     Vector2<float> m_startPoint;
     Vector2<float> m_endPoint;
     Vector2<float> m_centerPoint;
@@ -57,7 +59,10 @@ public:
 
     CommandResult setArc(const GCode& gcode);
     bool getNextSegment(GCode& gcode);
+    void moveBack();
     bool isFinished() const;
+
+    void clear();
 
 private:
     void setStartPoint();
@@ -79,9 +84,22 @@ private:
     Vector3<float> fromPlan(Vector2<float> position, float otherAxis);
 };
 
+inline void ArcConverter::moveBack()
+{
+    m_segmentIndex--;
+    m_currentAngle -= m_angleStep;
+    m_currentOtherAxis -= m_otherAxisStep;
+}
+
 inline bool ArcConverter::isFinished() const
 {
     return m_segmentIndex == m_segmentCount;
+}
+
+inline void ArcConverter::clear()
+{
+    m_segmentCount = 0;
+    m_segmentIndex = 0;
 }
 
 float atan2Pos(float a, float b);

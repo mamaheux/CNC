@@ -99,26 +99,31 @@ CommandResult ArcConverter::setArc(const GCode& gcode)
     m_previousGcodePosition = m_coordinateTransformer->machineCoordinateToGcode(m_previousMachinePosition);
 
     m_feedrate = gcode.f();
+    m_spindleRpm = gcode.s();
 
     setStartPoint();
     setEndPoint(gcode);
     if (!setCenterPoint(gcode))
     {
+        clear();
         return CommandResult::error(CENTER_POINT_ERROR_COMMAND_ERROR_MESSAGE);
     }
 
     if (!setRadius())
     {
+        clear();
         return CommandResult::error(RADIUS_ERROR_COMMAND_ERROR_MESSAGE);
     }
 
     if (m_radius < MINIMUM_RADIUS)
     {
+        clear();
         return CommandResult::error(RADIUS_ERROR_COMMAND_ERROR_MESSAGE);
     }
 
     if (!calculateSegments(gcode))
     {
+        clear();
         return CommandResult::error(SEGMENT_ERROR_COMMAND_ERROR_MESSAGE);
     }
     return CommandResult::ok();
@@ -131,18 +136,17 @@ bool ArcConverter::getNextSegment(GCode& gcode)
         return false;
     }
 
-    // TODO add spindle speed if specified
     m_segmentIndex++;
     m_currentAngle += m_angleStep;
     m_currentOtherAxis += m_otherAxisStep;
     if (isFinished())
     {
-        gcode = GCode::g1(fromPlan(m_endPoint, m_endOtherAxis), m_feedrate, true);
+        gcode = GCode::g1(fromPlan(m_endPoint, m_endOtherAxis), m_feedrate, m_spindleRpm, true);
     }
     else
     {
         Vector2<float> position = m_centerPoint + Vector2<float>(cos(m_currentAngle), sin(m_currentAngle)) * m_radius;
-        gcode = GCode::g1(fromPlan(position, m_currentOtherAxis), m_feedrate, true);
+        gcode = GCode::g1(fromPlan(position, m_currentOtherAxis), m_feedrate, m_spindleRpm, true);
     }
 
     return true;

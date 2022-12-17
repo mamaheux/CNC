@@ -43,6 +43,8 @@ public:
 
     void dispatchTargetPosition(const Vector3<float>& machinePosition) override;
 
+    bool dispatchLinearBlock(const LinearBlock& block, uint32_t& queueDurationUs, size_t& queueSize) override;
+
 private:
     void executeSystemCommand(const char* line, CommandSource source, uint32_t commandId);
     void executeGCodeCommand(const char* line, CommandSource source, uint32_t commandId);
@@ -121,6 +123,11 @@ void GuiKernel::dispatchTargetPosition(const Vector3<float>& machinePosition)
     {
         module->onTargetPositionChanged(machinePosition);
     }
+}
+
+bool GuiKernel::dispatchLinearBlock(const LinearBlock& block, uint32_t& queueDurationUs, size_t& queueSize)
+{
+    return false;
 }
 
 void GuiKernel::executeSystemCommand(const char* line, CommandSource source, uint32_t commandId)
@@ -557,8 +564,8 @@ CommandResult LineCreator::onGCodeCommandReceived(const GCode& gcode, CommandSou
                 static_cast<int>(commandId),
                 fast});
             m_startPoint = endPoint;
+            m_kernel->dispatchTargetPosition(m_startPoint);
         }
-        m_kernel->dispatchTargetPosition(m_startPoint);
     }
 
     return CommandResult::ok();
@@ -579,7 +586,6 @@ Vector3<float> LineCreator::calculateEndPoint(const GCode& g0g1)
         float x = *g0g1.x().or_else([gcodeStartPoint]() { return gcodeStartPoint.x; });
         float y = *g0g1.y().or_else([gcodeStartPoint]() { return gcodeStartPoint.y; });
         float z = *g0g1.z().or_else([gcodeStartPoint]() { return gcodeStartPoint.z; });
-        auto e = m_coordinateTransformer->gcodeCoordinateToMachineCoordinate(Vector3<float>(x, y, z));
         return m_coordinateTransformer->gcodeCoordinateToMachineCoordinate(Vector3<float>(x, y, z));
     }
 }

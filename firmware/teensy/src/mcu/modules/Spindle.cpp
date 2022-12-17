@@ -166,7 +166,6 @@ void Spindle::enable(float targetRpm)
     else
     {
         m_targetRpm = targetRpm;
-        m_pwm.write(0);
         m_enable.write(true);
     }
 }

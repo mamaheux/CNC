@@ -165,6 +165,14 @@ void Kernel::dispatchTargetPosition(const Vector3<float>& machinePosition)
     }
 }
 
+bool Kernel::dispatchLinearBlock(const LinearBlock& block, uint32_t& queueDurationUs, size_t& queueSize)
+{
+    constexpr auto EVENT_INDEX = static_cast<size_t>(ModuleEventType::LINEAR_BLOCK);
+    CRITICAL_ERROR_CHECK(m_moduleCountByEventType[EVENT_INDEX] == 1, "Only 1 module must listen onLinearBlock.");
+
+    return m_modulesByEventType[EVENT_INDEX][0]->onLinearBlock(block, queueDurationUs, queueSize);
+}
+
 void Kernel::executeSystemCommand(const char* line, CommandSource source, uint32_t commandId)
 {
     SystemCommand command;

@@ -207,6 +207,8 @@ void testModules()
     RUN_TEST(test_ArcConverter_g2Offset);
     RUN_TEST(test_ArcConverter_g2Rotation);
     RUN_TEST(test_ArcConverter_g2OffsetRotation);
+    RUN_TEST(test_ArcConverter_moveBack);
+    RUN_TEST(test_ArcConverter_clear);
 
     RUN_TEST(test_junctionFeedRateInMmPerS_notValidLines);
     RUN_TEST(test_junctionFeedRateInMmPerS_0Deg);
@@ -292,8 +294,6 @@ void testParsing()
     RUN_TEST(test_parseGCode_G19);
     RUN_TEST(test_parseGCode_G20);
     RUN_TEST(test_parseGCode_G21);
-    RUN_TEST(test_parseGCode_G28);
-    RUN_TEST(test_parseGCode_G28D1);
     RUN_TEST(test_parseGCode_G53);
     RUN_TEST(test_parseGCode_G53NextLine);
     RUN_TEST(test_parseGCode_G54);

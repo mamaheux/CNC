@@ -5,10 +5,11 @@
 
 #include <cnc/modules/Module.h>
 #include <cnc/modules/CoordinateTransformer.h>
-#include <cnc/modules/Planner.h>
 #include <cnc/parsing/MCode.h>
 
 #include <tl/optional.hpp>
+
+class Planner;
 
 constexpr size_t MAX_STEPPER_CONTROLLER_RESPONSE_SIZE = 128;
 constexpr uint32_t ENABLE_DISABLE_DELAY_US = 10;

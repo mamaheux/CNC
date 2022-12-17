@@ -8,6 +8,7 @@
 #include <cnc/parsing/MCode.h>
 #include <cnc/utils/macro.h>
 #include <cnc/utils/ClassMacro.h>
+#include <cnc/LinearBlock.h>
 
 #include <functional>
 
@@ -129,9 +130,10 @@ enum class ModuleEventType : size_t
     GCODE_COMMAND,
     MCODE_COMMAND,
     TARGET_POSITION,
-    COMMAND_RESPONSE
+    COMMAND_RESPONSE,
+    LINEAR_BLOCK,
 };
-constexpr size_t MODULE_EVENT_TYPE_COUNT = 6;
+constexpr size_t MODULE_EVENT_TYPE_COUNT = 7;
 
 enum class CommandSource : size_t
 {
@@ -180,6 +182,8 @@ public:
     virtual void onTargetPositionChanged(const Vector3<float>& machinePosition);  // In mm
 
     virtual void onCommandResponse(const char* response, CommandSource source, uint32_t commandId, bool isComplete);
+
+    virtual bool onLinearBlock(const LinearBlock& block, uint32_t& queueDurationUs, size_t& queueSize);
 
     virtual void update();
 

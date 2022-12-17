@@ -17,7 +17,7 @@
 
 void test_GCode_g1()
 {
-    GCode code = GCode::g1(Vector3<float>(1.f, 2.f, 3.f), 5.f, true);
+    GCode code = GCode::g1(Vector3<float>(1.f, 2.f, 3.f), 5.f, tl::nullopt, true);
     TEST_ASSERT_EQUAL(1, code.code());
     TEST_ASSERT(tl::nullopt == code.subcode());
     TEST_ASSERT(1.f == code.x());
@@ -369,39 +369,6 @@ void test_parseGCode_G21()
     TEST_ASSERT_EQUAL(ParsingResult::OK, parser.parse("G21 ", code));
     TEST_ASSERT_EQUAL(21, code.code());
     TEST_ASSERT(tl::nullopt == code.subcode());
-    TEST_ASSERT_NO_PARAMETERS(code);
-}
-
-void test_parseGCode_G28()
-{
-    GCode code;
-    GCodeParser parser;
-
-    TEST_ASSERT_EQUAL(ParsingResult::OK, parser.parse("G28 X1.125", code));
-    TEST_ASSERT_EQUAL(28, code.code());
-    TEST_ASSERT(tl::nullopt == code.subcode());
-    TEST_ASSERT(1.125 == code.x());
-    TEST_ASSERT(tl::nullopt == code.y());
-    TEST_ASSERT(tl::nullopt == code.z());
-    TEST_ASSERT(tl::nullopt == code.f());
-    TEST_ASSERT(tl::nullopt == code.i());
-    TEST_ASSERT(tl::nullopt == code.j());
-    TEST_ASSERT(tl::nullopt == code.k());
-    TEST_ASSERT(tl::nullopt == code.s());
-    TEST_ASSERT(tl::nullopt == code.p());
-    TEST_ASSERT(tl::nullopt == code.r());
-    TEST_ASSERT(tl::nullopt == code.l());
-    TEST_ASSERT_FALSE(code.isMachineCoordinateSystem());
-}
-
-void test_parseGCode_G28D1()
-{
-    GCode code;
-    GCodeParser parser;
-
-    TEST_ASSERT_EQUAL(ParsingResult::OK, parser.parse("G28.1", code));
-    TEST_ASSERT_EQUAL(28, code.code());
-    TEST_ASSERT(1 == code.subcode());
     TEST_ASSERT_NO_PARAMETERS(code);
 }
 

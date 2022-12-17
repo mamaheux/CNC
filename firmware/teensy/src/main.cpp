@@ -5,7 +5,7 @@
 #include "mcu/modules/FileSystem.h"
 #include "mcu/modules/CommandSerial.h"
 #include "mcu/modules/CommandFile.h"
-#include "mcu/modules/McuPlanner.h"
+#include "mcu/modules/Planner.h"
 #include "mcu/modules/StepperController.h"
 #include "mcu/modules/Endstops.h"
 #include "mcu/modules/Spindle.h"
@@ -22,12 +22,12 @@ CommandFile commandFile;
 
 CoordinateTransformer coordinateTransformer;
 ArcConverter arcConverter(&coordinateTransformer);
-McuPlanner planner(&coordinateTransformer, &arcConverter);
+Planner planner(&coordinateTransformer, &arcConverter);
 
 StepperController stepperController(&coordinateTransformer, &planner);
 Endstops endstops(&planner, &stepperController);
 Spindle spindle;
-LinearBlockExecutor linearBlockExecutor(&stepperController, &spindle);
+LinearBlockExecutor linearBlockExecutor(&stepperController, &spindle, &planner);
 
 Kernel kernel;
 

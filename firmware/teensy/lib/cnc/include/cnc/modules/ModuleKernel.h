@@ -27,6 +27,8 @@ public:
         bool isComplete = true) = 0;
 
     virtual void dispatchTargetPosition(const Vector3<float>& machinePosition) = 0;
+
+    virtual bool dispatchLinearBlock(const LinearBlock& block, uint32_t& queueDurationUs, size_t& queueSize) = 0;
 };
 
 #endif

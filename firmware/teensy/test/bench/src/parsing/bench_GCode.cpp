@@ -46,8 +46,6 @@ constexpr const char* GCODE_LINES[GCODE_LINE_COUNT] = {
     "G19",
     "G20",
     "G21",
-    "G28",
-    "G28.1",
     "G53 G0 X0 Y0 Z0",
     "G54",
     "G55",

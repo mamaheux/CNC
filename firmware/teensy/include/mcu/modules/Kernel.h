@@ -53,6 +53,8 @@ public:
 
     void dispatchTargetPosition(const Vector3<float>& machinePosition) override;
 
+    bool dispatchLinearBlock(const LinearBlock& block, uint32_t& queueDurationUs, size_t& queueSize) override;
+
 private:
     void executeSystemCommand(const char* line, CommandSource source, uint32_t commandId);
     void executeGCodeCommand(const char* line, CommandSource source, uint32_t commandId);

@@ -13,7 +13,7 @@ void test_MotionLock()
 {
     MotionLock testee;
 
-    GCode g1 = GCode::g1(Vector3<float>(1.f, 2.f, 3.f), 5.f, true);
+    GCode g1 = GCode::g1(Vector3<float>(1.f, 2.f, 3.f), 5.f, tl::nullopt, true);
     MCode m3 = toMCode("M3");
     MCode m114 = toMCode("M114");
 

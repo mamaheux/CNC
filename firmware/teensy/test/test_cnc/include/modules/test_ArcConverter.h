@@ -24,4 +24,7 @@ void test_ArcConverter_g2Offset();
 void test_ArcConverter_g2Rotation();
 void test_ArcConverter_g2OffsetRotation();
 
+void test_ArcConverter_moveBack();
+void test_ArcConverter_clear();
+
 #endif

@@ -1,4 +1,5 @@
 #include "mcu/modules/StepperController.h"
+#include "mcu/modules/Planner.h"
 #include "mcu/utils/StringPrint.h"
 #include "mcu/criticalError.h"
 
