@@ -250,9 +250,9 @@ void Endstops::performCompletedState(PendingHoming& pendingHoming)
     float yPosition = m_findYMin ? 0.f : *m_yRangeInMm;
     float zPosition = m_findZMin ? 0.f : *m_zRangeInMm;
 
-    int32_t xStepPosition = static_cast<int32_t>(m_planner->xStepCountPerMm() * xPosition);
-    int32_t yStepPosition = static_cast<int32_t>(m_planner->yStepCountPerMm() * yPosition);
-    int32_t zStepPosition = static_cast<int32_t>(m_planner->zStepCountPerMm() * zPosition);
+    auto xStepPosition = static_cast<int32_t>(m_planner->xStepCountPerMm() * xPosition);
+    auto yStepPosition = static_cast<int32_t>(m_planner->yStepCountPerMm() * yPosition);
+    auto zStepPosition = static_cast<int32_t>(m_planner->zStepCountPerMm() * zPosition);
 
     InclusiveRange3<float> range({0.f, 0.f, 0.f}, {*m_xRangeInMm, *m_yRangeInMm, *m_zRangeInMm});
     m_planner->reset({xPosition, yPosition, zPosition}, range);

@@ -27,6 +27,7 @@ static inline void loadNextBlock()
         return;
     }
 
+    stepperController->enable(StepperControlModule::LINEAR_BLOCK_EXECUTOR);
     stepperController->setDirection(
         Axis::X,
         currentBlock->directions[AXIS_X_INDEX],
@@ -135,7 +136,8 @@ static void onTick()
     isStep = !isStep;
 }
 
-FLASHMEM LinearBlockExecutor::LinearBlockExecutor(StepperController* stepperController, Spindle* spindle, Planner* planner)
+FLASHMEM
+    LinearBlockExecutor::LinearBlockExecutor(StepperController* stepperController, Spindle* spindle, Planner* planner)
     : m_stepperController(stepperController),
       m_spindle(spindle),
       m_queueDurationUs(0),

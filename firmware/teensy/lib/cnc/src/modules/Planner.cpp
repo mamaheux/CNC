@@ -3,6 +3,7 @@
 
 #include <cstring>
 #include <cmath>
+#include <cstdlib>
 
 #undef round
 #undef abs
@@ -112,10 +113,13 @@ void PlannerBlock::setAccelerationAndFeedRates(
 
     float maxFeedRateOnlyAcceleration = std::sqrt(da2 + squaredEntryFeedRateInMmPerS);
     float minFeedRateOnlyDeceleration = std::sqrt(squaredEntryFeedRateInMmPerS - da2);
-    float maxFeedRateAccelerationAndDeceleration = std::sqrt(da2 + squaredEntryFeedRateInMmPerS + squaredExitFeedRateInMmPerS) / 1.41421356237f;
+    float maxFeedRateAccelerationAndDeceleration =
+        std::sqrt(da2 + squaredEntryFeedRateInMmPerS + squaredExitFeedRateInMmPerS) / 1.41421356237f;
 
-    float distanceOnlyAcceleration = (squaredFeedRateInMmPerS - squaredEntryFeedRateInMmPerS) / (2.f * accelerationInMmPerSS);
-    float distanceOnlyDeceleration = (squaredFeedRateInMmPerS - squaredExitFeedRateInMmPerS) / (2.f * accelerationInMmPerSS);
+    float distanceOnlyAcceleration =
+        (squaredFeedRateInMmPerS - squaredEntryFeedRateInMmPerS) / (2.f * accelerationInMmPerSS);
+    float distanceOnlyDeceleration =
+        (squaredFeedRateInMmPerS - squaredExitFeedRateInMmPerS) / (2.f * accelerationInMmPerSS);
 
     if (entryFeedRateInMmPerS < exitFeedRateInMmPerS && maxFeedRateOnlyAcceleration < feedRateInMmPerS)
     {
@@ -194,21 +198,21 @@ LinearBlock PlannerBlock::toLinearBlock(
         static_cast<double>(m_endPoint.y),
         static_cast<double>(m_endPoint.z));
 
-    int32_t startXInStep = static_cast<int32_t>(std::round(startPointDouble.x * xStepCountPerMmDouble));
-    int32_t startYInStep = static_cast<int32_t>(std::round(startPointDouble.y * yStepCountPerMmDouble));
-    int32_t startZInStep = static_cast<int32_t>(std::round(startPointDouble.z * zStepCountPerMmDouble));
-    int32_t endXInStep = static_cast<int32_t>(std::round(endPointDouble.x * xStepCountPerMmDouble));
-    int32_t endYInStep = static_cast<int32_t>(std::round(endPointDouble.y * yStepCountPerMmDouble));
-    int32_t endZInStep = static_cast<int32_t>(std::round(endPointDouble.z * zStepCountPerMmDouble));
-    block.totalStepCount[AXIS_X_INDEX] = std::abs(startXInStep - endXInStep);
-    block.totalStepCount[AXIS_Y_INDEX] = std::abs(startYInStep - endYInStep);
-    block.totalStepCount[AXIS_Z_INDEX] = std::abs(startZInStep - endZInStep);
+    auto startXInStep = static_cast<int32_t>(std::round(startPointDouble.x * xStepCountPerMmDouble));
+    auto startYInStep = static_cast<int32_t>(std::round(startPointDouble.y * yStepCountPerMmDouble));
+    auto startZInStep = static_cast<int32_t>(std::round(startPointDouble.z * zStepCountPerMmDouble));
+    auto endXInStep = static_cast<int32_t>(std::round(endPointDouble.x * xStepCountPerMmDouble));
+    auto endYInStep = static_cast<int32_t>(std::round(endPointDouble.y * yStepCountPerMmDouble));
+    auto endZInStep = static_cast<int32_t>(std::round(endPointDouble.z * zStepCountPerMmDouble));
+    block.totalStepCount[AXIS_X_INDEX] = std::labs(startXInStep - endXInStep);
+    block.totalStepCount[AXIS_Y_INDEX] = std::labs(startYInStep - endYInStep);
+    block.totalStepCount[AXIS_Z_INDEX] = std::labs(startZInStep - endZInStep);
 
 
     // Set acceleration
-    double entryFeedRateInMmPerSDouble = static_cast<double>(m_entryFeedRateInMmPerS);
-    double feedRateInMmPerSDouble = static_cast<double>(m_feedRateInMmPerS);
-    double exitFeedRateInMmPerSDouble = static_cast<double>(m_exitFeedRateInMmPerS);
+    auto entryFeedRateInMmPerSDouble = static_cast<double>(m_entryFeedRateInMmPerS);
+    auto feedRateInMmPerSDouble = static_cast<double>(m_feedRateInMmPerS);
+    auto exitFeedRateInMmPerSDouble = static_cast<double>(m_exitFeedRateInMmPerS);
 
     Vector3<double> direction = (endPointDouble - startPointDouble).normalized();
     Vector3<double> absDirection(std::abs(direction.x), std::abs(direction.y), std::abs(direction.z));
@@ -268,7 +272,8 @@ LinearBlock PlannerBlock::toLinearBlock(
 
 
     // Set missing attributes
-    block.durationUs = static_cast<uint32_t>(static_cast<double>(block.decelerationUntilTick) / tickFrequencyDouble * 1e6);
+    block.durationUs =
+        static_cast<uint32_t>(static_cast<double>(block.decelerationUntilTick) / tickFrequencyDouble * 1e6);
     block.spindleRpm = m_spindleRpm;
 
     return block;

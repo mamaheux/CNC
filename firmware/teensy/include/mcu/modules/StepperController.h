@@ -74,6 +74,7 @@ public:
     bool setDirectionAndWait(Axis axis, Direction direction, StepperControlModule module);
     bool stepFull(Axis axis, StepperControlModule module);
 
+    bool enable(StepperControlModule module);
     bool setDirection(Axis axis, Direction direction, StepperControlModule module);
     bool step(Axis axis, StepperControlModule module);
     bool unstepAll(StepperControlModule module);
@@ -195,6 +196,19 @@ inline bool StepperController::stepFull(Axis axis, StepperControlModule module)
     }
 
     delayMicroseconds(STEP_DURATION_US);
+    return true;
+}
+
+inline bool StepperController::enable(StepperControlModule module)
+{
+    if (m_owner != module)
+    {
+        return false;
+    }
+
+    m_xStepper.enable();
+    m_yStepper.enable();
+    m_zStepper.enable();
     return true;
 }
 

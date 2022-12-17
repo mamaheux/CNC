@@ -87,8 +87,18 @@ void test_PlannerBlockFromLine_invalid()
     constexpr float ACCELERATION_IN_MM_PER_SS = 200.f;
 
     PlannerLine line{{0.f, 0.f, 0.f}, {10.f, 10.f, 0.f}, FEED_RATE_IN_MM_PER_S, tl::nullopt};
-    TEST_ASSERT_FALSE(PlannerBlock::fromLine(line, INVALID_ENTRY_FEED_RATE_IN_MM_PER_S, VALID_EXIT_FEED_RATE_IN_MM_PER_S, ACCELERATION_IN_MM_PER_SS).has_value());
-    TEST_ASSERT_FALSE(PlannerBlock::fromLine(line, VALID_ENTRY_FEED_RATE_IN_MM_PER_S, INVALID_EXIT_FEED_RATE_IN_MM_PER_S, ACCELERATION_IN_MM_PER_SS).has_value());
+    TEST_ASSERT_FALSE(PlannerBlock::fromLine(
+                          line,
+                          INVALID_ENTRY_FEED_RATE_IN_MM_PER_S,
+                          VALID_EXIT_FEED_RATE_IN_MM_PER_S,
+                          ACCELERATION_IN_MM_PER_SS)
+                          .has_value());
+    TEST_ASSERT_FALSE(PlannerBlock::fromLine(
+                          line,
+                          VALID_ENTRY_FEED_RATE_IN_MM_PER_S,
+                          INVALID_EXIT_FEED_RATE_IN_MM_PER_S,
+                          ACCELERATION_IN_MM_PER_SS)
+                          .has_value());
 }
 
 void test_PlannerBlockFromLine_directions()
@@ -99,35 +109,55 @@ void test_PlannerBlockFromLine_directions()
     constexpr float ACCELERATION_IN_MM_PER_SS = 200.f;
 
     PlannerLine line1{{0.f, 0.f, 0.f}, {0.f, 0.f, 0.f}, FEED_RATE_IN_MM_PER_S, tl::nullopt};
-    auto block1 = PlannerBlock::fromLine(line1, ENTRY_FEED_RATE_IN_MM_PER_S, EXIT_FEED_RATE_IN_MM_PER_S, ACCELERATION_IN_MM_PER_SS);
+    auto block1 = PlannerBlock::fromLine(
+        line1,
+        ENTRY_FEED_RATE_IN_MM_PER_S,
+        EXIT_FEED_RATE_IN_MM_PER_S,
+        ACCELERATION_IN_MM_PER_SS);
     TEST_ASSERT_TRUE(block1.has_value());
     TEST_ASSERT_EQUAL(Direction::FORWARD, block1->directions(Axis::X));
     TEST_ASSERT_EQUAL(Direction::FORWARD, block1->directions(Axis::Y));
     TEST_ASSERT_EQUAL(Direction::FORWARD, block1->directions(Axis::Z));
 
     PlannerLine line2{{1.f, 2.f, 3.f}, {0.f, 3.f, 4.f}, FEED_RATE_IN_MM_PER_S, tl::nullopt};
-    auto block2 = PlannerBlock::fromLine(line2, ENTRY_FEED_RATE_IN_MM_PER_S, EXIT_FEED_RATE_IN_MM_PER_S, ACCELERATION_IN_MM_PER_SS);
+    auto block2 = PlannerBlock::fromLine(
+        line2,
+        ENTRY_FEED_RATE_IN_MM_PER_S,
+        EXIT_FEED_RATE_IN_MM_PER_S,
+        ACCELERATION_IN_MM_PER_SS);
     TEST_ASSERT_TRUE(block2.has_value());
     TEST_ASSERT_EQUAL(Direction::BACKWARD, block2->directions(Axis::X));
     TEST_ASSERT_EQUAL(Direction::FORWARD, block2->directions(Axis::Y));
     TEST_ASSERT_EQUAL(Direction::FORWARD, block2->directions(Axis::Z));
 
     PlannerLine line3{{1.f, 2.f, 3.f}, {2.f, 0.f, 4.f}, FEED_RATE_IN_MM_PER_S, tl::nullopt};
-    auto block3 = PlannerBlock::fromLine(line3, ENTRY_FEED_RATE_IN_MM_PER_S, EXIT_FEED_RATE_IN_MM_PER_S, ACCELERATION_IN_MM_PER_SS);
+    auto block3 = PlannerBlock::fromLine(
+        line3,
+        ENTRY_FEED_RATE_IN_MM_PER_S,
+        EXIT_FEED_RATE_IN_MM_PER_S,
+        ACCELERATION_IN_MM_PER_SS);
     TEST_ASSERT_TRUE(block3.has_value());
     TEST_ASSERT_EQUAL(Direction::FORWARD, block3->directions(Axis::X));
     TEST_ASSERT_EQUAL(Direction::BACKWARD, block3->directions(Axis::Y));
     TEST_ASSERT_EQUAL(Direction::FORWARD, block3->directions(Axis::Z));
 
     PlannerLine line4{{1.f, 2.f, 3.f}, {2.f, 3.f, 0.f}, FEED_RATE_IN_MM_PER_S, tl::nullopt};
-    auto block4 = PlannerBlock::fromLine(line4, ENTRY_FEED_RATE_IN_MM_PER_S, EXIT_FEED_RATE_IN_MM_PER_S, ACCELERATION_IN_MM_PER_SS);
+    auto block4 = PlannerBlock::fromLine(
+        line4,
+        ENTRY_FEED_RATE_IN_MM_PER_S,
+        EXIT_FEED_RATE_IN_MM_PER_S,
+        ACCELERATION_IN_MM_PER_SS);
     TEST_ASSERT_TRUE(block4.has_value());
     TEST_ASSERT_EQUAL(Direction::FORWARD, block4->directions(Axis::X));
     TEST_ASSERT_EQUAL(Direction::FORWARD, block4->directions(Axis::Y));
     TEST_ASSERT_EQUAL(Direction::BACKWARD, block4->directions(Axis::Z));
 
     PlannerLine line5{{1.f, 2.f, 3.f}, {0.f, 0.f, 0.f}, FEED_RATE_IN_MM_PER_S, tl::nullopt};
-    auto block5 = PlannerBlock::fromLine(line5, ENTRY_FEED_RATE_IN_MM_PER_S, EXIT_FEED_RATE_IN_MM_PER_S, ACCELERATION_IN_MM_PER_SS);
+    auto block5 = PlannerBlock::fromLine(
+        line5,
+        ENTRY_FEED_RATE_IN_MM_PER_S,
+        EXIT_FEED_RATE_IN_MM_PER_S,
+        ACCELERATION_IN_MM_PER_SS);
     TEST_ASSERT_TRUE(block5.has_value());
     TEST_ASSERT_EQUAL(Direction::BACKWARD, block5->directions(Axis::X));
     TEST_ASSERT_EQUAL(Direction::BACKWARD, block5->directions(Axis::Y));
@@ -142,12 +172,20 @@ void test_PlannerBlockFromLine_spindleRpm()
     constexpr float ACCELERATION_IN_MM_PER_SS = 200.f;
 
     PlannerLine line1{{0.f, 0.f, 0.f}, {0.f, 0.f, 0.f}, FEED_RATE_IN_MM_PER_S, tl::nullopt};
-    auto block1 = PlannerBlock::fromLine(line1, ENTRY_FEED_RATE_IN_MM_PER_S, EXIT_FEED_RATE_IN_MM_PER_S, ACCELERATION_IN_MM_PER_SS);
+    auto block1 = PlannerBlock::fromLine(
+        line1,
+        ENTRY_FEED_RATE_IN_MM_PER_S,
+        EXIT_FEED_RATE_IN_MM_PER_S,
+        ACCELERATION_IN_MM_PER_SS);
     TEST_ASSERT_TRUE(block1.has_value());
     TEST_ASSERT(tl::nullopt == block1->spindleRpm());
 
     PlannerLine line2{{0.f, 0.f, 0.f}, {0.f, 0.f, 0.f}, FEED_RATE_IN_MM_PER_S, 10000.f};
-    auto block2 = PlannerBlock::fromLine(line2, ENTRY_FEED_RATE_IN_MM_PER_S, EXIT_FEED_RATE_IN_MM_PER_S, ACCELERATION_IN_MM_PER_SS);
+    auto block2 = PlannerBlock::fromLine(
+        line2,
+        ENTRY_FEED_RATE_IN_MM_PER_S,
+        EXIT_FEED_RATE_IN_MM_PER_S,
+        ACCELERATION_IN_MM_PER_SS);
     TEST_ASSERT_TRUE(block2.has_value());
     TEST_ASSERT(10000.f == block2->spindleRpm());
 }
@@ -160,7 +198,11 @@ void test_PlannerBlockFromLine_noMovement()
     constexpr float ACCELERATION_IN_MM_PER_SS = 200.f;
 
     PlannerLine line{{0.f, 0.f, 0.f}, {0.f, 0.f, 0.f}, FEED_RATE_IN_MM_PER_S, tl::nullopt};
-    auto block = PlannerBlock::fromLine(line, ENTRY_FEED_RATE_IN_MM_PER_S, EXIT_FEED_RATE_IN_MM_PER_S, ACCELERATION_IN_MM_PER_SS);
+    auto block = PlannerBlock::fromLine(
+        line,
+        ENTRY_FEED_RATE_IN_MM_PER_S,
+        EXIT_FEED_RATE_IN_MM_PER_S,
+        ACCELERATION_IN_MM_PER_SS);
     TEST_ASSERT_TRUE(block.has_value());
 
     TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 0.f, block->distance());
@@ -180,7 +222,11 @@ void test_PlannerBlockFromLine_accelerationOnly()
     constexpr float ACCELERATION_IN_MM_PER_SS = 2.f;
 
     PlannerLine line{{0.f, 0.f, 0.f}, {10.f, 0.f, 0.f}, FEED_RATE_IN_MM_PER_S, tl::nullopt};
-    auto block = PlannerBlock::fromLine(line, ENTRY_FEED_RATE_IN_MM_PER_S, EXIT_FEED_RATE_IN_MM_PER_S, ACCELERATION_IN_MM_PER_SS);
+    auto block = PlannerBlock::fromLine(
+        line,
+        ENTRY_FEED_RATE_IN_MM_PER_S,
+        EXIT_FEED_RATE_IN_MM_PER_S,
+        ACCELERATION_IN_MM_PER_SS);
     TEST_ASSERT_TRUE(block.has_value());
 
     TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 10.f, block->distance());
@@ -200,7 +246,11 @@ void test_PlannerBlockFromLine_decelerationOnly()
     constexpr float ACCELERATION_IN_MM_PER_SS = 2.f;
 
     PlannerLine line{{-3.f, -4.f, 0.f}, {0.f, 0.f, 0.f}, FEED_RATE_IN_MM_PER_S, tl::nullopt};
-    auto block = PlannerBlock::fromLine(line, ENTRY_FEED_RATE_IN_MM_PER_S, EXIT_FEED_RATE_IN_MM_PER_S, ACCELERATION_IN_MM_PER_SS);
+    auto block = PlannerBlock::fromLine(
+        line,
+        ENTRY_FEED_RATE_IN_MM_PER_S,
+        EXIT_FEED_RATE_IN_MM_PER_S,
+        ACCELERATION_IN_MM_PER_SS);
     TEST_ASSERT_TRUE(block.has_value());
 
     TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 5.f, block->distance());
@@ -220,7 +270,11 @@ void test_PlannerBlockFromLine_accelerationPlateau()
     constexpr float ACCELERATION_IN_MM_PER_SS = 8.f;
 
     PlannerLine line{{0.f, 40.f, 30.f}, {0.f, 0.f, 0.f}, FEED_RATE_IN_MM_PER_S, tl::nullopt};
-    auto block = PlannerBlock::fromLine(line, ENTRY_FEED_RATE_IN_MM_PER_S, EXIT_FEED_RATE_IN_MM_PER_S, ACCELERATION_IN_MM_PER_SS);
+    auto block = PlannerBlock::fromLine(
+        line,
+        ENTRY_FEED_RATE_IN_MM_PER_S,
+        EXIT_FEED_RATE_IN_MM_PER_S,
+        ACCELERATION_IN_MM_PER_SS);
     TEST_ASSERT_TRUE(block.has_value());
 
     TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 50.f, block->distance());
@@ -240,7 +294,11 @@ void test_PlannerBlockFromLine_plateauDeceleration()
     constexpr float ACCELERATION_IN_MM_PER_SS = 8.f;
 
     PlannerLine line{{0.f, 0.f, 0.f}, {30.f, 0.f, 40.f}, FEED_RATE_IN_MM_PER_S, tl::nullopt};
-    auto block = PlannerBlock::fromLine(line, ENTRY_FEED_RATE_IN_MM_PER_S, EXIT_FEED_RATE_IN_MM_PER_S, ACCELERATION_IN_MM_PER_SS);
+    auto block = PlannerBlock::fromLine(
+        line,
+        ENTRY_FEED_RATE_IN_MM_PER_S,
+        EXIT_FEED_RATE_IN_MM_PER_S,
+        ACCELERATION_IN_MM_PER_SS);
     TEST_ASSERT_TRUE(block.has_value());
 
     TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 50.f, block->distance());
@@ -260,7 +318,11 @@ void test_PlannerBlockFromLine_plateau()
     constexpr float ACCELERATION_IN_MM_PER_SS = 100.f;
 
     PlannerLine line{{0.f, 0.f, 0.f}, {100.f, 0.f, 0.f}, FEED_RATE_IN_MM_PER_S, tl::nullopt};
-    auto block = PlannerBlock::fromLine(line, ENTRY_FEED_RATE_IN_MM_PER_S, EXIT_FEED_RATE_IN_MM_PER_S, ACCELERATION_IN_MM_PER_SS);
+    auto block = PlannerBlock::fromLine(
+        line,
+        ENTRY_FEED_RATE_IN_MM_PER_S,
+        EXIT_FEED_RATE_IN_MM_PER_S,
+        ACCELERATION_IN_MM_PER_SS);
     TEST_ASSERT_TRUE(block.has_value());
 
     TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 100.f, block->distance());
@@ -280,7 +342,11 @@ void test_PlannerBlockFromLine_accelerationPlateauDeceleration()
     constexpr float ACCELERATION_IN_MM_PER_SS = 3.f;
 
     PlannerLine line{{0.f, 0.f, 0.f}, {100.f, 0.f, 0.f}, FEED_RATE_IN_MM_PER_S, tl::nullopt};
-    auto block = PlannerBlock::fromLine(line, ENTRY_FEED_RATE_IN_MM_PER_S, EXIT_FEED_RATE_IN_MM_PER_S, ACCELERATION_IN_MM_PER_SS);
+    auto block = PlannerBlock::fromLine(
+        line,
+        ENTRY_FEED_RATE_IN_MM_PER_S,
+        EXIT_FEED_RATE_IN_MM_PER_S,
+        ACCELERATION_IN_MM_PER_SS);
     TEST_ASSERT_TRUE(block.has_value());
 
     TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 100.f, block->distance());
@@ -300,7 +366,11 @@ void test_PlannerBlockFromLine_accelerationDeceleration()
     constexpr float ACCELERATION_IN_MM_PER_SS = 3.f;
 
     PlannerLine line{{0.f, 0.f, 0.f}, {20.f, 0.f, 0.f}, FEED_RATE_IN_MM_PER_S, tl::nullopt};
-    auto block = PlannerBlock::fromLine(line, ENTRY_FEED_RATE_IN_MM_PER_S, EXIT_FEED_RATE_IN_MM_PER_S, ACCELERATION_IN_MM_PER_SS);
+    auto block = PlannerBlock::fromLine(
+        line,
+        ENTRY_FEED_RATE_IN_MM_PER_S,
+        EXIT_FEED_RATE_IN_MM_PER_S,
+        ACCELERATION_IN_MM_PER_SS);
     TEST_ASSERT_TRUE(block.has_value());
 
     TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 20.f, block->distance());
@@ -320,7 +390,11 @@ void test_PlannerBlockToLinearBlock_directions()
     constexpr float ACCELERATION_IN_MM_PER_SS = 200.f;
 
     PlannerLine line1{{0.f, 0.f, 0.f}, {0.f, 0.f, 0.f}, FEED_RATE_IN_MM_PER_S, tl::nullopt};
-    auto plannerBlock1 = PlannerBlock::fromLine(line1, ENTRY_FEED_RATE_IN_MM_PER_S, EXIT_FEED_RATE_IN_MM_PER_S, ACCELERATION_IN_MM_PER_SS);
+    auto plannerBlock1 = PlannerBlock::fromLine(
+        line1,
+        ENTRY_FEED_RATE_IN_MM_PER_S,
+        EXIT_FEED_RATE_IN_MM_PER_S,
+        ACCELERATION_IN_MM_PER_SS);
     TEST_ASSERT_TRUE(plannerBlock1.has_value());
 
     auto linearBlock1 = plannerBlock1->toLinearBlock(1.f, 1.f, 1.f, 1.f, 1.f);
@@ -330,7 +404,11 @@ void test_PlannerBlockToLinearBlock_directions()
 
 
     PlannerLine line2{{1.f, 2.f, 3.f}, {0.f, 3.f, 4.f}, FEED_RATE_IN_MM_PER_S, tl::nullopt};
-    auto plannerBlock2 = PlannerBlock::fromLine(line2, ENTRY_FEED_RATE_IN_MM_PER_S, EXIT_FEED_RATE_IN_MM_PER_S, ACCELERATION_IN_MM_PER_SS);
+    auto plannerBlock2 = PlannerBlock::fromLine(
+        line2,
+        ENTRY_FEED_RATE_IN_MM_PER_S,
+        EXIT_FEED_RATE_IN_MM_PER_S,
+        ACCELERATION_IN_MM_PER_SS);
     TEST_ASSERT_TRUE(plannerBlock2.has_value());
 
     auto linearBlock2 = plannerBlock2->toLinearBlock(1.f, 1.f, 1.f, 1.f, 1.f);
@@ -340,7 +418,11 @@ void test_PlannerBlockToLinearBlock_directions()
 
 
     PlannerLine line3{{1.f, 2.f, 3.f}, {2.f, 0.f, 4.f}, FEED_RATE_IN_MM_PER_S, tl::nullopt};
-    auto plannerBlock3 = PlannerBlock::fromLine(line3, ENTRY_FEED_RATE_IN_MM_PER_S, EXIT_FEED_RATE_IN_MM_PER_S, ACCELERATION_IN_MM_PER_SS);
+    auto plannerBlock3 = PlannerBlock::fromLine(
+        line3,
+        ENTRY_FEED_RATE_IN_MM_PER_S,
+        EXIT_FEED_RATE_IN_MM_PER_S,
+        ACCELERATION_IN_MM_PER_SS);
     TEST_ASSERT_TRUE(plannerBlock3.has_value());
 
     auto linearBlock3 = plannerBlock3->toLinearBlock(1.f, 1.f, 1.f, 1.f, 1.f);
@@ -350,7 +432,11 @@ void test_PlannerBlockToLinearBlock_directions()
 
 
     PlannerLine line4{{1.f, 2.f, 3.f}, {2.f, 3.f, 0.f}, FEED_RATE_IN_MM_PER_S, tl::nullopt};
-    auto plannerBlock4 = PlannerBlock::fromLine(line4, ENTRY_FEED_RATE_IN_MM_PER_S, EXIT_FEED_RATE_IN_MM_PER_S, ACCELERATION_IN_MM_PER_SS);
+    auto plannerBlock4 = PlannerBlock::fromLine(
+        line4,
+        ENTRY_FEED_RATE_IN_MM_PER_S,
+        EXIT_FEED_RATE_IN_MM_PER_S,
+        ACCELERATION_IN_MM_PER_SS);
     TEST_ASSERT_TRUE(plannerBlock4.has_value());
 
     auto linearBlock4 = plannerBlock4->toLinearBlock(1.f, 1.f, 1.f, 1.f, 1.f);
@@ -360,7 +446,11 @@ void test_PlannerBlockToLinearBlock_directions()
 
 
     PlannerLine line5{{1.f, 2.f, 3.f}, {0.f, 0.f, 0.f}, FEED_RATE_IN_MM_PER_S, tl::nullopt};
-    auto plannerBlock5 = PlannerBlock::fromLine(line5, ENTRY_FEED_RATE_IN_MM_PER_S, EXIT_FEED_RATE_IN_MM_PER_S, ACCELERATION_IN_MM_PER_SS);
+    auto plannerBlock5 = PlannerBlock::fromLine(
+        line5,
+        ENTRY_FEED_RATE_IN_MM_PER_S,
+        EXIT_FEED_RATE_IN_MM_PER_S,
+        ACCELERATION_IN_MM_PER_SS);
     TEST_ASSERT_TRUE(plannerBlock5.has_value());
 
     auto linearBlock5 = plannerBlock5->toLinearBlock(1.f, 1.f, 1.f, 1.f, 1.f);
@@ -377,13 +467,21 @@ void test_PlannerBlockToLinearBlock_spindleRpm()
     constexpr float ACCELERATION_IN_MM_PER_SS = 200.f;
 
     PlannerLine line1{{0.f, 0.f, 0.f}, {0.f, 0.f, 0.f}, FEED_RATE_IN_MM_PER_S, tl::nullopt};
-    auto plannerBlock1 = PlannerBlock::fromLine(line1, ENTRY_FEED_RATE_IN_MM_PER_S, EXIT_FEED_RATE_IN_MM_PER_S, ACCELERATION_IN_MM_PER_SS);
+    auto plannerBlock1 = PlannerBlock::fromLine(
+        line1,
+        ENTRY_FEED_RATE_IN_MM_PER_S,
+        EXIT_FEED_RATE_IN_MM_PER_S,
+        ACCELERATION_IN_MM_PER_SS);
     TEST_ASSERT_TRUE(plannerBlock1.has_value());
     auto linearBlock1 = plannerBlock1->toLinearBlock(1.f, 1.f, 1.f, 1.f, 1.f);
     TEST_ASSERT(tl::nullopt == linearBlock1.spindleRpm);
 
     PlannerLine line2{{0.f, 0.f, 0.f}, {0.f, 0.f, 0.f}, FEED_RATE_IN_MM_PER_S, 10000.f};
-    auto plannerBlock2 = PlannerBlock::fromLine(line2, ENTRY_FEED_RATE_IN_MM_PER_S, EXIT_FEED_RATE_IN_MM_PER_S, ACCELERATION_IN_MM_PER_SS);
+    auto plannerBlock2 = PlannerBlock::fromLine(
+        line2,
+        ENTRY_FEED_RATE_IN_MM_PER_S,
+        EXIT_FEED_RATE_IN_MM_PER_S,
+        ACCELERATION_IN_MM_PER_SS);
     TEST_ASSERT_TRUE(plannerBlock2.has_value());
     auto linearBlock2 = plannerBlock2->toLinearBlock(1.f, 1.f, 1.f, 1.f, 1.f);
     TEST_ASSERT(10000.f == linearBlock2.spindleRpm);
@@ -403,10 +501,19 @@ void test_PlannerBlockToLinearBlock_noMovement()
     constexpr float TICK_FREQUENCY = 100000;
 
     PlannerLine line{{0.f, 0.f, 0.f}, {0.f, 0.f, 0.f}, FEED_RATE_IN_MM_PER_S, tl::nullopt};
-    auto plannerBlock = PlannerBlock::fromLine(line, ENTRY_FEED_RATE_IN_MM_PER_S, EXIT_FEED_RATE_IN_MM_PER_S, ACCELERATION_IN_MM_PER_SS);
+    auto plannerBlock = PlannerBlock::fromLine(
+        line,
+        ENTRY_FEED_RATE_IN_MM_PER_S,
+        EXIT_FEED_RATE_IN_MM_PER_S,
+        ACCELERATION_IN_MM_PER_SS);
     TEST_ASSERT_TRUE(plannerBlock.has_value());
 
-    auto linearBlock = plannerBlock->toLinearBlock(X_STEP_COUNT_PER_MM, Y_STEP_COUNT_PER_MM, Z_STEP_COUNT_PER_MM, MIN_FEED_RATE_IN_MM_PER_S, TICK_FREQUENCY);
+    auto linearBlock = plannerBlock->toLinearBlock(
+        X_STEP_COUNT_PER_MM,
+        Y_STEP_COUNT_PER_MM,
+        Z_STEP_COUNT_PER_MM,
+        MIN_FEED_RATE_IN_MM_PER_S,
+        TICK_FREQUENCY);
 
     TEST_ASSERT_EQUAL(0, linearBlock.currentTick);
     TEST_ASSERT_EQUAL(0, linearBlock.accelerationUntilTick);
@@ -435,10 +542,19 @@ void test_PlannerBlockToLinearBlock_accelerationOnly()
     constexpr float TICK_FREQUENCY = 100000;
 
     PlannerLine line{{0.f, 0.f, 0.f}, {-10.f, 0.f, 0.f}, FEED_RATE_IN_MM_PER_S, tl::nullopt};
-    auto plannerBlock = PlannerBlock::fromLine(line, ENTRY_FEED_RATE_IN_MM_PER_S, EXIT_FEED_RATE_IN_MM_PER_S, ACCELERATION_IN_MM_PER_SS);
+    auto plannerBlock = PlannerBlock::fromLine(
+        line,
+        ENTRY_FEED_RATE_IN_MM_PER_S,
+        EXIT_FEED_RATE_IN_MM_PER_S,
+        ACCELERATION_IN_MM_PER_SS);
     TEST_ASSERT_TRUE(plannerBlock.has_value());
 
-    auto linearBlock = plannerBlock->toLinearBlock(X_STEP_COUNT_PER_MM, Y_STEP_COUNT_PER_MM, Z_STEP_COUNT_PER_MM, MIN_FEED_RATE_IN_MM_PER_S, TICK_FREQUENCY);
+    auto linearBlock = plannerBlock->toLinearBlock(
+        X_STEP_COUNT_PER_MM,
+        Y_STEP_COUNT_PER_MM,
+        Z_STEP_COUNT_PER_MM,
+        MIN_FEED_RATE_IN_MM_PER_S,
+        TICK_FREQUENCY);
     TEST_ASSERT_EQUAL(0, linearBlock.currentTick);
     TEST_ASSERT_EQUAL(270156, linearBlock.accelerationUntilTick);
     TEST_ASSERT_EQUAL(270156, linearBlock.plateauUntilTick);
@@ -482,10 +598,19 @@ void test_PlannerBlockToLinearBlock_decelerationOnly()
     constexpr float TICK_FREQUENCY = 100000;
 
     PlannerLine line{{3.f, 4.f, 0.f}, {0.f, 0.f, 0.f}, FEED_RATE_IN_MM_PER_S, tl::nullopt};
-    auto plannerBlock = PlannerBlock::fromLine(line, ENTRY_FEED_RATE_IN_MM_PER_S, EXIT_FEED_RATE_IN_MM_PER_S, ACCELERATION_IN_MM_PER_SS);
+    auto plannerBlock = PlannerBlock::fromLine(
+        line,
+        ENTRY_FEED_RATE_IN_MM_PER_S,
+        EXIT_FEED_RATE_IN_MM_PER_S,
+        ACCELERATION_IN_MM_PER_SS);
     TEST_ASSERT_TRUE(plannerBlock.has_value());
 
-    auto linearBlock = plannerBlock->toLinearBlock(X_STEP_COUNT_PER_MM, Y_STEP_COUNT_PER_MM, Z_STEP_COUNT_PER_MM, MIN_FEED_RATE_IN_MM_PER_S, TICK_FREQUENCY);
+    auto linearBlock = plannerBlock->toLinearBlock(
+        X_STEP_COUNT_PER_MM,
+        Y_STEP_COUNT_PER_MM,
+        Z_STEP_COUNT_PER_MM,
+        MIN_FEED_RATE_IN_MM_PER_S,
+        TICK_FREQUENCY);
     TEST_ASSERT_EQUAL(0, linearBlock.currentTick);
     TEST_ASSERT_EQUAL(0, linearBlock.accelerationUntilTick);
     TEST_ASSERT_EQUAL(0, linearBlock.plateauUntilTick);
@@ -529,10 +654,19 @@ void test_PlannerBlockToLinearBlock_accelerationPlateau()
     constexpr float TICK_FREQUENCY = 100000.f;
 
     PlannerLine line{{0.f, 40.f, -30.f}, {0.f, 0.f, 0.f}, FEED_RATE_IN_MM_PER_S, tl::nullopt};
-    auto plannerBlock = PlannerBlock::fromLine(line, ENTRY_FEED_RATE_IN_MM_PER_S, EXIT_FEED_RATE_IN_MM_PER_S, ACCELERATION_IN_MM_PER_SS);
+    auto plannerBlock = PlannerBlock::fromLine(
+        line,
+        ENTRY_FEED_RATE_IN_MM_PER_S,
+        EXIT_FEED_RATE_IN_MM_PER_S,
+        ACCELERATION_IN_MM_PER_SS);
     TEST_ASSERT_TRUE(plannerBlock.has_value());
 
-    auto linearBlock = plannerBlock->toLinearBlock(X_STEP_COUNT_PER_MM, Y_STEP_COUNT_PER_MM, Z_STEP_COUNT_PER_MM, MIN_FEED_RATE_IN_MM_PER_S, TICK_FREQUENCY);
+    auto linearBlock = plannerBlock->toLinearBlock(
+        X_STEP_COUNT_PER_MM,
+        Y_STEP_COUNT_PER_MM,
+        Z_STEP_COUNT_PER_MM,
+        MIN_FEED_RATE_IN_MM_PER_S,
+        TICK_FREQUENCY);
     TEST_ASSERT_EQUAL(0, linearBlock.currentTick);
     TEST_ASSERT_EQUAL(237500, linearBlock.accelerationUntilTick);
     TEST_ASSERT_EQUAL(362812, linearBlock.plateauUntilTick);
@@ -576,10 +710,19 @@ void test_PlannerBlockToLinearBlock_plateauDeceleration()
     constexpr float TICK_FREQUENCY = 100000.f;
 
     PlannerLine line{{0.f, 0.f, 0.f}, {30.f, 0.f, 40.f}, FEED_RATE_IN_MM_PER_S, tl::nullopt};
-    auto plannerBlock = PlannerBlock::fromLine(line, ENTRY_FEED_RATE_IN_MM_PER_S, EXIT_FEED_RATE_IN_MM_PER_S, ACCELERATION_IN_MM_PER_SS);
+    auto plannerBlock = PlannerBlock::fromLine(
+        line,
+        ENTRY_FEED_RATE_IN_MM_PER_S,
+        EXIT_FEED_RATE_IN_MM_PER_S,
+        ACCELERATION_IN_MM_PER_SS);
     TEST_ASSERT_TRUE(plannerBlock.has_value());
 
-    auto linearBlock = plannerBlock->toLinearBlock(X_STEP_COUNT_PER_MM, Y_STEP_COUNT_PER_MM, Z_STEP_COUNT_PER_MM, MIN_FEED_RATE_IN_MM_PER_S, TICK_FREQUENCY);
+    auto linearBlock = plannerBlock->toLinearBlock(
+        X_STEP_COUNT_PER_MM,
+        Y_STEP_COUNT_PER_MM,
+        Z_STEP_COUNT_PER_MM,
+        MIN_FEED_RATE_IN_MM_PER_S,
+        TICK_FREQUENCY);
     TEST_ASSERT_EQUAL(0, linearBlock.currentTick);
     TEST_ASSERT_EQUAL(0, linearBlock.accelerationUntilTick);
     TEST_ASSERT_EQUAL(125312, linearBlock.plateauUntilTick);
@@ -623,10 +766,19 @@ void test_PlannerBlockToLinearBlock_plateau()
     constexpr float TICK_FREQUENCY = 100000.f;
 
     PlannerLine line{{0.f, 0.f, 0.f}, {100.f, 0.f, 0.f}, FEED_RATE_IN_MM_PER_S, tl::nullopt};
-    auto plannerBlock = PlannerBlock::fromLine(line, ENTRY_FEED_RATE_IN_MM_PER_S, EXIT_FEED_RATE_IN_MM_PER_S, ACCELERATION_IN_MM_PER_SS);
+    auto plannerBlock = PlannerBlock::fromLine(
+        line,
+        ENTRY_FEED_RATE_IN_MM_PER_S,
+        EXIT_FEED_RATE_IN_MM_PER_S,
+        ACCELERATION_IN_MM_PER_SS);
     TEST_ASSERT_TRUE(plannerBlock.has_value());
 
-    auto linearBlock = plannerBlock->toLinearBlock(X_STEP_COUNT_PER_MM, Y_STEP_COUNT_PER_MM, Z_STEP_COUNT_PER_MM, MIN_FEED_RATE_IN_MM_PER_S, TICK_FREQUENCY);
+    auto linearBlock = plannerBlock->toLinearBlock(
+        X_STEP_COUNT_PER_MM,
+        Y_STEP_COUNT_PER_MM,
+        Z_STEP_COUNT_PER_MM,
+        MIN_FEED_RATE_IN_MM_PER_S,
+        TICK_FREQUENCY);
     TEST_ASSERT_EQUAL(0, linearBlock.currentTick);
     TEST_ASSERT_EQUAL(0, linearBlock.accelerationUntilTick);
     TEST_ASSERT_EQUAL(1000000, linearBlock.plateauUntilTick);
@@ -670,10 +822,19 @@ void test_PlannerBlockToLinearBlock_accelerationPlateauDeceleration()
     constexpr float TICK_FREQUENCY = 100000.f;
 
     PlannerLine line{{0.f, 0.f, 0.f}, {100.f, 0.f, 0.f}, FEED_RATE_IN_MM_PER_S, tl::nullopt};
-    auto plannerBlock = PlannerBlock::fromLine(line, ENTRY_FEED_RATE_IN_MM_PER_S, EXIT_FEED_RATE_IN_MM_PER_S, ACCELERATION_IN_MM_PER_SS);
+    auto plannerBlock = PlannerBlock::fromLine(
+        line,
+        ENTRY_FEED_RATE_IN_MM_PER_S,
+        EXIT_FEED_RATE_IN_MM_PER_S,
+        ACCELERATION_IN_MM_PER_SS);
     TEST_ASSERT_TRUE(plannerBlock.has_value());
 
-    auto linearBlock = plannerBlock->toLinearBlock(X_STEP_COUNT_PER_MM, Y_STEP_COUNT_PER_MM, Z_STEP_COUNT_PER_MM, MIN_FEED_RATE_IN_MM_PER_S, TICK_FREQUENCY);
+    auto linearBlock = plannerBlock->toLinearBlock(
+        X_STEP_COUNT_PER_MM,
+        Y_STEP_COUNT_PER_MM,
+        Z_STEP_COUNT_PER_MM,
+        MIN_FEED_RATE_IN_MM_PER_S,
+        TICK_FREQUENCY);
     TEST_ASSERT_EQUAL(0, linearBlock.currentTick);
     TEST_ASSERT_EQUAL(166667, linearBlock.accelerationUntilTick);
     TEST_ASSERT_EQUAL(881667, linearBlock.plateauUntilTick);
@@ -717,10 +878,19 @@ void test_PlannerBlockToLinearBlock_accelerationDeceleration()
     constexpr float TICK_FREQUENCY = 100000.f;
 
     PlannerLine line{{0.f, 0.f, 0.f}, {20.f, 0.f, 0.f}, FEED_RATE_IN_MM_PER_S, tl::nullopt};
-    auto plannerBlock = PlannerBlock::fromLine(line, ENTRY_FEED_RATE_IN_MM_PER_S, EXIT_FEED_RATE_IN_MM_PER_S, ACCELERATION_IN_MM_PER_SS);
+    auto plannerBlock = PlannerBlock::fromLine(
+        line,
+        ENTRY_FEED_RATE_IN_MM_PER_S,
+        EXIT_FEED_RATE_IN_MM_PER_S,
+        ACCELERATION_IN_MM_PER_SS);
     TEST_ASSERT_TRUE(plannerBlock.has_value());
 
-    auto linearBlock = plannerBlock->toLinearBlock(X_STEP_COUNT_PER_MM, Y_STEP_COUNT_PER_MM, Z_STEP_COUNT_PER_MM, MIN_FEED_RATE_IN_MM_PER_S, TICK_FREQUENCY);
+    auto linearBlock = plannerBlock->toLinearBlock(
+        X_STEP_COUNT_PER_MM,
+        Y_STEP_COUNT_PER_MM,
+        Z_STEP_COUNT_PER_MM,
+        MIN_FEED_RATE_IN_MM_PER_S,
+        TICK_FREQUENCY);
     TEST_ASSERT_EQUAL(0, linearBlock.currentTick);
     TEST_ASSERT_EQUAL(262001, linearBlock.accelerationUntilTick);
     TEST_ASSERT_EQUAL(262001, linearBlock.plateauUntilTick);

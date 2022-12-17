@@ -3,8 +3,6 @@
 
 #include <cstring>
 
-#include <iostream>
-
 using namespace std;
 
 bool parsePropertiesLine(const char* line, char* key, size_t maxKeySize, char* value, size_t maxValueSize)

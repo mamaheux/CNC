@@ -225,19 +225,21 @@ void Planner::handlePendingLinearBlock()
 
     if (pushLinearBlock(m_pendingLinearBlock->block))
     {
-        if (m_pendingLinearBlock->source.has_value() && m_pendingLinearBlock->commandId.has_value())
+        m_pendingLinearBlock = tl::nullopt;
+
+        if (m_pendingLinearBlock->source.has_value() && m_pendingLinearBlock->commandId.has_value() &&
+            m_arcConverter->isFinished())
         {
             sendOkForG0G1G2G3(*m_pendingLinearBlock->source, *m_pendingLinearBlock->commandId);
+            m_pendingGCode = tl::nullopt;
         }
-        m_pendingLinearBlock = tl::nullopt;
     }
 }
 
 void Planner::handlePendingGCode()
 {
-     PlannerLine nextLine;
-     switch (m_pendingGCode->gcode.code())
-     {
+    switch (m_pendingGCode->gcode.code())
+    {
         case 0:
             handlePendingG0G1(m_g0FeedRateInMmPerS);
             break;
@@ -250,7 +252,7 @@ void Planner::handlePendingGCode()
         case 3:
             handlePendingG2G3();
             break;
-     }
+    }
 }
 
 void Planner::handlePendingG0G1(float& modalFeedRateInMmPerS)
@@ -270,7 +272,7 @@ void Planner::handlePendingG0G1(float& modalFeedRateInMmPerS)
         modalFeedRateInMmPerS = feedRateInMmPerS;
     }
 
-    PlannerLine line {m_lastTargetPosition, endPoint, modalFeedRateInMmPerS * m_speedFactor, m_pendingGCode->gcode.s()};
+    PlannerLine line{m_lastTargetPosition, endPoint, modalFeedRateInMmPerS * m_speedFactor, m_pendingGCode->gcode.s()};
     pushLine(line, m_pendingGCode->source, m_pendingGCode->commandId);
 
     m_lastTargetPosition = endPoint;
@@ -304,16 +306,23 @@ void Planner::handleNotFinishedArc()
     GCode lineGCode;
     while (m_arcConverter->getNextSegment(lineGCode) && m_pendingLinearBlock == tl::nullopt)
     {
-        auto endPoint = calculateEndPoint(m_pendingGCode->gcode);
+        auto endPoint = calculateEndPoint(lineGCode);
         if (!m_machineRange.contains(endPoint))
         {
-            m_kernel->sendCommandResponse(OUT_OF_RANGE_COMMAND_RESPONSE, m_pendingGCode->source, m_pendingGCode->commandId);
+            m_kernel->sendCommandResponse(
+                OUT_OF_RANGE_COMMAND_RESPONSE,
+                m_pendingGCode->source,
+                m_pendingGCode->commandId);
             m_pendingGCode = tl::nullopt;
             m_arcConverter->clear();
             return;
         }
 
-        PlannerLine line {m_lastTargetPosition, endPoint, m_g1g2g3FeedRateInMmPerS * m_speedFactor, m_pendingGCode->gcode.s()};
+        PlannerLine line{
+            m_lastTargetPosition,
+            endPoint,
+            m_g1g2g3FeedRateInMmPerS * m_speedFactor,
+            m_pendingGCode->gcode.s()};
         pushLine(line, m_pendingGCode->source, m_pendingGCode->commandId);
 
         m_lastTargetPosition = endPoint;
@@ -334,12 +343,18 @@ void Planner::handlePendingLine()
         return;
     }
 
-    auto plannerBlock = PlannerBlock::fromLine(*m_pendingLine, m_lastExitFeedRateInMmPerS, 0.f, *m_accelerationInMmPerSS);
+    auto plannerBlock =
+        PlannerBlock::fromLine(*m_pendingLine, m_lastExitFeedRateInMmPerS, 0.f, *m_accelerationInMmPerSS);
     CRITICAL_ERROR_CHECK(plannerBlock.has_value(), "PlannerBlock::fromLine failed");
     m_lastExitFeedRateInMmPerS = 0.f;
 
 
-    auto linearBlock = plannerBlock->toLinearBlock(*m_xStepCountPerMm, *m_yStepCountPerMm, *m_zStepCountPerMm, *m_minFeedRateInMmPerS, m_linearBlockExecutor->tickFrequency());
+    auto linearBlock = plannerBlock->toLinearBlock(
+        *m_xStepCountPerMm,
+        *m_yStepCountPerMm,
+        *m_zStepCountPerMm,
+        *m_minFeedRateInMmPerS,
+        m_linearBlockExecutor->tickFrequency());
     if (!pushLinearBlock(linearBlock))
     {
         m_pendingLinearBlock = PendingLinearBlock{linearBlock, tl::nullopt, tl::nullopt};
@@ -373,14 +388,24 @@ void Planner::pushLine(const PlannerLine& line, CommandSource source, uint32_t c
         return;
     }
 
-    auto exitFeedRateInMmPerS = calculateJunctionFeedRateInMmPerS(*m_pendingLine, line, *m_accelerationInMmPerSS, *m_junctionDeviation);
+    auto exitFeedRateInMmPerS =
+        calculateJunctionFeedRateInMmPerS(*m_pendingLine, line, *m_accelerationInMmPerSS, *m_junctionDeviation);
     CRITICAL_ERROR_CHECK(exitFeedRateInMmPerS.has_value(), "calculateJunctionFeedRateInMmPerS failed");
 
-    auto plannerBlock = PlannerBlock::fromLine(*m_pendingLine, m_lastExitFeedRateInMmPerS, *exitFeedRateInMmPerS, *m_accelerationInMmPerSS);
+    auto plannerBlock = PlannerBlock::fromLine(
+        *m_pendingLine,
+        m_lastExitFeedRateInMmPerS,
+        *exitFeedRateInMmPerS,
+        *m_accelerationInMmPerSS);
     CRITICAL_ERROR_CHECK(plannerBlock.has_value(), "PlannerBlock::fromLine failed");
     m_lastExitFeedRateInMmPerS = *exitFeedRateInMmPerS;
 
-    auto linearBlock = plannerBlock->toLinearBlock(*m_xStepCountPerMm, *m_yStepCountPerMm, *m_zStepCountPerMm, *m_minFeedRateInMmPerS, m_linearBlockExecutor->tickFrequency());
+    auto linearBlock = plannerBlock->toLinearBlock(
+        *m_xStepCountPerMm,
+        *m_yStepCountPerMm,
+        *m_zStepCountPerMm,
+        *m_minFeedRateInMmPerS,
+        m_linearBlockExecutor->tickFrequency());
     if (!pushLinearBlock(linearBlock))
     {
         m_pendingLinearBlock = PendingLinearBlock{linearBlock, source, commandId};

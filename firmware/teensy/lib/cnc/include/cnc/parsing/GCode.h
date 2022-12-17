@@ -54,7 +54,11 @@ public:
 
     void clear();
 
-    static GCode g1(const Vector3<float>& position, tl::optional<float> f, tl::optional<float> s, bool isMachineCoordinateSystem);
+    static GCode
+        g1(const Vector3<float>& position,
+           tl::optional<float> f,
+           tl::optional<float> s,
+           bool isMachineCoordinateSystem);
 
     friend GCodeParser;
 };
@@ -129,7 +133,11 @@ inline bool GCode::isMachineCoordinateSystem() const
     return m_isMachineCoordinateSystem;
 }
 
-inline GCode GCode::g1(const Vector3<float>& position, tl::optional<float> f, tl::optional<float> s, bool isMachineCoordinateSystem)
+inline GCode GCode::g1(
+    const Vector3<float>& position,
+    tl::optional<float> f,
+    tl::optional<float> s,
+    bool isMachineCoordinateSystem)
 {
     GCode gcode;
     gcode.m_code = 1;
