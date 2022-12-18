@@ -13,6 +13,12 @@
 
 constexpr size_t MAX_SPINDLE_RESPONSE_SIZE = 128;
 
+struct PendingSpindleDeactivation
+{
+    CommandSource source;
+    uint32_t commandId;
+};
+
 class Spindle : public IntervalModule
 {
     tl::optional<DigitalOutputConfig> m_enableConfig;
@@ -41,6 +47,8 @@ class Spindle : public IntervalModule
 
     char m_response[MAX_SPINDLE_RESPONSE_SIZE];
 
+    tl::optional<PendingSpindleDeactivation> m_pendingSpindleDeactivation;
+
 public:
     Spindle();
     ~Spindle() override = default;
@@ -59,6 +67,7 @@ public:
 
 protected:
     void onUpdate(uint32_t elapsedUs) override;
+    void handlePendingSpindleDeactivation();
 
     CommandResult enable(const MCode& mcode);
     void sendCurrentRpm(CommandSource source, uint32_t commandId);

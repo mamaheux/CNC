@@ -162,6 +162,8 @@ LinearBlock PlannerBlock::toLinearBlock(
     float minFeedRateInMmPerS,
     float tickFrequency)
 {
+    constexpr double S_TO_US = 1e6;
+
     double xStepCountPerMmDouble = xStepCountPerMm;
     double yStepCountPerMmDouble = yStepCountPerMm;
     double zStepCountPerMmDouble = zStepCountPerMm;
@@ -231,9 +233,9 @@ LinearBlock PlannerBlock::toLinearBlock(
     }
     else
     {
-        block.accelerationPerTick[AXIS_X_INDEX] = accelerationInMmPerSS * xMmToTickScale;
-        block.accelerationPerTick[AXIS_Y_INDEX] = accelerationInMmPerSS * yMmToTickScale;
-        block.accelerationPerTick[AXIS_Z_INDEX] = accelerationInMmPerSS * zMmToTickScale;
+        block.accelerationPerTick[AXIS_X_INDEX] = accelerationInMmPerSS * xMmToTickScale / tickFrequencyDouble;
+        block.accelerationPerTick[AXIS_Y_INDEX] = accelerationInMmPerSS * yMmToTickScale / tickFrequencyDouble;
+        block.accelerationPerTick[AXIS_Z_INDEX] = accelerationInMmPerSS * zMmToTickScale / tickFrequencyDouble;
     }
 
 
@@ -250,19 +252,21 @@ LinearBlock PlannerBlock::toLinearBlock(
     }
     else
     {
-        block.decelerationPerTick[AXIS_X_INDEX] = decelerationInMmPerSS * xMmToTickScale;
-        block.decelerationPerTick[AXIS_Y_INDEX] = decelerationInMmPerSS * yMmToTickScale;
-        block.decelerationPerTick[AXIS_Z_INDEX] = decelerationInMmPerSS * zMmToTickScale;
+        block.decelerationPerTick[AXIS_X_INDEX] = decelerationInMmPerSS * xMmToTickScale / tickFrequencyDouble;
+        block.decelerationPerTick[AXIS_Y_INDEX] = decelerationInMmPerSS * yMmToTickScale / tickFrequencyDouble;
+        block.decelerationPerTick[AXIS_Z_INDEX] = decelerationInMmPerSS * zMmToTickScale / tickFrequencyDouble;
     }
 
     block.stepPerTick[AXIS_X_INDEX] = entryFeedRateInMmPerSDouble * xMmToTickScale;
     block.stepPerTick[AXIS_Y_INDEX] = entryFeedRateInMmPerSDouble * yMmToTickScale;
     block.stepPerTick[AXIS_Z_INDEX] = entryFeedRateInMmPerSDouble * zMmToTickScale;
 
+
     // Set step counter
     block.stepCounter[AXIS_X_INDEX] = LinearBlockFixedPoint::ZERO;
     block.stepCounter[AXIS_Y_INDEX] = LinearBlockFixedPoint::ZERO;
     block.stepCounter[AXIS_Z_INDEX] = LinearBlockFixedPoint::ZERO;
+
 
     // Set minStepPerTick
     double minFeedRateInMmPerSDouble = minFeedRateInMmPerS;
@@ -273,7 +277,7 @@ LinearBlock PlannerBlock::toLinearBlock(
 
     // Set missing attributes
     block.durationUs =
-        static_cast<uint32_t>(static_cast<double>(block.decelerationUntilTick) / tickFrequencyDouble * 1e6);
+        static_cast<uint32_t>(static_cast<double>(block.decelerationUntilTick) / tickFrequencyDouble * S_TO_US);
     block.spindleRpm = m_spindleRpm;
 
     return block;

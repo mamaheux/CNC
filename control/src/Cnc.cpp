@@ -411,13 +411,13 @@ void SerialPortCnc::onSerialPortReadyRead()
         }
         else if (trimmedLine.startsWith("error", Qt::CaseInsensitive))
         {
-            m_commandQueue.clear();
             emit cncError(m_currentResponse.remove(0, 6));
             if (m_isGCodeFileStarted)
             {
                 m_isGCodeFileStarted = false;
                 emit gcodeFileAborted();
             }
+            m_commandQueue.clear();
             okOrErrorReceived = true;
             break;
         }

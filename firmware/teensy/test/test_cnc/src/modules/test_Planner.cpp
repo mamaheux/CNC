@@ -565,7 +565,7 @@ void test_PlannerBlockToLinearBlock_accelerationOnly()
     TEST_ASSERT_EQUAL(100, linearBlock.totalStepCount[AXIS_X_INDEX]);
     TEST_ASSERT_EQUAL(0, linearBlock.totalStepCount[AXIS_Y_INDEX]);
     TEST_ASSERT_EQUAL(0, linearBlock.totalStepCount[AXIS_Z_INDEX]);
-    TEST_ASSERT(LinearBlockFixedPoint(922337943250674) == linearBlock.accelerationPerTick[AXIS_X_INDEX]);
+    TEST_ASSERT(LinearBlockFixedPoint(9223379432) == linearBlock.accelerationPerTick[AXIS_X_INDEX]);
     TEST_ASSERT(0.f == linearBlock.accelerationPerTick[AXIS_Y_INDEX]);
     TEST_ASSERT(0.f == linearBlock.accelerationPerTick[AXIS_Z_INDEX]);
     TEST_ASSERT(0.f == linearBlock.decelerationPerTick[AXIS_X_INDEX]);
@@ -624,8 +624,8 @@ void test_PlannerBlockToLinearBlock_decelerationOnly()
     TEST_ASSERT(0.f == linearBlock.accelerationPerTick[AXIS_X_INDEX]);
     TEST_ASSERT(0.f == linearBlock.accelerationPerTick[AXIS_Y_INDEX]);
     TEST_ASSERT(0.f == linearBlock.accelerationPerTick[AXIS_Z_INDEX]);
-    TEST_ASSERT(LinearBlockFixedPoint(-553406494104923) == linearBlock.decelerationPerTick[AXIS_X_INDEX]);
-    TEST_ASSERT(LinearBlockFixedPoint(-1475750650946463) == linearBlock.decelerationPerTick[AXIS_Y_INDEX]);
+    TEST_ASSERT(LinearBlockFixedPoint(-5534064941) == linearBlock.decelerationPerTick[AXIS_X_INDEX]);
+    TEST_ASSERT(LinearBlockFixedPoint(-14757506509) == linearBlock.decelerationPerTick[AXIS_Y_INDEX]);
     TEST_ASSERT(0.f == linearBlock.decelerationPerTick[AXIS_Z_INDEX]);
     TEST_ASSERT(LinearBlockFixedPoint(2767011611056433) == linearBlock.stepPerTick[AXIS_X_INDEX]);
     TEST_ASSERT(LinearBlockFixedPoint(7378697629483821) == linearBlock.stepPerTick[AXIS_Y_INDEX]);
@@ -678,8 +678,8 @@ void test_PlannerBlockToLinearBlock_accelerationPlateau()
     TEST_ASSERT_EQUAL(800, linearBlock.totalStepCount[AXIS_Y_INDEX]);
     TEST_ASSERT_EQUAL(900, linearBlock.totalStepCount[AXIS_Z_INDEX]);
     TEST_ASSERT(0.f == linearBlock.accelerationPerTick[AXIS_X_INDEX]);
-    TEST_ASSERT(LinearBlockFixedPoint(5902958103587057) == linearBlock.accelerationPerTick[AXIS_Y_INDEX]);
-    TEST_ASSERT(LinearBlockFixedPoint(6640827866535439) == linearBlock.accelerationPerTick[AXIS_Z_INDEX]);
+    TEST_ASSERT(LinearBlockFixedPoint(59029581035) == linearBlock.accelerationPerTick[AXIS_Y_INDEX]);
+    TEST_ASSERT(LinearBlockFixedPoint(66408278665) == linearBlock.accelerationPerTick[AXIS_Z_INDEX]);
     TEST_ASSERT(0.f == linearBlock.decelerationPerTick[AXIS_X_INDEX]);
     TEST_ASSERT(0.f == linearBlock.decelerationPerTick[AXIS_Y_INDEX]);
     TEST_ASSERT(0.f == linearBlock.decelerationPerTick[AXIS_Z_INDEX]);
@@ -736,9 +736,9 @@ void test_PlannerBlockToLinearBlock_plateauDeceleration()
     TEST_ASSERT(0.f == linearBlock.accelerationPerTick[AXIS_X_INDEX]);
     TEST_ASSERT(0.f == linearBlock.accelerationPerTick[AXIS_Y_INDEX]);
     TEST_ASSERT(0.f == linearBlock.accelerationPerTick[AXIS_Z_INDEX]);
-    TEST_ASSERT(LinearBlockFixedPoint(-22136092888451460) == linearBlock.decelerationPerTick[AXIS_X_INDEX]);
+    TEST_ASSERT(LinearBlockFixedPoint(-221360928884) == linearBlock.decelerationPerTick[AXIS_X_INDEX]);
     TEST_ASSERT(0.f == linearBlock.decelerationPerTick[AXIS_Y_INDEX]);
-    TEST_ASSERT(LinearBlockFixedPoint(-88544371553805840) == linearBlock.decelerationPerTick[AXIS_Z_INDEX]);
+    TEST_ASSERT(LinearBlockFixedPoint(-885443715538) == linearBlock.decelerationPerTick[AXIS_Z_INDEX]);
     TEST_ASSERT(LinearBlockFixedPoint(55340232221128648) == linearBlock.stepPerTick[AXIS_X_INDEX]);
     TEST_ASSERT(0.f == linearBlock.stepPerTick[AXIS_Y_INDEX]);
     TEST_ASSERT(LinearBlockFixedPoint(221360928884514592) == linearBlock.stepPerTick[AXIS_Z_INDEX]);
@@ -845,10 +845,10 @@ void test_PlannerBlockToLinearBlock_accelerationPlateauDeceleration()
     TEST_ASSERT_EQUAL(50000, linearBlock.totalStepCount[AXIS_X_INDEX]);
     TEST_ASSERT_EQUAL(0, linearBlock.totalStepCount[AXIS_Y_INDEX]);
     TEST_ASSERT_EQUAL(0, linearBlock.totalStepCount[AXIS_Z_INDEX]);
-    TEST_ASSERT(LinearBlockFixedPoint(69175151926106960) == linearBlock.accelerationPerTick[AXIS_X_INDEX]);
+    TEST_ASSERT(LinearBlockFixedPoint(691751519261) == linearBlock.accelerationPerTick[AXIS_X_INDEX]);
     TEST_ASSERT(0.f == linearBlock.accelerationPerTick[AXIS_Y_INDEX]);
     TEST_ASSERT(0.f == linearBlock.accelerationPerTick[AXIS_Z_INDEX]);
-    TEST_ASSERT(LinearBlockFixedPoint(-69175463215068856) == linearBlock.decelerationPerTick[AXIS_X_INDEX]);
+    TEST_ASSERT(LinearBlockFixedPoint(-691754632150) == linearBlock.decelerationPerTick[AXIS_X_INDEX]);
     TEST_ASSERT(0.f == linearBlock.decelerationPerTick[AXIS_Y_INDEX]);
     TEST_ASSERT(0.f == linearBlock.decelerationPerTick[AXIS_Z_INDEX]);
     TEST_ASSERT(LinearBlockFixedPoint(115292150460684704) == linearBlock.stepPerTick[AXIS_X_INDEX]);
@@ -901,10 +901,10 @@ void test_PlannerBlockToLinearBlock_accelerationDeceleration()
     TEST_ASSERT_EQUAL(10000, linearBlock.totalStepCount[AXIS_X_INDEX]);
     TEST_ASSERT_EQUAL(0, linearBlock.totalStepCount[AXIS_Y_INDEX]);
     TEST_ASSERT_EQUAL(0, linearBlock.totalStepCount[AXIS_Z_INDEX]);
-    TEST_ASSERT(LinearBlockFixedPoint(69175224664521872) == linearBlock.accelerationPerTick[AXIS_X_INDEX]);
+    TEST_ASSERT(LinearBlockFixedPoint(691752246645) == linearBlock.accelerationPerTick[AXIS_X_INDEX]);
     TEST_ASSERT(0.f == linearBlock.accelerationPerTick[AXIS_Y_INDEX]);
     TEST_ASSERT(0.f == linearBlock.accelerationPerTick[AXIS_Z_INDEX]);
-    TEST_ASSERT(LinearBlockFixedPoint(-69175351828947976) == linearBlock.decelerationPerTick[AXIS_X_INDEX]);
+    TEST_ASSERT(LinearBlockFixedPoint(-691753518289) == linearBlock.decelerationPerTick[AXIS_X_INDEX]);
     TEST_ASSERT(0.f == linearBlock.decelerationPerTick[AXIS_Y_INDEX]);
     TEST_ASSERT(0.f == linearBlock.decelerationPerTick[AXIS_Z_INDEX]);
     TEST_ASSERT(LinearBlockFixedPoint(23058430092136940) == linearBlock.stepPerTick[AXIS_X_INDEX]);

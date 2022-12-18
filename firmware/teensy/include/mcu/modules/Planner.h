@@ -85,6 +85,7 @@ public:
 
     void update() override;
 
+    bool isCncMoving() override;
     bool hasPendingMotionCommands() override;
 
     void reset(const Vector3<float>& machinePosition, const InclusiveRange3<float>& range);
@@ -113,6 +114,7 @@ private:
     void handlePendingLine();
 
     Vector3<float> calculateEndPoint(const GCode& g0g1);
+    float toLineFeedRate(float feedRate);
 
     void pushLine(const PlannerLine& line, CommandSource source, uint32_t commandId);
     bool pushLinearBlock(const LinearBlock& block);

@@ -187,6 +187,7 @@ public:
 
     virtual void update();
 
+    virtual bool isCncMoving();
     virtual bool hasPendingMotionCommands();
 };
 

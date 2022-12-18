@@ -145,7 +145,6 @@ void StepperController::update()
     if (m_owner == tl::nullopt && m_pendingMCode != tl::nullopt)
     {
         handlePendingMCode(m_pendingMCode->command, m_pendingMCode->source, m_pendingMCode->commandId);
-        m_pendingMCode = tl::nullopt;
     }
 }
 
@@ -200,6 +199,11 @@ void StepperController::handlePendingMCode(const MCode& mcode, CommandSource sou
     }
     else if (mcode.code() == 18 && mcode.subcode() == tl::nullopt)
     {
+        if (m_kernel->isCncMoving())
+        {
+            return;
+        }
+
         m_xStepper.disable();
         m_yStepper.disable();
         m_zStepper.disable();
@@ -209,4 +213,6 @@ void StepperController::handlePendingMCode(const MCode& mcode, CommandSource sou
     {
         ON_CRITICAL_ERROR_2("Invalid pending MCode ", mcode.code(), __FUNCTION_NAME__, __FILENAME__);
     }
+
+    m_pendingMCode = tl::nullopt;
 }

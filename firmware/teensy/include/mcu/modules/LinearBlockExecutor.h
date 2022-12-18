@@ -43,6 +43,8 @@ public:
     void begin() override;
 
     void update() override;
+
+    bool isCncMoving() override;
     bool hasPendingMotionCommands() override;
 
     float tickFrequency() const;

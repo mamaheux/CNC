@@ -19,6 +19,8 @@ public:
     virtual void addModule(Module* module) = 0;
     virtual void registerToEvent(ModuleEventType eventType, Module* module) = 0;
 
+    virtual bool isCncMoving() = 0;
+
     virtual void executeCommand(const char* line, CommandSource source, tl::optional<uint32_t>& commandId) = 0;
     virtual void sendCommandResponse(
         const char* commandResponse,

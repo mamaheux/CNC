@@ -40,9 +40,10 @@ public:
     void addModule(Module* module) override;
     void registerToEvent(ModuleEventType eventType, Module* module) override;
 
+    bool isCncMoving() override;
+
     void begin();
     void update();
-
 
     void executeCommand(const char* line, CommandSource source, tl::optional<uint32_t>& commandId) override;
     void sendCommandResponse(

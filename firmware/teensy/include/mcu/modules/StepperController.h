@@ -263,9 +263,9 @@ inline bool StepperController::unstepAll(StepperControlModule module)
         return false;
     }
 
-    m_xStepper.step();
-    m_yStepper.step();
-    m_zStepper.step();
+    m_xStepper.unstep();
+    m_yStepper.unstep();
+    m_zStepper.unstep();
     return true;
 }
 

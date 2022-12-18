@@ -37,6 +37,8 @@ public:
     void addModule(Module* module) override;
     void registerToEvent(ModuleEventType eventType, Module* module) override;
 
+    bool isCncMoving() override;
+
     void executeCommand(const char* line, CommandSource source, tl::optional<uint32_t>& commandId) override;
     void sendCommandResponse(const char* commandResponse, CommandSource source, uint32_t commandId, bool isComplete)
         override;
@@ -73,6 +75,18 @@ void GuiKernel::addModule(Module* module)
 void GuiKernel::registerToEvent(ModuleEventType eventType, Module* module)
 {
     m_modulesByEventType[eventType].push_back(module);
+}
+
+bool GuiKernel::isCncMoving()
+{
+    for (auto module : m_modules)
+    {
+        if (module->isCncMoving())
+        {
+            return true;
+        }
+    }
+    return false;
 }
 
 void GuiKernel::executeCommand(const char* line, CommandSource source, tl::optional<uint32_t>& commandId)

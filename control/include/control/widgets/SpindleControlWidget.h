@@ -28,6 +28,8 @@ private slots:
     void onCncConnected();
     void onCncDisconnected();
 
+    void onCurrentRpmChanged(float currentRpm, float targetRpm);
+
     void onEnableSpindleButtonPressed();
     void onDisableSpindleButtonPressed();
     void onSpindleRpmSpinBoxValueChanged(int value);

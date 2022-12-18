@@ -78,7 +78,7 @@ FLASHMEM void Kernel::begin()
 void Kernel::update()
 {
     bool hasPendingMotionCommands = false;
-    for (size_t i = 0; i < m_moduleCount; i++)
+    for (size_t i = 0; i < m_moduleCount && !hasPendingMotionCommands; i++)
     {
         hasPendingMotionCommands = hasPendingMotionCommands || m_modules[i]->hasPendingMotionCommands();
     }
@@ -91,6 +91,18 @@ void Kernel::update()
     {
         m_modules[i]->update();
     }
+}
+
+bool Kernel::isCncMoving()
+{
+    for (size_t i = 0; i < m_moduleCount; i++)
+    {
+        if (m_modules[i]->isCncMoving())
+        {
+            return true;
+        }
+    }
+    return false;
 }
 
 void Kernel::executeCommand(const char* line, CommandSource source, tl::optional<uint32_t>& commandId)

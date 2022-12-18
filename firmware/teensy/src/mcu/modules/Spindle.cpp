@@ -136,7 +136,15 @@ CommandResult Spindle::onMCodeCommandReceived(const MCode& mcode, CommandSource 
     }
     else if (mcode.code() == 5 && mcode.subcode() == tl::nullopt)
     {
-        disable();
+        if (m_kernel->isCncMoving())
+        {
+            m_pendingSpindleDeactivation = PendingSpindleDeactivation{source, commandId};
+            return CommandResult::pending();
+        }
+        else
+        {
+            disable();
+        }
     }
     else if (mcode.code() == 957 && mcode.subcode() == tl::nullopt)
     {
@@ -181,6 +189,11 @@ void Spindle::disable()
 
 void Spindle::onUpdate(uint32_t elapsedUs)
 {
+    if (m_pendingSpindleDeactivation.has_value() && !m_kernel->isCncMoving())
+    {
+        handlePendingSpindleDeactivation();
+    }
+
     uint32_t currentPulseCount;
 
     {
@@ -210,6 +223,16 @@ void Spindle::onUpdate(uint32_t elapsedUs)
     m_previousError = error;
 
     m_pwm.write(static_cast<uint16_t>(PWM_MAX_VALUE * pwm));
+}
+
+void Spindle::handlePendingSpindleDeactivation()
+{
+    disable();
+    m_kernel->sendCommandResponse(
+        OK_COMMAND_RESPONSE,
+        m_pendingSpindleDeactivation->source,
+        m_pendingSpindleDeactivation->commandId);
+    m_pendingSpindleDeactivation = tl::nullopt;
 }
 
 CommandResult Spindle::enable(const MCode& mcode)

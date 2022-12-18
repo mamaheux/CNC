@@ -1,6 +1,5 @@
 #include "mcu/modules/CommandSerial.h"
 #include "mcu/criticalError.h"
-#include "config.h"
 
 #include <cnc/modules/ModuleKernel.h>
 

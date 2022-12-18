@@ -137,7 +137,7 @@ static void onTick()
 }
 
 FLASHMEM
-    LinearBlockExecutor::LinearBlockExecutor(StepperController* stepperController, Spindle* spindle, Planner* planner)
+LinearBlockExecutor::LinearBlockExecutor(StepperController* stepperController, Spindle* spindle, Planner* planner)
     : m_stepperController(stepperController),
       m_spindle(spindle),
       m_queueDurationUs(0),
@@ -188,7 +188,13 @@ void LinearBlockExecutor::update()
     else if (m_timerStarted && m_noMoreBlock)
     {
         stopTimer();
+        m_stepperController->unlock(StepperControlModule::LINEAR_BLOCK_EXECUTOR);
     }
+}
+
+bool LinearBlockExecutor::isCncMoving()
+{
+    return m_timerStarted;
 }
 
 bool LinearBlockExecutor::hasPendingMotionCommands()
@@ -217,6 +223,7 @@ bool LinearBlockExecutor::onLinearBlock(const LinearBlock& block, uint32_t& queu
 
 void LinearBlockExecutor::startTimer()
 {
+    constexpr double S_TO_US = 1e6;
     m_noMoreBlock = false;
 
     isStep = true;
@@ -226,7 +233,7 @@ void LinearBlockExecutor::startTimer()
     stepperController = m_stepperController;
     spindle = m_spindle;
 
-    m_timer.begin(onTick, 1 / (2 * *m_tickFrequency));
+    m_timer.begin(onTick, 1 / (2 * *m_tickFrequency) * S_TO_US);
     m_timer.priority(0);
 
     m_timerStarted = true;

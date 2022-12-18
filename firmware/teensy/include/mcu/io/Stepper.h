@@ -73,13 +73,16 @@ inline void Stepper::setDirection(Direction direction)
 
 inline void Stepper::step()
 {
+    if (!m_step.read())
+    {
+        m_position += directionToInt(direction());
+    }
     m_step.write(true);
 }
 
 inline void Stepper::unstep()
 {
     m_step.write(false);
-    m_position += directionToInt(direction());
 }
 
 inline int32_t Stepper::position() const

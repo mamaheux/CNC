@@ -41,6 +41,11 @@ bool Module::onLinearBlock(const LinearBlock& block, uint32_t& queueDurationUs, 
 
 void Module::update() {}
 
+bool Module::isCncMoving()
+{
+    return false;
+}
+
 bool Module::hasPendingMotionCommands()
 {
     return false;

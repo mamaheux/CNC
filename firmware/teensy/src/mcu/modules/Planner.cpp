@@ -99,6 +99,7 @@ FLASHMEM void Planner::begin()
 {
     m_g0FeedRateInMmPerS = *m_maxFeedRateInMmPerS;
     m_g1g2g3FeedRateInMmPerS = *m_minFeedRateInMmPerS;
+    m_lastExitFeedRateInMmPerS = *m_minFeedRateInMmPerS;
 
     m_kernel->registerToEvent(ModuleEventType::GCODE_COMMAND, this);
     m_kernel->registerToEvent(ModuleEventType::MCODE_COMMAND, this);
@@ -168,9 +169,15 @@ void Planner::update()
     }
 }
 
+bool Planner::isCncMoving()
+{
+    return hasPendingMotionCommands();
+}
+
 bool Planner::hasPendingMotionCommands()
 {
-    return !m_arcConverter->isFinished() || m_pendingLinearBlock.has_value() || m_pendingGCode.has_value();
+    return !m_arcConverter->isFinished() || m_pendingLinearBlock.has_value() || m_pendingGCode.has_value() ||
+           m_pendingLine.has_value();
 }
 
 void Planner::reset(const Vector3<float>& machinePosition, const InclusiveRange3<float>& range)
@@ -218,7 +225,7 @@ void Planner::updateSpeedFactor(const MCode& mcode)
 
 void Planner::handlePendingLinearBlock()
 {
-    if ((micros() - m_lastPushTimeUs) < (m_lastQueueDurationUs / 2))
+    if ((micros() - m_lastPushTimeUs) < (m_lastQueueDurationUs / 4))
     {
         return;
     }
@@ -272,7 +279,7 @@ void Planner::handlePendingG0G1(float& modalFeedRateInMmPerS)
         modalFeedRateInMmPerS = feedRateInMmPerS;
     }
 
-    PlannerLine line{m_lastTargetPosition, endPoint, modalFeedRateInMmPerS * m_speedFactor, m_pendingGCode->gcode.s()};
+    PlannerLine line{m_lastTargetPosition, endPoint, toLineFeedRate(modalFeedRateInMmPerS), m_pendingGCode->gcode.s()};
     pushLine(line, m_pendingGCode->source, m_pendingGCode->commandId);
 
     m_lastTargetPosition = endPoint;
@@ -321,7 +328,7 @@ void Planner::handleNotFinishedArc()
         PlannerLine line{
             m_lastTargetPosition,
             endPoint,
-            m_g1g2g3FeedRateInMmPerS * m_speedFactor,
+            toLineFeedRate(m_g1g2g3FeedRateInMmPerS),
             m_pendingGCode->gcode.s()};
         pushLine(line, m_pendingGCode->source, m_pendingGCode->commandId);
 
@@ -338,16 +345,22 @@ void Planner::handleNotFinishedArc()
 
 void Planner::handlePendingLine()
 {
-    if ((micros() - m_lastPendingLineTimeUs) < *m_pendingLineDelayUs)
+    int64_t pendingLineDelayUs = std::max(
+        static_cast<int64_t>(m_lastQueueDurationUs) - static_cast<int64_t>(*m_queueMinDurationUs),
+        static_cast<int64_t>(*m_pendingLineDelayUs));
+
+    if (static_cast<int64_t>(micros() - m_lastPendingLineTimeUs) < pendingLineDelayUs)
     {
         return;
     }
 
-    auto plannerBlock =
-        PlannerBlock::fromLine(*m_pendingLine, m_lastExitFeedRateInMmPerS, 0.f, *m_accelerationInMmPerSS);
+    auto plannerBlock = PlannerBlock::fromLine(
+        *m_pendingLine,
+        m_lastExitFeedRateInMmPerS,
+        *m_minFeedRateInMmPerS,
+        *m_accelerationInMmPerSS);
     CRITICAL_ERROR_CHECK(plannerBlock.has_value(), "PlannerBlock::fromLine failed");
-    m_lastExitFeedRateInMmPerS = 0.f;
-
+    m_lastExitFeedRateInMmPerS = *m_minFeedRateInMmPerS;
 
     auto linearBlock = plannerBlock->toLinearBlock(
         *m_xStepCountPerMm,
@@ -355,10 +368,13 @@ void Planner::handlePendingLine()
         *m_zStepCountPerMm,
         *m_minFeedRateInMmPerS,
         m_linearBlockExecutor->tickFrequency());
+
     if (!pushLinearBlock(linearBlock))
     {
         m_pendingLinearBlock = PendingLinearBlock{linearBlock, tl::nullopt, tl::nullopt};
     }
+
+    m_pendingLine = tl::nullopt;
 }
 
 Vector3<float> Planner::calculateEndPoint(const GCode& g0g1)
@@ -380,10 +396,17 @@ Vector3<float> Planner::calculateEndPoint(const GCode& g0g1)
     }
 }
 
+float Planner::toLineFeedRate(float feedRate)
+{
+    float lineFeedRate = feedRate * m_speedFactor;
+    return std::max(*m_minFeedRateInMmPerS, std::min(lineFeedRate, *m_maxFeedRateInMmPerS));
+}
+
 void Planner::pushLine(const PlannerLine& line, CommandSource source, uint32_t commandId)
 {
     if (m_pendingLine == tl::nullopt)
     {
+        m_lastPendingLineTimeUs = micros();
         m_pendingLine = line;
         return;
     }
@@ -410,6 +433,9 @@ void Planner::pushLine(const PlannerLine& line, CommandSource source, uint32_t c
     {
         m_pendingLinearBlock = PendingLinearBlock{linearBlock, source, commandId};
     }
+
+    m_lastPendingLineTimeUs = micros();
+    m_pendingLine = line;
 }
 
 bool Planner::pushLinearBlock(const LinearBlock& block)
@@ -421,9 +447,9 @@ bool Planner::pushLinearBlock(const LinearBlock& block)
 void Planner::sendOkForG0G1G2G3(CommandSource source, uint32_t commandId)
 {
     float sleepDurationMs = 0.f;
-    if (m_lastQueueSize > *m_queueMinSize && m_lastQueueDurationUs > *m_queueMinDurationUs)
+    if (m_lastQueueSize > *m_queueMinSize && m_lastQueueDurationUs > (*m_queueMinDurationUs + *m_pendingLineDelayUs))
     {
-        sleepDurationMs = (m_lastQueueDurationUs - *m_queueMinDurationUs) / 1000.f;
+        sleepDurationMs = (m_lastQueueDurationUs - *m_queueMinDurationUs - *m_pendingLineDelayUs) / 1000.f;
     }
 
     sendOkWithP(source, commandId, sleepDurationMs);
