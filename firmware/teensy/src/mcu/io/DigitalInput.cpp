@@ -25,5 +25,22 @@ FLASHMEM void DigitalInput::begin(const DigitalInputConfig& config)
 
 FLASHMEM void DigitalInput::attachInterrupt(void (*function)(), DigitalInputInterruptMode mode)
 {
+    if (m_inverted && mode == DigitalInputInterruptMode::INTERRUPT_LOW)
+    {
+        mode = DigitalInputInterruptMode::INTERRUPT_HIGH;
+    }
+    else if (m_inverted && mode == DigitalInputInterruptMode::INTERRUPT_FALLING)
+    {
+        mode = DigitalInputInterruptMode::INTERRUPT_RISING;
+    }
+    else if (m_inverted && mode == DigitalInputInterruptMode::INTERRUPT_RISING)
+    {
+        mode = DigitalInputInterruptMode::INTERRUPT_FALLING;
+    }
+    else if (m_inverted && mode == DigitalInputInterruptMode::INTERRUPT_HIGH)
+    {
+        mode = DigitalInputInterruptMode::INTERRUPT_LOW;
+    }
+
     ::attachInterrupt(m_pin, function, static_cast<int>(mode));
 }
