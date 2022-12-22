@@ -38,7 +38,8 @@ class Spindle : public IntervalModule
     DigitalInput m_feedback;
     PwmOutput m_pwm;
 
-    volatile uint32_t m_pulseCount;
+    volatile uint32_t m_lastPulseTimeUs;
+    volatile uint32_t m_currentPulseTimeUs;
     float m_cumulativeError;
     float m_previousError;
 

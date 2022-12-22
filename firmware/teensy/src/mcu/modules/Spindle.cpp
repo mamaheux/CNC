@@ -24,14 +24,17 @@ constexpr const char* MAX_CUMULATIVE_ERROR_KEY = "spindle.max_cumulative_error";
 constexpr const char* MISSING_SPINDLE_SPEED_COMMAND_ERROR_MESSAGE = "The spindle speed is missing.";
 
 
-static volatile uint32_t* pulseCount;
+static volatile uint32_t* lastPulseTimeUs;
+static volatile uint32_t* currentPulseTimeUs;
 static void onFeedbackPulse()
 {
-    *pulseCount++;
+    *lastPulseTimeUs = *currentPulseTimeUs;
+    *currentPulseTimeUs = micros();
 }
 
 FLASHMEM Spindle::Spindle()
-    : m_pulseCount(0),
+    : m_lastPulseTimeUs(0),
+      m_currentPulseTimeUs(0),
       m_cumulativeError(0.f),
       m_previousError(0.f),
       m_currentRpm(0.f),
@@ -120,8 +123,9 @@ FLASHMEM void Spindle::begin()
 {
     m_enable.begin(*m_enableConfig, false);
     m_feedback.begin(*m_feedbackConfig);
-    pulseCount = &m_pulseCount;
-    m_feedback.attachInterrupt(&onFeedbackPulse, DigitalInputInterruptMode::INTERRUPT_RISING);
+    lastPulseTimeUs = &m_lastPulseTimeUs;
+    currentPulseTimeUs = &m_currentPulseTimeUs;
+    m_feedback.attachInterrupt(&onFeedbackPulse, DigitalInputInterruptMode::INTERRUPT_CHANGE);
     m_pwm.begin(*m_pwmConfig, 0);
 
     setUpdatePeriodUs(*m_controlPeriodUs);
@@ -192,18 +196,17 @@ void Spindle::onUpdate(uint32_t elapsedUs)
     if (m_pendingSpindleDeactivation.has_value() && !m_kernel->isCncMoving())
     {
         handlePendingSpindleDeactivation();
+        return;
     }
 
-    uint32_t currentPulseCount;
-
+    uint32_t pulseDeltaUs;
     {
         PinInterruptLock lock;
-        currentPulseCount = m_pulseCount;
-        m_pulseCount = 0;
+        pulseDeltaUs = m_currentPulseTimeUs - m_lastPulseTimeUs;
     }
 
     float elapsedS = static_cast<float>(elapsedUs) / 1000000.f;
-    float instantRpm = static_cast<float>(currentPulseCount) / *m_pulsePerRotation / elapsedS * 60;
+    float instantRpm = 60.f * 1e6f / (static_cast<float>(pulseDeltaUs) * *m_pulsePerRotation);
     m_currentRpm = *m_rpmDecay * instantRpm + (1.f - *m_rpmDecay) * m_currentRpm;
 
     if (m_enable.read())
