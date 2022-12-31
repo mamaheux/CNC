@@ -23,18 +23,26 @@ constexpr const char* MAX_CUMULATIVE_ERROR_KEY = "spindle.max_cumulative_error";
 
 constexpr const char* MISSING_SPINDLE_SPEED_COMMAND_ERROR_MESSAGE = "The spindle speed is missing.";
 
+constexpr uint8_t PIN_INTERRUPT_PRIORITY = 1;
 
-static volatile uint32_t* lastPulseTimeUs;
-static volatile uint32_t* currentPulseTimeUs;
+static volatile uint32_t pulseCount = 0;
+static volatile uint32_t lastTimeUs = 0;
+
 static void onFeedbackPulse()
 {
-    *lastPulseTimeUs = *currentPulseTimeUs;
-    *currentPulseTimeUs = micros();
+    constexpr uint32_t MIN_DURATION_US = 500;
+    uint32_t currentTimeUs = micros();
+
+    // To prevent pulse cause by noise
+    if ((currentTimeUs - lastTimeUs) > MIN_DURATION_US)
+    {
+        pulseCount++;
+    }
+    lastTimeUs = currentTimeUs;
 }
 
 FLASHMEM Spindle::Spindle()
-    : m_lastPulseTimeUs(0),
-      m_currentPulseTimeUs(0),
+    : m_lastPulseCount(0),
       m_cumulativeError(0.f),
       m_previousError(0.f),
       m_currentRpm(0.f),
@@ -93,7 +101,7 @@ FLASHMEM void Spindle::configure(const ConfigItem& item)
     }
     else if (strcmp(item.getKey(), RPM_DECAY_KEY) == 0)
     {
-        m_rpmDecay = item.getValueInt();
+        m_rpmDecay = item.getValueFloat();
     }
     else if (strcmp(item.getKey(), PULSE_PER_ROTATION_KEY) == 0)
     {
@@ -123,8 +131,7 @@ FLASHMEM void Spindle::begin()
 {
     m_enable.begin(*m_enableConfig, false);
     m_feedback.begin(*m_feedbackConfig);
-    lastPulseTimeUs = &m_lastPulseTimeUs;
-    currentPulseTimeUs = &m_currentPulseTimeUs;
+    DigitalInput::setInterruptPriority(PIN_INTERRUPT_PRIORITY);
     m_feedback.attachInterrupt(&onFeedbackPulse, DigitalInputInterruptMode::INTERRUPT_CHANGE);
     m_pwm.begin(*m_pwmConfig, 0);
 
@@ -199,17 +206,19 @@ void Spindle::onUpdate(uint32_t elapsedUs)
         return;
     }
 
-    uint32_t pulseDeltaUs;
+    uint32_t currentPulseCount;
     {
         PinInterruptLock lock;
-        pulseDeltaUs = m_currentPulseTimeUs - m_lastPulseTimeUs;
+        currentPulseCount = pulseCount;
     }
+    uint32_t deltaPulseCount = currentPulseCount - m_lastPulseCount;
+    m_lastPulseCount = currentPulseCount;
 
     float elapsedS = static_cast<float>(elapsedUs) / 1000000.f;
-    float instantRpm = 60.f * 1e6f / (static_cast<float>(pulseDeltaUs) * *m_pulsePerRotation);
+    float instantRpm = static_cast<float>(deltaPulseCount) / *m_pulsePerRotation / elapsedS * 60.f;
     m_currentRpm = *m_rpmDecay * instantRpm + (1.f - *m_rpmDecay) * m_currentRpm;
 
-    if (m_enable.read())
+    if (!m_enable.read())
     {
         return;
     }

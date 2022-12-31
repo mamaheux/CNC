@@ -142,6 +142,7 @@ FLASHMEM void Endstops::begin()
     }
 
     setUpdatePeriodUs(*m_controlSlowPeriodUs);
+    m_kernel->registerToEvent(ModuleEventType::SYSTEM_COMMAND, this);
 }
 
 CommandResult Endstops::onSystemCommandReceived(const SystemCommand& command, CommandSource source, uint32_t commandId)

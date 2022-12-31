@@ -34,6 +34,8 @@ public:
     void attachInterrupt(void (*function)(), DigitalInputInterruptMode mode);
 
     bool read() const;
+
+    static void setInterruptPriority(uint8_t n);
 };
 
 inline bool DigitalInput::read() const

@@ -12,9 +12,9 @@
 class Planner;
 
 constexpr size_t MAX_STEPPER_CONTROLLER_RESPONSE_SIZE = 128;
-constexpr uint32_t ENABLE_DISABLE_DELAY_US = 10;
-constexpr uint32_t DIRECTION_DELAY_US = 10;
-constexpr uint32_t STEP_DURATION_US = 5;
+constexpr uint32_t ENABLE_DISABLE_DELAY_US = 20;
+constexpr uint32_t DIRECTION_DELAY_US = 20;
+constexpr uint32_t STEP_DURATION_US = 10;
 
 enum class StepperControlModule
 {

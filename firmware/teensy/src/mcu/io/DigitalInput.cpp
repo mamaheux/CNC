@@ -44,3 +44,17 @@ FLASHMEM void DigitalInput::attachInterrupt(void (*function)(), DigitalInputInte
 
     ::attachInterrupt(m_pin, function, static_cast<int>(mode));
 }
+
+FLASHMEM void DigitalInput::setInterruptPriority(uint8_t n)
+{
+    NVIC_SET_PRIORITY(IRQ_GPIO1_0_15, n);
+    NVIC_SET_PRIORITY(IRQ_GPIO1_16_31, n);
+    NVIC_SET_PRIORITY(IRQ_GPIO2_0_15, n);
+    NVIC_SET_PRIORITY(IRQ_GPIO2_16_31, n);
+    NVIC_SET_PRIORITY(IRQ_GPIO3_0_15, n);
+    NVIC_SET_PRIORITY(IRQ_GPIO3_16_31, n);
+    NVIC_SET_PRIORITY(IRQ_GPIO4_0_15, n);
+    NVIC_SET_PRIORITY(IRQ_GPIO4_16_31, n);
+    NVIC_SET_PRIORITY(IRQ_GPIO5_0_15, n);
+    NVIC_SET_PRIORITY(IRQ_GPIO5_16_31, n);
+}

@@ -8,6 +8,8 @@
 constexpr const char* TICK_FREQUENCY_KEY = "linear_block_executor.tick_frequency";
 constexpr const char* QUEUE_DELAY_MS_KEY = "linear_block_executor.queue_delay_ms";
 
+constexpr uint8_t TIMER_INTERRUPT_PRIORITY = 0;
+
 
 // Inspired by Smoothieware StepTicker.cpp
 static bool isStep = true;
@@ -234,7 +236,7 @@ void LinearBlockExecutor::startTimer()
     spindle = m_spindle;
 
     m_timer.begin(onTick, 1 / (2 * *m_tickFrequency) * S_TO_US);
-    m_timer.priority(0);
+    m_timer.priority(TIMER_INTERRUPT_PRIORITY);
 
     m_timerStarted = true;
 }
