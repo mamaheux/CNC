@@ -9,6 +9,7 @@
 #include <QMap>
 #include <QFile>
 #include <QTextStream>
+#include <QTimer>
 
 #include <clocale>
 
@@ -623,7 +624,7 @@ void GCodeModel::load(const QString& path, const std::function<void(int, int)>& 
     {
         m_commands.clear();
         m_lines.clear();
-        emit invalidGCode(invalidCommands);
+        QTimer::singleShot(0, [=](){ emit invalidGCode(invalidCommands); });
     }
     emit gcodeChanged();
 }

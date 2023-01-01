@@ -76,14 +76,8 @@ void GCodeViewWidget::touchUpdateEvent(QTouchEvent* event)
         float scaleFactor = static_cast<float>(
             QLineF(touchPoint0.pos(), touchPoint1.pos()).length() -
             QLineF(touchPoint0.lastPos(), touchPoint1.lastPos()).length());
-        if (scaleFactor > 0)
-        {
-            m_r /= scaleFactor * TOUCH_ZOOM_SPEED;
-        }
-        else if (scaleFactor < 0)
-        {
-            m_r *= scaleFactor * TOUCH_ZOOM_SPEED;
-        }
+        m_r -= scaleFactor * TOUCH_ZOOM_SPEED;
+        m_r = max(0.f, m_r);
 
         // Pan
         float centerPosX = static_cast<float>(touchPoint0.pos().x() + touchPoint1.pos().x()) / 2.f;
@@ -128,14 +122,8 @@ void GCodeViewWidget::mouseMoveEvent(QMouseEvent* event)
 void GCodeViewWidget::wheelEvent(QWheelEvent* event)
 {
     event->accept();
-    if (event->angleDelta().y() > 0)
-    {
-        m_r /= static_cast<float>(event->angleDelta().y()) * MOUSE_WHEEL_LINEAR_SPEED;
-    }
-    else if (event->angleDelta().y() < 0)
-    {
-        m_r *= static_cast<float>(-event->angleDelta().y()) * MOUSE_WHEEL_LINEAR_SPEED;
-    }
+    m_r += static_cast<float>(event->angleDelta().y()) * MOUSE_WHEEL_LINEAR_SPEED;
+    m_r = max(0.f, m_r);
     update();
 }
 

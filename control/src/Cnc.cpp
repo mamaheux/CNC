@@ -271,6 +271,11 @@ void Cnc::sendNextGCodeFileCommandIfStarted()
         });
 }
 
+void Cnc::emitCncError(const QString& error)
+{
+    QTimer::singleShot(0, [=]() { emit cncError(error); });
+}
+
 
 SerialPortCnc::SerialPortCnc(GCodeModel* gcodeModel) : Cnc(gcodeModel), m_serialPort(nullptr) {}
 
@@ -343,44 +348,44 @@ void SerialPortCnc::onSerialPortErrorOccurred(QSerialPort::SerialPortError error
     switch (error)
     {
         case QSerialPort::DeviceNotFoundError:
-            emit cncError("Serial Port Error: The device was not found.");
+            emitCncError("Serial Port Error: The device was not found.");
             break;
         case QSerialPort::PermissionError:
-            emit cncError("Serial Port Error: A permission error occurred.");
+            emitCncError("Serial Port Error: A permission error occurred.");
             break;
         case QSerialPort::OpenError:
-            emit cncError("Serial Port Error: The device is already opened.");
+            emitCncError("Serial Port Error: The device is already opened.");
             break;
         case QSerialPort::ParityError:
-            emit cncError("Serial Port Error: A parity error occurred.");
+            emitCncError("Serial Port Error: A parity error occurred.");
             break;
         case QSerialPort::FramingError:
-            emit cncError("Serial Port Error: A framing error occurred.");
+            emitCncError("Serial Port Error: A framing error occurred.");
             break;
         case QSerialPort::BreakConditionError:
-            emit cncError("Serial Port Error: A break condition occurred.");
+            emitCncError("Serial Port Error: A break condition occurred.");
             break;
         case QSerialPort::WriteError:
-            emit cncError("Serial Port Error: A write error occurred.");
+            emitCncError("Serial Port Error: A write error occurred.");
             break;
         case QSerialPort::ReadError:
-            emit cncError("Serial Port Error: A read error occurred.");
+            emitCncError("Serial Port Error: A read error occurred.");
             break;
         case QSerialPort::ResourceError:
-            emit cncError("Serial Port Error: A resource error occurred.");
+            emitCncError("Serial Port Error: A resource error occurred.");
             break;
         case QSerialPort::UnsupportedOperationError:
-            emit cncError("Serial Port Error: An unsupported operation occurred.");
+            emitCncError("Serial Port Error: An unsupported operation occurred.");
             break;
         case QSerialPort::NoError:
         case QSerialPort::UnknownError:
-            emit cncError("Serial Port Error: An unknown error occurred.");
+            emitCncError("Serial Port Error: An unknown error occurred.");
             break;
         case QSerialPort::TimeoutError:
-            emit cncError("Serial Port Error: A timeout error occurred.");
+            emitCncError("Serial Port Error: A timeout error occurred.");
             break;
         case QSerialPort::NotOpenError:
-            emit cncError("Serial Port Error: The device is not opened.");
+            emitCncError("Serial Port Error: The device is not opened.");
             break;
     }
 }
@@ -411,7 +416,7 @@ void SerialPortCnc::onSerialPortReadyRead()
         }
         else if (trimmedLine.startsWith("error", Qt::CaseInsensitive))
         {
-            emit cncError(m_currentResponse.remove(0, 6));
+            emitCncError(m_currentResponse.remove(0, 6));
             if (m_isGCodeFileStarted)
             {
                 m_isGCodeFileStarted = false;

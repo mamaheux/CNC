@@ -95,6 +95,8 @@ private slots:
 
 protected:
     virtual void sendHeadCommand() = 0;
+
+    void emitCncError(const QString& error);
 };
 
 class SerialPortCnc : public Cnc
