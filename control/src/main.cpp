@@ -12,7 +12,7 @@ constexpr int SMALL_MAIN_WINDOW_HEIGHT = 986;
 
 enum class WindowsShowStyle
 {
-    DOCK,
+    NORMAL,
     FULLSCREEN,
     MAXIMIZED
 };
@@ -40,7 +40,7 @@ void messageHandler(QtMsgType type, const QMessageLogContext& context, const QSt
     }
 }
 
-int runApp(bool small, WindowsShowStyle showStyle, bool mockCnc)
+int runApp(bool small, WindowsShowStyle showStyle, bool frameless, bool mockCnc)
 {
     qInstallMessageHandler(messageHandler);
 
@@ -61,7 +61,7 @@ int runApp(bool small, WindowsShowStyle showStyle, bool mockCnc)
     if (small)
     {
         mainWindow = new SmallMainWindow(settings, gcodeModel, cnc);
-        if (showStyle == WindowsShowStyle::DOCK)
+        if (showStyle == WindowsShowStyle::NORMAL)
         {
             mainWindow->setMinimumSize(SMALL_MAIN_WINDOW_WIDTH, SMALL_MAIN_WINDOW_HEIGHT);
             mainWindow->setMaximumSize(SMALL_MAIN_WINDOW_WIDTH, SMALL_MAIN_WINDOW_HEIGHT);
@@ -94,11 +94,15 @@ int runApp(bool small, WindowsShowStyle showStyle, bool mockCnc)
                               "  width: 32px;"
                               "}");
 
+    if (frameless)
+    {
+        mainWindow->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
+    }
     switch (showStyle)
     {
         case WindowsShowStyle::FULLSCREEN:
             mainWindow->setWindowState(Qt::WindowFullScreen);
-        case WindowsShowStyle::DOCK:
+        case WindowsShowStyle::NORMAL:
             mainWindow->show();
             break;
         case WindowsShowStyle::MAXIMIZED:
@@ -133,11 +137,13 @@ int main(int argc, char* argv[])
     parser.addOption(maximizedOption);
     QCommandLineOption smallOption("small");
     parser.addOption(smallOption);
+    QCommandLineOption framelessOption("frameless");
+    parser.addOption(framelessOption);
     QCommandLineOption mockCnc("mock_cnc");
     parser.addOption(mockCnc);
     parser.process(app);
 
-    WindowsShowStyle showStyle = WindowsShowStyle::DOCK;
+    WindowsShowStyle showStyle = WindowsShowStyle::NORMAL;
     if (parser.isSet(fullscreenOption))
     {
         showStyle = WindowsShowStyle::FULLSCREEN;
@@ -147,5 +153,5 @@ int main(int argc, char* argv[])
         showStyle = WindowsShowStyle::MAXIMIZED;
     }
 
-    return runApp(parser.isSet(smallOption), showStyle, parser.isSet(mockCnc));
+    return runApp(parser.isSet(smallOption), showStyle, parser.isSet(framelessOption), parser.isSet(mockCnc));
 }
