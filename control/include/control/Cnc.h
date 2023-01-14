@@ -88,6 +88,9 @@ signals:
     void gcodeFileAborted();
     void gcodeFileFinished();
 
+    void stepperStateChanged(bool isEnabled);
+    void spindleStateChanged(bool isEnabled);
+
 private slots:
     void onStatusTimerTimeout();
 
@@ -97,6 +100,9 @@ protected:
     virtual void sendHeadCommand() = 0;
 
     void emitCncError(const QString& error);
+
+private:
+    void emitCommandSignals(const QString& command);
 };
 
 class SerialPortCnc : public Cnc

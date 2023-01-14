@@ -8,12 +8,20 @@
 #include <QCommandLineParser>
 
 constexpr int SMALL_MAIN_WINDOW_WIDTH = 600;
-constexpr int SMALL_MAIN_WINDOW_HEIGHT = 1024;
+constexpr int SMALL_MAIN_WINDOW_HEIGHT = 986;
 
-void messageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
+enum class WindowsShowStyle
+{
+    DOCK,
+    FULLSCREEN,
+    MAXIMIZED
+};
+
+void messageHandler(QtMsgType type, const QMessageLogContext& context, const QString& msg)
 {
     QByteArray localMsg = msg.toLocal8Bit();
-    switch (type) {
+    switch (type)
+    {
         case QtDebugMsg:
             fprintf(stderr, "Debug: %s\n", localMsg.constData());
             break;
@@ -32,7 +40,7 @@ void messageHandler(QtMsgType type, const QMessageLogContext &context, const QSt
     }
 }
 
-int runApp(bool small, bool fullscreen, bool mockCnc)
+int runApp(bool small, WindowsShowStyle showStyle, bool mockCnc)
 {
     qInstallMessageHandler(messageHandler);
 
@@ -53,7 +61,7 @@ int runApp(bool small, bool fullscreen, bool mockCnc)
     if (small)
     {
         mainWindow = new SmallMainWindow(settings, gcodeModel, cnc);
-        if (!fullscreen)
+        if (showStyle == WindowsShowStyle::DOCK)
         {
             mainWindow->setMinimumSize(SMALL_MAIN_WINDOW_WIDTH, SMALL_MAIN_WINDOW_HEIGHT);
             mainWindow->setMaximumSize(SMALL_MAIN_WINDOW_WIDTH, SMALL_MAIN_WINDOW_HEIGHT);
@@ -65,8 +73,8 @@ int runApp(bool small, bool fullscreen, bool mockCnc)
         mainWindow->setMinimumHeight(SMALL_MAIN_WINDOW_HEIGHT);
     }
 
-    mainWindow->setStyleSheet("QWidget {font-size: 14pt;} "
-                              "QPushButton {qproperty-iconSize: 23px;} "
+    mainWindow->setStyleSheet("QWidget {font-size: 13pt;} "
+                              "QPushButton {qproperty-iconSize: 20px;} "
                               "QGroupBox {font-weight: bold;} "
                               "QLCDNumber {min-height: 34px;} "
                               "QChartView {padding: 0px; margin: 0px;} "
@@ -85,11 +93,17 @@ int runApp(bool small, bool fullscreen, bool mockCnc)
                               "  height: 24px;"
                               "  width: 32px;"
                               "}");
-    mainWindow->show();
 
-    if (fullscreen)
+    switch (showStyle)
     {
-        mainWindow->setWindowState(Qt::WindowFullScreen);
+        case WindowsShowStyle::FULLSCREEN:
+            mainWindow->setWindowState(Qt::WindowFullScreen);
+        case WindowsShowStyle::DOCK:
+            mainWindow->show();
+            break;
+        case WindowsShowStyle::MAXIMIZED:
+            mainWindow->showMaximized();
+            break;
     }
 
     int code = QApplication::exec();
@@ -115,11 +129,23 @@ int main(int argc, char* argv[])
     parser.addHelpOption();
     QCommandLineOption fullscreenOption("fullscreen");
     parser.addOption(fullscreenOption);
+    QCommandLineOption maximizedOption("maximized");
+    parser.addOption(maximizedOption);
     QCommandLineOption smallOption("small");
     parser.addOption(smallOption);
     QCommandLineOption mockCnc("mock_cnc");
     parser.addOption(mockCnc);
     parser.process(app);
 
-    return runApp(parser.isSet(smallOption), parser.isSet(fullscreenOption), parser.isSet(mockCnc));
+    WindowsShowStyle showStyle = WindowsShowStyle::DOCK;
+    if (parser.isSet(fullscreenOption))
+    {
+        showStyle = WindowsShowStyle::FULLSCREEN;
+    }
+    else if (parser.isSet(maximizedOption))
+    {
+        showStyle = WindowsShowStyle::MAXIMIZED;
+    }
+
+    return runApp(parser.isSet(smallOption), showStyle, parser.isSet(mockCnc));
 }

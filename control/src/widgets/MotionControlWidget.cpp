@@ -21,6 +21,7 @@ MotionControlWidget::MotionControlWidget(SettingsModel* settings, Cnc* cnc, QWid
     connect(settings, &SettingsModel::settingsChanged, this, &MotionControlWidget::onSettingsChanged);
     connect(m_cnc, &Cnc::cncConnected, this, &MotionControlWidget::onCncConnected);
     connect(m_cnc, &Cnc::cncDisconnected, this, &MotionControlWidget::onCncDisconnected);
+    connect(m_cnc, &Cnc::stepperStateChanged, this, &MotionControlWidget::onStepperStateChanged);
 
     connect(m_cnc, &Cnc::gcodeFileStated, this, &MotionControlWidget::disableMotionWidgets);
     connect(m_cnc, &Cnc::gcodeFileAborted, this, &MotionControlWidget::enableMotionWidgets);
@@ -42,64 +43,66 @@ void MotionControlWidget::onCncDisconnected()
     setEnabled(false);
 }
 
+void MotionControlWidget::onStepperStateChanged(bool isEnabled)
+{
+    if (isEnabled)
+    {
+        setState(State::STEPPERS_ENABLED);
+    }
+    else
+    {
+        setState(State::STEPPERS_DISABLED);
+    }
+}
+
 void MotionControlWidget::onEnableSteppersButtonPressed()
 {
     m_cnc->enableSteppers();
-    setState(State::STEPPERS_ENABLED);
 }
 
 void MotionControlWidget::onDisableSteppersButtonPressed()
 {
     m_cnc->disableSteppers();
-    setState(State::STEPPERS_DISABLED);
 }
 
 void MotionControlWidget::onGotoMachineX0Y0ButtonPressed()
 {
     m_cnc->gotoMachineX0Y0(m_feedRateSpinBox->value());
-    setState(State::STEPPERS_ENABLED);
 }
 
 void MotionControlWidget::onGotoWorkX0Y0ButtonPressed()
 {
     m_cnc->gotoWorkX0Y0(m_feedRateSpinBox->value());
-    setState(State::STEPPERS_ENABLED);
 }
 
 void MotionControlWidget::onXBackwardButtonPressed()
 {
     m_cnc->jogX(-static_cast<float>(m_distanceButtonGroup->checkedId()) / 10.f, m_feedRateSpinBox->value());
-    setState(State::STEPPERS_ENABLED);
 }
 
 void MotionControlWidget::onXForwardButtonPressed()
 {
     m_cnc->jogX(static_cast<float>(m_distanceButtonGroup->checkedId()) / 10.f, m_feedRateSpinBox->value());
-    setState(State::STEPPERS_ENABLED);
 }
 
 void MotionControlWidget::onYBackwardButtonPressed()
 {
     m_cnc->jogY(-static_cast<float>(m_distanceButtonGroup->checkedId()) / 10.f, m_feedRateSpinBox->value());
-    setState(State::STEPPERS_ENABLED);
 }
 
 void MotionControlWidget::onYForwardButtonPressed()
 {
     m_cnc->jogY(static_cast<float>(m_distanceButtonGroup->checkedId()) / 10.f, m_feedRateSpinBox->value());
-    setState(State::STEPPERS_ENABLED);
 }
 
 void MotionControlWidget::onZBackwardButtonPressed()
 {
     m_cnc->jogZ(-static_cast<float>(m_distanceButtonGroup->checkedId()) / 10.f, m_feedRateSpinBox->value());
-    setState(State::STEPPERS_ENABLED);
 }
 
 void MotionControlWidget::onZForwardButtonPressed()
 {
     m_cnc->jogZ(static_cast<float>(m_distanceButtonGroup->checkedId()) / 10.f, m_feedRateSpinBox->value());
-    setState(State::STEPPERS_ENABLED);
 }
 
 void MotionControlWidget::onSpeedFactorSliderValueChanged(int value)

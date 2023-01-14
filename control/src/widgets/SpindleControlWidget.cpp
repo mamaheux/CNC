@@ -13,6 +13,7 @@ SpindleControlWidget::SpindleControlWidget(SettingsModel* settings, Cnc* cnc, QW
     connect(settings, &SettingsModel::settingsChanged, this, &SpindleControlWidget::onSettingsChanged);
     connect(m_cnc, &Cnc::cncConnected, this, &SpindleControlWidget::onCncConnected);
     connect(m_cnc, &Cnc::cncDisconnected, this, &SpindleControlWidget::onCncDisconnected);
+    connect(m_cnc, &Cnc::spindleStateChanged, this, &SpindleControlWidget::onSpindleStateChanged);
 
     connect(m_cnc, &Cnc::currentRpmChanged, this, &SpindleControlWidget::onCurrentRpmChanged);
 
@@ -36,6 +37,18 @@ void SpindleControlWidget::onCncDisconnected()
     setEnabled(false);
 }
 
+void SpindleControlWidget::onSpindleStateChanged(bool isEnabled)
+{
+    if (isEnabled)
+    {
+        setState(State::SPINDLE_ENABLED);
+    }
+    else
+    {
+        setState(State::SPINDLE_DISABLED);
+    }
+}
+
 void SpindleControlWidget::onCurrentRpmChanged(float currentRpm, float targetRpm)
 {
     if (targetRpm == 0.f)
@@ -47,13 +60,11 @@ void SpindleControlWidget::onCurrentRpmChanged(float currentRpm, float targetRpm
 void SpindleControlWidget::onEnableSpindleButtonPressed()
 {
     m_cnc->enableSpindle(m_spindleRpmSpinBox->value());
-    setState(State::SPINDLE_ENABLED);
 }
 
 void SpindleControlWidget::onDisableSpindleButtonPressed()
 {
     m_cnc->disableSpindle();
-    setState(State::SPINDLE_DISABLED);
 }
 
 void SpindleControlWidget::onSpindleRpmSpinBoxValueChanged(int value)

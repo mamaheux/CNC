@@ -27,6 +27,7 @@ public:
 private slots:
     void onCncConnected();
     void onCncDisconnected();
+    void onSpindleStateChanged(bool isEnabled);
 
     void onCurrentRpmChanged(float currentRpm, float targetRpm);
 

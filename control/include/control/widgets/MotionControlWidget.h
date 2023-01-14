@@ -30,6 +30,7 @@ public:
 private slots:
     void onCncConnected();
     void onCncDisconnected();
+    void onStepperStateChanged(bool isEnabled);
 
     void onEnableSteppersButtonPressed();
     void onDisableSteppersButtonPressed();

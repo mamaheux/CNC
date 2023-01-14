@@ -184,6 +184,8 @@ void Cnc::sendCommand(
     {
         sendHeadCommand();
     }
+
+    emitCommandSignals(command);
 }
 
 void Cnc::sendCommandIfNotQueued(
@@ -274,6 +276,30 @@ void Cnc::sendNextGCodeFileCommandIfStarted()
 void Cnc::emitCncError(const QString& error)
 {
     QTimer::singleShot(0, [=]() { emit cncError(error); });
+}
+
+void Cnc::emitCommandSignals(const QString& command)
+{
+    if (command.contains("$H", Qt::CaseInsensitive) || command.contains("M17", Qt::CaseInsensitive) ||
+        command.contains("G0", Qt::CaseInsensitive) || command.contains("G1", Qt::CaseInsensitive) ||
+        command.contains("G2", Qt::CaseInsensitive) || command.contains("G3", Qt::CaseInsensitive))
+    {
+        emit stepperStateChanged(true);
+    }
+    else if (command.contains("M18", Qt::CaseInsensitive))
+    {
+        emit stepperStateChanged(false);
+    }
+    else if (
+        command.contains("M5", Qt::CaseInsensitive) ||
+        (command.contains("M3", Qt::CaseInsensitive) && command.contains("S0", Qt::CaseInsensitive)))
+    {
+        emit spindleStateChanged(false);
+    }
+    else if (command.contains("M3", Qt::CaseInsensitive))
+    {
+        emit spindleStateChanged(true);
+    }
 }
 
 
