@@ -281,8 +281,8 @@ void Cnc::emitCncError(const QString& error)
 void Cnc::emitCommandSignals(const QString& command)
 {
     if (command.contains("$H", Qt::CaseInsensitive) || command.contains("M17", Qt::CaseInsensitive) ||
-        command.contains("G0", Qt::CaseInsensitive) || command.contains("G1", Qt::CaseInsensitive) ||
-        command.contains("G2", Qt::CaseInsensitive) || command.contains("G3", Qt::CaseInsensitive))
+        command.contains("G0 ", Qt::CaseInsensitive) || command.contains("G1 ", Qt::CaseInsensitive) ||
+        command.contains("G2 ", Qt::CaseInsensitive) || command.contains("G3 ", Qt::CaseInsensitive))
     {
         emit stepperStateChanged(true);
     }
