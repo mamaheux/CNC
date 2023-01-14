@@ -14,7 +14,7 @@ constexpr float PI = M_PI;
 constexpr float EPS = 1e-6;
 constexpr float MM_TO_M = 0.001;
 
-constexpr float MOUSE_WHEEL_LINEAR_SPEED = 0.01f;
+constexpr float MOUSE_WHEEL_LINEAR_SPEED = 0.001f;
 constexpr float MOUSE_LINEAR_SPEED = 0.001f;
 constexpr float MOUSE_ANGULAR_SPEED = 0.01f;
 
@@ -190,7 +190,7 @@ void GCodeViewWidget::drawWorkspace()
 
     glBegin(GL_QUADS);
 
-    glColor3f(0.95f, 0.95f, 0.95f);
+    glColor3f(1.f, 0.8f, 0.6f);
     glVertex3f(0.f, 0.f, -z);
     glVertex3f(x, 0.f, -z);
     glVertex3f(x, y, -z);
