@@ -13,6 +13,8 @@
 
 #include <clocale>
 
+constexpr float MIN_FEED_RATE_PER_S = 0.1;
+
 class GuiKernel : public ModuleKernel
 {
     QList<Module*> m_modules;
@@ -505,12 +507,16 @@ class LineCreator : public Module
 {
     Vector3<float> m_startPoint;
     QList<GCodeLine>& m_lines;
+    float& m_durationS;
+    float m_feedRateScale;
+    float m_g0FeedRateMmPerS;
+    float m_g1g2g3FeedRateMmPerS;
 
     CoordinateTransformer* m_coordinateTransformer;
     ArcConverter* m_arcConverter;
 
 public:
-    LineCreator(CoordinateTransformer* coordinateTransformer, ArcConverter* arcConverter, QList<GCodeLine>& lines);
+    LineCreator(CoordinateTransformer* coordinateTransformer, ArcConverter* arcConverter, QList<GCodeLine>& lines, float& durationS);
     ~LineCreator() override = default;
 
     DECLARE_NOT_COPYABLE(LineCreator);
@@ -523,16 +529,23 @@ public:
     CommandResult onGCodeCommandReceived(const GCode& gcode, CommandSource source, uint32_t commandId) override;
 
 private:
+    void updateFeedRate(const GCode& gcode);
     Vector3<float> calculateEndPoint(const GCode& g0g1);
+    void addLastLineDuration(bool fast);
 };
 
 LineCreator::LineCreator(
     CoordinateTransformer* coordinateTransformer,
     ArcConverter* arcConverter,
-    QList<GCodeLine>& lines)
+    QList<GCodeLine>& lines,
+    float& durationS)
     : m_coordinateTransformer(coordinateTransformer),
       m_arcConverter(arcConverter),
-      m_lines(lines)
+      m_lines(lines),
+      m_durationS(durationS),
+      m_feedRateScale(1.f),
+      m_g0FeedRateMmPerS(20.f),
+      m_g1g2g3FeedRateMmPerS(0.1f)
 {
 }
 
@@ -547,10 +560,12 @@ void LineCreator::begin()
 
 CommandResult LineCreator::onGCodeCommandReceived(const GCode& gcode, CommandSource source, uint32_t commandId)
 {
-    bool fast = gcode.code() == 0;
+    updateFeedRate(gcode);
 
     if (gcode.code() == 0 || gcode.code() == 1)
     {
+        bool fast = gcode.code() == 0;
+
         auto endPoint = calculateEndPoint(gcode);
         m_lines.push_back(GCodeLine{
             QVector3D(m_startPoint.x, m_startPoint.y, m_startPoint.z),
@@ -559,6 +574,7 @@ CommandResult LineCreator::onGCodeCommandReceived(const GCode& gcode, CommandSou
             fast});
         m_startPoint = endPoint;
         m_kernel->dispatchTargetPosition(endPoint);
+        addLastLineDuration(fast);
     }
     else if (gcode.code() == 2 || gcode.code() == 3)
     {
@@ -577,13 +593,47 @@ CommandResult LineCreator::onGCodeCommandReceived(const GCode& gcode, CommandSou
                 QVector3D(m_startPoint.x, m_startPoint.y, m_startPoint.z),
                 QVector3D(endPoint.x, endPoint.y, endPoint.z),
                 static_cast<int>(commandId),
-                fast});
+                false});
             m_startPoint = endPoint;
             m_kernel->dispatchTargetPosition(m_startPoint);
+            addLastLineDuration(false);
         }
     }
 
     return CommandResult::ok();
+}
+
+void LineCreator::updateFeedRate(const GCode& gcode)
+{
+    if (gcode.code() == 20 && gcode.subcode() == tl::nullopt)
+    {
+        m_feedRateScale = INCH_TO_MM_SCALE;
+        return;
+    }
+    else if (gcode.code() == 21 && gcode.subcode() == tl::nullopt)
+    {
+        m_feedRateScale = 1.f;
+        return;
+    }
+
+    float feedRateInMmPerS;
+    if (!gcode.f().has_value())
+    {
+        return;
+    }
+    else
+    {
+        feedRateInMmPerS = std::max(*gcode.f() * m_feedRateScale / 60.f, MIN_FEED_RATE_PER_S);
+    }
+
+    if (gcode.code() == 0)
+    {
+        m_g0FeedRateMmPerS = feedRateInMmPerS;
+    }
+    else if (gcode.code() == 1 || gcode.code() == 2 || gcode.code() == 3)
+    {
+        m_g1g2g3FeedRateMmPerS = feedRateInMmPerS;
+    }
 }
 
 Vector3<float> LineCreator::calculateEndPoint(const GCode& g0g1)
@@ -605,6 +655,21 @@ Vector3<float> LineCreator::calculateEndPoint(const GCode& g0g1)
     }
 }
 
+void LineCreator::addLastLineDuration(bool fast)
+{
+    float feedRateMmPerS;
+    if (fast)
+    {
+        feedRateMmPerS = m_g0FeedRateMmPerS;
+    }
+    else
+    {
+        feedRateMmPerS = m_g1g2g3FeedRateMmPerS;
+    }
+
+    m_durationS += (m_lines.last().start - m_lines.last().end).length() / feedRateMmPerS;
+}
+
 
 GCodeModel::GCodeModel() : m_completedCommandCount(0) {}
 
@@ -612,6 +677,7 @@ void GCodeModel::load(const QString& path, const std::function<void(int, int)>& 
 {
     m_commands.clear();
     m_lines.clear();
+    m_durationS = 0.f;
     m_completedCommandCount = 0;
 
     readCommands(path);
@@ -676,7 +742,7 @@ bool GCodeModel::calculateLines(
     CoordinateTransformer coordinateTransformer;
     ArcConverter arcConverter(&coordinateTransformer);
     arcConverter.configure(ConfigItem("arc_converter.max_error_in_mm", "0.01"));
-    LineCreator lineCreator(&coordinateTransformer, &arcConverter, m_lines);
+    LineCreator lineCreator(&coordinateTransformer, &arcConverter, m_lines, m_durationS);
 
     kernel.addModule(&coordinateTransformer);
     kernel.addModule(&arcConverter);

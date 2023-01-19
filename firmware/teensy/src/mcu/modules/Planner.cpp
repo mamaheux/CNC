@@ -25,6 +25,7 @@ FLASHMEM Planner::Planner(CoordinateTransformer* coordinateTransformer, ArcConve
       m_linearBlockExecutor(nullptr),
       m_machineRange(Vector3<float>(), Vector3<float>()),
       m_speedFactor(1.f),
+      m_feedRateScale(1.f),
       m_g0FeedRateInMmPerS(0.f),
       m_g1g2g3FeedRateInMmPerS(0.f),
       m_lastExitFeedRateInMmPerS(0.f),
@@ -111,6 +112,14 @@ CommandResult Planner::onGCodeCommandReceived(const GCode& gcode, CommandSource 
     {
         m_pendingGCode = {gcode, source, commandId};
         return CommandResult::pending();
+    }
+    else if (gcode.code() == 20 && gcode.subcode() == tl::nullopt)
+    {
+        m_feedRateScale = INCH_TO_MM_SCALE;
+    }
+    else if (gcode.code() == 21 && gcode.subcode() == tl::nullopt)
+    {
+        m_feedRateScale = 1.f;
     }
 
     return CommandResult::notHandled();
@@ -275,7 +284,7 @@ void Planner::handlePendingG0G1(float& modalFeedRateInMmPerS)
     float feedRateInMmPerS;
     if (m_pendingGCode->gcode.f().has_value())
     {
-        feedRateInMmPerS = std::max(*m_pendingGCode->gcode.f() / 60.f, *m_minFeedRateInMmPerS);
+        feedRateInMmPerS = std::max(*m_pendingGCode->gcode.f() * m_feedRateScale / 60.f, *m_minFeedRateInMmPerS);
         modalFeedRateInMmPerS = feedRateInMmPerS;
     }
 

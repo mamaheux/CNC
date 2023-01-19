@@ -96,16 +96,24 @@ void SpindleControlWidget::disableSpindleWidgets()
 void SpindleControlWidget::setState(State state)
 {
     m_state = state;
-    switch (m_state)
+
+    if (m_cnc->isGCodeFileStarted())
     {
-        case State::SPINDLE_ENABLED:
-            m_enableSpindleButton->setEnabled(false);
-            m_disableSpindleButton->setEnabled(true);
-            break;
-        case State::SPINDLE_DISABLED:
-            m_enableSpindleButton->setEnabled(true);
-            m_disableSpindleButton->setEnabled(false);
-            break;
+        disableSpindleWidgets();
+    }
+    else
+    {
+        switch (m_state)
+        {
+            case State::SPINDLE_ENABLED:
+                m_enableSpindleButton->setEnabled(false);
+                m_disableSpindleButton->setEnabled(true);
+                break;
+            case State::SPINDLE_DISABLED:
+                m_enableSpindleButton->setEnabled(true);
+                m_disableSpindleButton->setEnabled(false);
+                break;
+        }
     }
 }
 

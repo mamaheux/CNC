@@ -5,6 +5,7 @@
 #include <QLabel>
 #include <QFileDialog>
 #include <QProgressDialog>
+#include <QMessageBox>
 #include <QApplication>
 
 constexpr const char* GCODE_PROGRESS_BAR_FORMAT = "%v/%m (%p%)";
@@ -72,15 +73,21 @@ void GCodeFileWidget::onGCodeFileFinished()
 
 void GCodeFileWidget::onGCodeChanged()
 {
+    m_progressBar->setValue(0);
     if (m_gcodeModel->commandCount() > 0)
     {
         setState(State::GCODE_FILE_OPENED);
+        QMessageBox::information(
+            this,
+            "Successful Loading",
+            "Successful loading : The estimated duration is " +
+                QString::number(m_gcodeModel->durationS() / 60.f) +
+                " minutes.");
     }
     else
     {
         setState(State::NO_GCODE_FILE_OPENED);
     }
-    m_progressBar->setValue(0);
 }
 
 void GCodeFileWidget::onInvalidGCode(const QStringList& invalidCommands)

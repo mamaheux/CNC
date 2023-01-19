@@ -20,6 +20,7 @@ class GCodeModel : public QObject
 
     QStringList m_commands;
     QList<GCodeLine> m_lines;
+    float m_durationS;
     int m_completedCommandCount;
 
 public:
@@ -35,6 +36,7 @@ public:
     void reset();
 
     const QList<GCodeLine>& lines() const;
+    float durationS() const;
 
 signals:
     void gcodeChanged();
@@ -91,6 +93,12 @@ inline void GCodeModel::reset()
 inline const QList<GCodeLine>& GCodeModel::lines() const
 {
     return m_lines;
+}
+
+inline float GCodeModel::durationS() const
+{
+    constexpr float DURATION_SCALE = 1.33f;
+    return m_durationS * DURATION_SCALE;
 }
 
 #endif

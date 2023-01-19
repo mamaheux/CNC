@@ -3,7 +3,6 @@
 
 #include "mcu/modules/LinearBlockExecutor.h"
 
-#include <cnc/collections/BoundedQueue.h>
 #include <cnc/math/Range.h>
 #include <cnc/modules/Module.h>
 #include <cnc/modules/Planner.h>
@@ -54,6 +53,7 @@ class Planner : public Module
     Vector3<float> m_lastTargetPosition;
 
     float m_speedFactor;
+    float m_feedRateScale;
     float m_g0FeedRateInMmPerS;
     float m_g1g2g3FeedRateInMmPerS;
     float m_lastExitFeedRateInMmPerS;

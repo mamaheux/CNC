@@ -74,6 +74,8 @@ public:
     void pauseGCodeFile();
     void abortGCodeFile();
 
+    bool isGCodeFileStarted();
+
 signals:
     void cncConnected();
     void cncDisconnected();
@@ -104,6 +106,11 @@ protected:
 private:
     void emitCommandSignals(const QString& command);
 };
+
+inline bool Cnc::isGCodeFileStarted()
+{
+    return m_isGCodeFileStarted;
+}
 
 class SerialPortCnc : public Cnc
 {
