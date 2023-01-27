@@ -189,7 +189,7 @@ void testModules()
     RUN_TEST(test_getCenterPointFromRadius);
     RUN_TEST(test_ArcConverter_invalidCode);
     RUN_TEST(test_ArcConverter_invalidCenterPoint);
-    RUN_TEST(test_ArcConverter_invalidRadius);
+    RUN_TEST(test_ArcConverter_reallySmallRadius);
     RUN_TEST(test_ArcConverter_invalidP);
     RUN_TEST(test_ArcConverter_absoluteR);
     RUN_TEST(test_ArcConverter_g2XY);

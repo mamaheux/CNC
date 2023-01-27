@@ -183,21 +183,19 @@ void test_ArcConverter_invalidCenterPoint()
     TEST_ASSERT_EQUAL(CommandResultType::ERROR, arcConverter.setArc(toGCode("G3 I1 J2 K3")).type());
 }
 
-void test_ArcConverter_invalidRadius()
+void test_ArcConverter_reallySmallRadius()
 {
     CoordinateTransformer coordinateTransformer;
     ArcConverter arcConverter(&coordinateTransformer);
 
     // The distance between the center point and the start point is not equal
     // to the distance between the center point and the end point.
+    arcConverter.configure(createMaxErrorInMmConfigItem());
     arcConverter.onTargetPositionChanged(Vector3<float>(0.f, 0.f, 0.f));
-    TEST_ASSERT_EQUAL(CommandResultType::ERROR, arcConverter.setArc(toGCode("G2 X2 Y2 I0.1 J0.1")).type());
-    TEST_ASSERT_TRUE(arcConverter.isFinished());
-    TEST_ASSERT_EQUAL(CommandResultType::ERROR, arcConverter.setArc(toGCode("G3 X2 Y2 I0.1 J0.1")).type());
+    TEST_ASSERT_EQUAL(CommandResultType::OK, arcConverter.setArc(toGCode("G2 X0.02 Y0.02 I0.01 J0.01")).type());
+    TEST_ASSERT_FALSE(arcConverter.isFinished());
 
-    // Too small radius
-    TEST_ASSERT_EQUAL(CommandResultType::ERROR, arcConverter.setArc(toGCode("G2 X0.05 Y0.05 I0.05")).type());
-    TEST_ASSERT_EQUAL(CommandResultType::ERROR, arcConverter.setArc(toGCode("G3 X0.05 Y0.05 R0.09")).type());
+    assertArc(arcConverter, {0.02f}, {0.02f}, {0.f});
 }
 
 void test_ArcConverter_invalidP()

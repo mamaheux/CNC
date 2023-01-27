@@ -13,7 +13,6 @@ constexpr const char* CENTER_POINT_ERROR_COMMAND_ERROR_MESSAGE = "Unable to set 
 constexpr const char* RADIUS_ERROR_COMMAND_ERROR_MESSAGE = "The radiuses are not equals.";
 constexpr const char* SEGMENT_ERROR_COMMAND_ERROR_MESSAGE = "Segments calculation failed.";
 
-constexpr float MINIMUM_RADIUS = 0.1;
 constexpr float RADIUS_TOLERANCE = 1e-2;
 constexpr float MINIMUM_ARC_ANGLE = 1e-5;
 
@@ -110,12 +109,6 @@ CommandResult ArcConverter::setArc(const GCode& gcode)
     }
 
     if (!setRadius())
-    {
-        clear();
-        return CommandResult::error(RADIUS_ERROR_COMMAND_ERROR_MESSAGE);
-    }
-
-    if (m_radius < MINIMUM_RADIUS)
     {
         clear();
         return CommandResult::error(RADIUS_ERROR_COMMAND_ERROR_MESSAGE);

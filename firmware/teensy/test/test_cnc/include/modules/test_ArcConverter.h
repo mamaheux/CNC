@@ -5,7 +5,7 @@ void test_getCenterPointFromRadius();
 
 void test_ArcConverter_invalidCode();
 void test_ArcConverter_invalidCenterPoint();
-void test_ArcConverter_invalidRadius();
+void test_ArcConverter_reallySmallRadius();
 void test_ArcConverter_invalidP();
 void test_ArcConverter_absoluteR();
 void test_ArcConverter_g2XY();
