@@ -456,7 +456,10 @@ CommandResult CommandValidator::validateG20G21(const GCode& gcode)
 
 CommandResult CommandValidator::validateG90G91(const GCode& gcode)
 {
-    CHECK_EXTRA_SUBCODE(gcode);
+    if (gcode.subcode() != 1)
+    {
+        CHECK_EXTRA_SUBCODE(gcode);
+    }
     CHECK_GCODE_NO_PARAMETER(gcode);
     return CommandResult::ok();
 }
