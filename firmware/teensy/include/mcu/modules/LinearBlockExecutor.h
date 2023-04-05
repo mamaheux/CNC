@@ -21,14 +21,12 @@ class LinearBlockExecutor : public Module
     Spindle* m_spindle;
 
     tl::optional<double> m_tickFrequency;
-    tl::optional<uint32_t> m_queueDelayMs;
 
     IntervalTimer m_timer;
     BoundedQueue<LinearBlock, LINEAR_BLOCK_EXECUTOR_QUEUE_SIZE> m_queue;
     volatile uint32_t m_queueDurationUs;
 
     bool m_timerStarted;
-    uint32_t m_firstBlockTimestampMs;
     volatile bool m_noMoreBlock;
 
 public:

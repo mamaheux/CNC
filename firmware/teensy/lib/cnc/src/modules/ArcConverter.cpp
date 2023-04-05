@@ -13,7 +13,7 @@ constexpr const char* CENTER_POINT_ERROR_COMMAND_ERROR_MESSAGE = "Unable to set 
 constexpr const char* RADIUS_ERROR_COMMAND_ERROR_MESSAGE = "The radiuses are not equals.";
 constexpr const char* SEGMENT_ERROR_COMMAND_ERROR_MESSAGE = "Segments calculation failed.";
 
-constexpr float RADIUS_TOLERANCE = 1e-2;
+constexpr float RADIUS_TOLERANCE = 1e-1;
 constexpr float MINIMUM_ARC_ANGLE = 1e-5;
 
 constexpr float PI_VALUE = 3.1415926535897932384626433832795f;

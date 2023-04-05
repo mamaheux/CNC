@@ -268,7 +268,8 @@ void Cnc::sendNextGCodeFileCommandIfStarted()
         m_gcodeModel->nextCommand(),
         [this](const QString& command, const QString& response)
         {
-            float sleepTimeMs = parseFloat(response, "P");
+            constexpr float SLEEP_OFFSET_MS = 200.f;
+            float sleepTimeMs = std::max(0.f, parseFloat(response, "P") - SLEEP_OFFSET_MS);
             QTimer::singleShot(static_cast<int>(sleepTimeMs), this, &Cnc::sendNextGCodeFileCommandIfStarted);
         });
 }

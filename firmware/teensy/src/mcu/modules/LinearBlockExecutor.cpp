@@ -6,7 +6,6 @@
 #include <cmath>
 
 constexpr const char* TICK_FREQUENCY_KEY = "linear_block_executor.tick_frequency";
-constexpr const char* QUEUE_DELAY_MS_KEY = "linear_block_executor.queue_delay_ms";
 
 constexpr uint8_t TIMER_INTERRUPT_PRIORITY = 0;
 
@@ -143,8 +142,7 @@ LinearBlockExecutor::LinearBlockExecutor(StepperController* stepperController, S
     : m_stepperController(stepperController),
       m_spindle(spindle),
       m_queueDurationUs(0),
-      m_timerStarted(false),
-      m_firstBlockTimestampMs(0)
+      m_timerStarted(false)
 {
     planner->setLinearBlockExecutor(this);
 }
@@ -155,16 +153,11 @@ FLASHMEM void LinearBlockExecutor::configure(const ConfigItem& item)
     {
         m_tickFrequency = item.getValueDouble();
     }
-    else if (strcmp(item.getKey(), QUEUE_DELAY_MS_KEY) == 0)
-    {
-        m_queueDelayMs = item.getValueInt();
-    }
 }
 
 FLASHMEM void LinearBlockExecutor::checkConfigErrors(const MissingConfigCallback& onMissingConfigItem)
 {
     CHECK_CONFIG_ERROR(onMissingConfigItem, m_tickFrequency.has_value(), TICK_FREQUENCY_KEY);
-    CHECK_CONFIG_ERROR(onMissingConfigItem, m_queueDelayMs.has_value(), QUEUE_DELAY_MS_KEY);
 }
 
 void LinearBlockExecutor::begin()
@@ -172,14 +165,13 @@ void LinearBlockExecutor::begin()
     m_queueDurationUs = 0;
 
     m_timerStarted = false;
-    m_firstBlockTimestampMs = 0;
 
     m_kernel->registerToEvent(ModuleEventType::LINEAR_BLOCK, this);
 }
 
 void LinearBlockExecutor::update()
 {
-    if (!m_timerStarted && !m_queue.isEmpty() && (millis() - m_firstBlockTimestampMs) > *m_queueDelayMs)
+    if (!m_timerStarted && !m_queue.isEmpty())
     {
         if (m_stepperController->tryLock(StepperControlModule::LINEAR_BLOCK_EXECUTOR))
         {
@@ -206,11 +198,6 @@ bool LinearBlockExecutor::hasPendingMotionCommands()
 
 bool LinearBlockExecutor::onLinearBlock(const LinearBlock& block, uint32_t& queueDurationUs, size_t& queueSize)
 {
-    if (!m_timerStarted)
-    {
-        m_firstBlockTimestampMs = millis();
-    }
-
     TimerInterruptLock lock;
     bool ok = m_queue.push(block);
     if (ok)
@@ -244,7 +231,6 @@ void LinearBlockExecutor::startTimer()
 void LinearBlockExecutor::stopTimer()
 {
     m_timer.end();
-    m_firstBlockTimestampMs = millis();
-
     m_timerStarted = false;
+    m_queueDurationUs = 0;
 }

@@ -67,6 +67,7 @@ class Planner : public Module
     uint32_t m_lastPushTimeUs;
     uint32_t m_lastQueueDurationUs;
     size_t m_lastQueueSize;
+    uint32_t m_lastBlockDurationUs;
     tl::optional<PendingLinearBlock> m_pendingLinearBlock;
 
 public:
