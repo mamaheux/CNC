@@ -32,8 +32,7 @@ FLASHMEM Planner::Planner(CoordinateTransformer* coordinateTransformer, ArcConve
       m_lastPendingLineTimeUs(0),
       m_lastPushTimeUs(0),
       m_lastQueueDurationUs(0),
-      m_lastQueueSize(0),
-      m_lastBlockDurationUs(0)
+      m_lastQueueSize(0)
 {
 }
 
@@ -359,18 +358,12 @@ void Planner::handlePendingLine()
 
     int64_t pushTimeElapsedUs = static_cast<int64_t>(micros() - m_lastPushTimeUs);
     int64_t pendingLineTimeElapsedUs = static_cast<int64_t>(micros() - m_lastPendingLineTimeUs);
-    if ((pushTimeElapsedUs > 2 * m_lastBlockDurationUs &&
+    if ((pushTimeElapsedUs > (static_cast<int64_t>(m_lastQueueDurationUs) + PUSH_TIME_OFFSET_US) &&
         pendingLineTimeElapsedUs < static_cast<int64_t>(*m_pendingLineDelayUs)) ||
-        pushTimeElapsedUs < (static_cast<int64_t>(m_lastBlockDurationUs) / 2 - PUSH_TIME_OFFSET_US))
+        pushTimeElapsedUs < (static_cast<int64_t>(m_lastQueueDurationUs) - PUSH_TIME_OFFSET_US))
     {
         return;
     }
-
-    DEBUG_SERIAL.println("Planner::handlePendingLine");
-    DEBUG_SERIAL.print("\tentryFeedRateInMmPerS=");
-    DEBUG_SERIAL.println(m_lastExitFeedRateInMmPerS);
-    DEBUG_SERIAL.print("\texitFeedRateInMmPerS=");
-    DEBUG_SERIAL.println(*m_minFeedRateInMmPerS);
 
     auto plannerBlock = PlannerBlock::fromLine(
         *m_pendingLine,
@@ -460,8 +453,6 @@ void Planner::pushLine(const PlannerLine& line, CommandSource source, uint32_t c
 bool Planner::pushLinearBlock(const LinearBlock& block)
 {
     m_lastPushTimeUs = micros();
-    m_lastBlockDurationUs = block.durationUs;
-
     return m_kernel->dispatchLinearBlock(block, m_lastQueueDurationUs, m_lastQueueSize);
 }
 

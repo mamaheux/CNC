@@ -227,7 +227,8 @@ void testModules()
     RUN_TEST(test_PlannerBlockFromLine_plateauDeceleration);
     RUN_TEST(test_PlannerBlockFromLine_plateau);
     RUN_TEST(test_PlannerBlockFromLine_accelerationPlateauDeceleration);
-    RUN_TEST(test_PlannerBlockFromLine_accelerationDeceleration);
+    RUN_TEST(test_PlannerBlockFromLine_accelerationDeceleration1);
+    RUN_TEST(test_PlannerBlockFromLine_accelerationDeceleration2);
 
     RUN_TEST(test_PlannerBlockToLinearBlock_directions);
     RUN_TEST(test_PlannerBlockToLinearBlock_spindleRpm);

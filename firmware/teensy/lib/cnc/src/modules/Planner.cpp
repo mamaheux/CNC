@@ -121,7 +121,7 @@ void PlannerBlock::setAccelerationAndFeedRates(
     float distanceOnlyDeceleration =
         (squaredFeedRateInMmPerS - squaredExitFeedRateInMmPerS) / (2.f * accelerationInMmPerSS);
 
-    if (entryFeedRateInMmPerS < exitFeedRateInMmPerS && maxFeedRateOnlyAcceleration < feedRateInMmPerS)
+    if (entryFeedRateInMmPerS < exitFeedRateInMmPerS && maxFeedRateOnlyAcceleration < exitFeedRateInMmPerS)
     {
         m_feedRateInMmPerS = maxFeedRateOnlyAcceleration;
         m_exitFeedRateInMmPerS = maxFeedRateOnlyAcceleration;

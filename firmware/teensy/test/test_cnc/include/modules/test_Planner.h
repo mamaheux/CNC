@@ -18,7 +18,8 @@ void test_PlannerBlockFromLine_accelerationPlateau();
 void test_PlannerBlockFromLine_plateauDeceleration();
 void test_PlannerBlockFromLine_plateau();
 void test_PlannerBlockFromLine_accelerationPlateauDeceleration();
-void test_PlannerBlockFromLine_accelerationDeceleration();
+void test_PlannerBlockFromLine_accelerationDeceleration1();
+void test_PlannerBlockFromLine_accelerationDeceleration2();
 
 void test_PlannerBlockToLinearBlock_directions();
 void test_PlannerBlockToLinearBlock_spindleRpm();

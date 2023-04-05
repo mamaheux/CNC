@@ -218,7 +218,7 @@ void test_PlannerBlockFromLine_accelerationOnly()
 {
     constexpr float ENTRY_FEED_RATE_IN_MM_PER_S = 1.f;
     constexpr float FEED_RATE_IN_MM_PER_S = 10.f;
-    constexpr float EXIT_FEED_RATE_IN_MM_PER_S = 1.5f;
+    constexpr float EXIT_FEED_RATE_IN_MM_PER_S = 10.f;
     constexpr float ACCELERATION_IN_MM_PER_SS = 2.f;
 
     PlannerLine line{{0.f, 0.f, 0.f}, {10.f, 0.f, 0.f}, FEED_RATE_IN_MM_PER_S, tl::nullopt};
@@ -358,7 +358,7 @@ void test_PlannerBlockFromLine_accelerationPlateauDeceleration()
     TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 2.66667f, block->decelerationDurationS());
 }
 
-void test_PlannerBlockFromLine_accelerationDeceleration()
+void test_PlannerBlockFromLine_accelerationDeceleration1()
 {
     constexpr float ENTRY_FEED_RATE_IN_MM_PER_S = 1.f;
     constexpr float FEED_RATE_IN_MM_PER_S = 10.f;
@@ -380,6 +380,30 @@ void test_PlannerBlockFromLine_accelerationDeceleration()
     TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 2.62001f, block->accelerationDurationS());
     TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 0.f, block->plateauDurationS());
     TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 0.953341f, block->decelerationDurationS());
+}
+
+void test_PlannerBlockFromLine_accelerationDeceleration2()
+{
+    constexpr float ENTRY_FEED_RATE_IN_MM_PER_S = 0.1f;
+    constexpr float FEED_RATE_IN_MM_PER_S = 30.f;
+    constexpr float EXIT_FEED_RATE_IN_MM_PER_S = 0.78f;
+    constexpr float ACCELERATION_IN_MM_PER_SS = 50.f;
+
+    PlannerLine line{{0.f, 0.f, 0.f}, {0.f, 0.f, 3.f}, FEED_RATE_IN_MM_PER_S, tl::nullopt};
+    auto block = PlannerBlock::fromLine(
+        line,
+        ENTRY_FEED_RATE_IN_MM_PER_S,
+        EXIT_FEED_RATE_IN_MM_PER_S,
+        ACCELERATION_IN_MM_PER_SS);
+    TEST_ASSERT_TRUE(block.has_value());
+
+    TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 3.f, block->distance());
+    TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 0.1f, block->entryFeedRateInMmPerS());
+    TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 12.26007f, block->feedRateInMmPerS());
+    TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 0.78f, block->exitFeedRateInMmPerS());
+    TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 0.2432013f, block->accelerationDurationS());
+    TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 0.f, block->plateauDurationS());
+    TEST_ASSERT_FLOAT_WITHIN(MAX_DELTA, 0.2296013f, block->decelerationDurationS());
 }
 
 void test_PlannerBlockToLinearBlock_directions()
@@ -532,7 +556,7 @@ void test_PlannerBlockToLinearBlock_accelerationOnly()
 {
     constexpr float ENTRY_FEED_RATE_IN_MM_PER_S = 1.f;
     constexpr float FEED_RATE_IN_MM_PER_S = 10.f;
-    constexpr float EXIT_FEED_RATE_IN_MM_PER_S = 1.5f;
+    constexpr float EXIT_FEED_RATE_IN_MM_PER_S = FEED_RATE_IN_MM_PER_S;
     constexpr float ACCELERATION_IN_MM_PER_SS = 2.f;
 
     constexpr float X_STEP_COUNT_PER_MM = 10;
