@@ -45,9 +45,13 @@ tl::optional<PlannerBlock> PlannerBlock::fromLine(
     float exitFeedRateInMmPerS,
     float accelerationInMmPerSS)
 {
-    if (entryFeedRateInMmPerS > line.feedRateInMmPerS || exitFeedRateInMmPerS > line.feedRateInMmPerS)
+    if (exitFeedRateInMmPerS > line.feedRateInMmPerS)
     {
         return tl::nullopt;
+    }
+    if (entryFeedRateInMmPerS > line.feedRateInMmPerS)
+    {
+        entryFeedRateInMmPerS = line.feedRateInMmPerS;
     }
 
     PlannerBlock block;

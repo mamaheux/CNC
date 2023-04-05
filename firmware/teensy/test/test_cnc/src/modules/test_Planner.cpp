@@ -89,12 +89,6 @@ void test_PlannerBlockFromLine_invalid()
     PlannerLine line{{0.f, 0.f, 0.f}, {10.f, 10.f, 0.f}, FEED_RATE_IN_MM_PER_S, tl::nullopt};
     TEST_ASSERT_FALSE(PlannerBlock::fromLine(
                           line,
-                          INVALID_ENTRY_FEED_RATE_IN_MM_PER_S,
-                          VALID_EXIT_FEED_RATE_IN_MM_PER_S,
-                          ACCELERATION_IN_MM_PER_SS)
-                          .has_value());
-    TEST_ASSERT_FALSE(PlannerBlock::fromLine(
-                          line,
                           VALID_ENTRY_FEED_RATE_IN_MM_PER_S,
                           INVALID_EXIT_FEED_RATE_IN_MM_PER_S,
                           ACCELERATION_IN_MM_PER_SS)
